@@ -21,14 +21,14 @@ Important NOTE: remember to checkout the develop branch.
 ```sh
 cd ${instance name}
 bash docker/init-docker.sh
-docker exec -u 0 -it php81_${instance name} bash
+docker exec -u 0 -it php82_${instance name} bash
 chown -R 33 storage
 ```
 
 *Important NOTE*: if you have installed XDEBUG you need to create the xdebug.log file on the docker:
 
 ```bash
-docker exec -u 0 -it php81_${instance name} bash
+docker exec -u 0 -it php82_${instance name} bash
 touch /var/log/xdebug.log
 chown -R 33 /var/log/
 ```
