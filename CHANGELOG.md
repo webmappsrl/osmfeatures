@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/webmappsrl/osmfeatures/compare/v1.1.1...v1.1.2) (2024-01-23)
+
+
+### Bug Fixes
+
+* fixed feature example test ([39881c5](https://github.com/webmappsrl/osmfeatures/commit/39881c556260bddfe8f38518724bb52c64822e6e))
+
 ## [1.1.1](https://github.com/webmappsrl/osmfeatures/compare/v1.1.0...v1.1.1) (2024-01-23)
 
 
