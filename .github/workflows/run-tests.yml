@@ -9,7 +9,7 @@ jobs:
       postgres:
         image: postgis/postgis:14-3.3
         env:
-          POSTGRES_PASSWORD: mpt2
+          POSTGRES_PASSWORD: osmfeatures
           POSTGRES_DB: osmfeatures
           POSTGRES_USER: osmfeatures
         ports:
