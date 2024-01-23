@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/webmappsrl/osmfeatures/compare/v1.0.0...v1.1.0) (2024-01-23)
+
+
+### Features
+
+* updated readme and route ([db0fad1](https://github.com/webmappsrl/osmfeatures/commit/db0fad1ac7275d4f7ea73b89acd84be006518ffc))
+
 ## 1.0.0 (2024-01-23)
 
 
