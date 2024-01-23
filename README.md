@@ -12,35 +12,38 @@ First of all install the [GEOBOX](https://github.com/webmappsrl/geobox) repo and
 Replace `${instance name}` with the instance name (APP_NAME in .env file)
 
 ```sh
-git clone git@github.com:webmappsrl/${repository_name}.git ${instance name}
+git clone git@github.com:webmappsrl/osmfeatures.git osmfeatures
 git flow init
 ```
 
 Important NOTE: remember to checkout the develop branch.
 
 ```sh
-cd ${instance name}
+cd osmfeatures
 bash docker/init-docker.sh
-docker exec -u 0 -it php81_${instance name} bash
+docker exec -u 0 -it php81_osmfeatures bash
 chown -R 33 storage
 ```
 
-*Important NOTE*: if you have installed XDEBUG you need to create the xdebug.log file on the docker:
+_Important NOTE_: if you have installed XDEBUG you need to create the xdebug.log file on the docker:
 
 ```bash
-docker exec -u 0 -it php81_${instance name} bash
+docker exec -u 0 -it php81_osmfeatures bash
 touch /var/log/xdebug.log
 chown -R 33 /var/log/
 ```
 
 At the end run install command to for this instance
+
 ```bash
-geobox_install ${instance name}
+geobox_install osmfeatures
 ```
 
-*Important NOTE*: 
-- Update your local repository of Geobox following its [Aliases instructions](https://github.com/webmappsrl/geobox#aliases-and-global-shell-variable). Make sure that you have set the environment variable GEOBOX_PATH correctly.
-- Make sure that the version of wm-package of your instance is at leaset 1.1. Use command:
+_Important NOTE_:
+
+-   Update your local repository of Geobox following its [Aliases instructions](https://github.com/webmappsrl/geobox#aliases-and-global-shell-variable). Make sure that you have set the environment variable GEOBOX_PATH correctly.
+-   Make sure that the version of wm-package of your instance is at leaset 1.1. Use command:
+
 ```bash
 composer update wm/wp-package
 ```
@@ -48,7 +51,7 @@ composer update wm/wp-package
 Finally to import a fresh copy of database use Geobox restore command:
 
 ```bash
-geobox_dump_restore ${instance name}
+geobox_dump_restore osmfeatures
 ```
 
 ## Run web server from shell outside docker
@@ -57,7 +60,7 @@ In order to start a web server in local environment use the following command:
 Replace `${instance name}` with the instance name (APP_NAME in .env file)
 
 ```sh
-geobox_serve ${instance name}
+geobox_serve osmfeatures
 ```
 
 ### Differenze ambiente produzione locale
@@ -191,6 +194,7 @@ Durante l'esecuzione degli script potrebbero verificarsi problemi di scrittura s
     NOTA: per eseguire il comando chown potrebbe essere necessario avere i privilegi di root. In questo caso si deve effettuare l'accesso al cointainer del docker utilizzando lo specifico utente root (-u 0). Questo è valido anche sbloccare la possibilità di scrivere nella cartella /var/log per il funzionamento di Xdedug
 
     Utilizzare il parametro `-u` per il comando `docker exec` così da specificare l'id utente, eg come utente root (utilizzare `APP_NAME` al posto di `$nomeApp`):
+
     ```bash
     docker exec -u 0 -it php81_$nomeApp bash
     chown -R 33 storage
