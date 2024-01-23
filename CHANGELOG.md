@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/webmappsrl/osmfeatures/compare/v1.1.0...v1.1.1) (2024-01-23)
+
+
+### Bug Fixes
+
+* fixed homepage path to nova login ([ebb7b49](https://github.com/webmappsrl/osmfeatures/commit/ebb7b499491f42b37f4f183364c05de60f979218))
+
 ## [1.1.0](https://github.com/webmappsrl/osmfeatures/compare/v1.0.0...v1.1.0) (2024-01-23)
 
 
