@@ -4,6 +4,19 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+        /*
+    |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | This value is the current version of the application
+    |
+    */
+
+    'version' => '1.0.0', //x-release-please-version
+    'release' => '1.0.0', // x-release-please-version
+    'release_date' => '23/01/2024',
+
     /*
     |--------------------------------------------------------------------------
     | Application Name
