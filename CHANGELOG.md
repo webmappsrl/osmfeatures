@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/webmappsrl/osmfeatures/compare/v1.3.0...v1.3.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* fixed path in sync ([c01e798](https://github.com/webmappsrl/osmfeatures/commit/c01e798f8127b95eff2caede8c30c410ff8875ee))
+
 ## [1.3.0](https://github.com/webmappsrl/osmfeatures/compare/v1.2.0...v1.3.0) (2024-01-24)
 
 
