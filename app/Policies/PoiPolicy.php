@@ -21,7 +21,7 @@ class PoiPolicy
      */
     public function view(User $user, Poi $poi): bool
     {
-        return tre
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class PoiPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -37,7 +37,7 @@ class PoiPolicy
      */
     public function update(User $user, Poi $poi): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -45,7 +45,7 @@ class PoiPolicy
      */
     public function delete(User $user, Poi $poi): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -53,7 +53,7 @@ class PoiPolicy
      */
     public function restore(User $user, Poi $poi): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -61,6 +61,6 @@ class PoiPolicy
      */
     public function forceDelete(User $user, Poi $poi): bool
     {
-        //
+        return false;
     }
 }
