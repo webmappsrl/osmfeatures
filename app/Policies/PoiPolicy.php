@@ -21,7 +21,7 @@ class PoiPolicy
      */
     public function view(User $user, Poi $poi): bool
     {
-        return true;
+        return false;
     }
 
     /**
