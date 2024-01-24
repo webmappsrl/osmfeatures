@@ -37,7 +37,7 @@ class PoiController extends Controller
     {
         $poi = Poi::find($id);
 
-        if (!$poi) {
+        if (! $poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
 
@@ -50,7 +50,7 @@ class PoiController extends Controller
                 'osm_id' => $poi->osm_id,
                 'osm_type' => $poi->osm_type,
             ],
-            'geometry' => json_decode($poi->geom) // Assumendo che 'geom' sia già in formato GeoJSON
+            'geometry' => json_decode($poi->geom), // Assumendo che 'geom' sia già in formato GeoJSON
         ];
 
         return response()->json($geojsonFeature);
