@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.3.0](https://github.com/webmappsrl/osmfeatures/compare/v1.2.0...v1.3.0) (2024-01-24)
+
+
+### Features
+
+* added footer to nova ([ea39531](https://github.com/webmappsrl/osmfeatures/commit/ea3953142af33202c55d3a55e4be8e872cda26a1))
+* added footer to nova ([bd171db](https://github.com/webmappsrl/osmfeatures/commit/bd171db70aa274e7bfcdb5a09bcd753886d012d3))
+* added sync command with osmium and osm2pgsql ([d1dfcb2](https://github.com/webmappsrl/osmfeatures/commit/d1dfcb2bbfe43a9a00520b4cd0af9e965fb5bd10))
+* added sync command with osmium and osm2pgsql ([efe0097](https://github.com/webmappsrl/osmfeatures/commit/efe009798cc76a702c0bb8c05d0a42117cd5a652))
+* implemented nova resource for pois ([fcef6da](https://github.com/webmappsrl/osmfeatures/commit/fcef6dac060eea4c31581aeaab71974ee6db9c23))
+* implemented nova resource for pois ([79368ae](https://github.com/webmappsrl/osmfeatures/commit/79368ae7a90f38fff716afa6ae778c1c507fd54d))
+* implemented poi list api ([7c3ee11](https://github.com/webmappsrl/osmfeatures/commit/7c3ee11f7db1342c5a0424b3d745bee7f8fb6d94))
+* implemented poi list api ([ceea5a6](https://github.com/webmappsrl/osmfeatures/commit/ceea5a6cdd78f8ce92877204e860cfda51c1c998))
+* swagger 1st version ([cdb6598](https://github.com/webmappsrl/osmfeatures/commit/cdb6598af0b9fccc464abebd4c356d875f1af042))
+* uploaded lua file ([767bc16](https://github.com/webmappsrl/osmfeatures/commit/767bc165758e7dd016f6d624365b854daeedcb83))
+
 ## [1.2.0](https://github.com/webmappsrl/osmfeatures/compare/v1.1.2...v1.2.0) (2024-01-24)
 
 ### Features
