@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\DB;
  *       description="API server"
  *   )
  * )
-
  * @OA\Schema(
  *     schema="PoiItem",
  *     type="object",
