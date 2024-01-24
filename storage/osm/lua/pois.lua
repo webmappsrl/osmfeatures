@@ -3,6 +3,7 @@ local pois = osm2pgsql.define_table({
     name = 'pois',
     ids = { type = 'any', type_column = 'osm_type', id_column = 'osm_id' },
     columns = {
+        { column = 'updated_at'},
         { column = 'name' },
         { column = 'class', not_null = true },
         { column = 'subclass' },

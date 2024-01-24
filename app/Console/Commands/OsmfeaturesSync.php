@@ -23,8 +23,8 @@ class OsmfeaturesSync extends Command
 
         $this->info("Inizio sincronizzazione per $name...");
 
-        $originalPath = storage_path("app/osm/original_$name.pbf");
-        $extractedPbfPath = storage_path("app/osm/$name.pbf");
+        $originalPath = storage_path("osm/pbf/original_$name.pbf");
+        $extractedPbfPath = storage_path("osm/pbf/$name.pbf");
 
         if (! $skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
@@ -86,7 +86,7 @@ class OsmfeaturesSync extends Command
         $dbName = 'osmfeatures';
         $dbHost = '172.31.0.2';
         $dbUser = 'osmfeatures';
-        $luaPath = 'storage/app/osm/lua/pois.lua';
+        $luaPath = 'storage/osm/lua/pois.lua';
         $osm2pgsqlCmd = "osm2pgsql -d $dbName -H $dbHost -U $dbUser -W -O flex -S $luaPath $extractedPbfPath";
 
         $this->info('Stai per eseguire osm2pgsql. Inserisci la password del database.');
@@ -115,7 +115,7 @@ class OsmfeaturesSync extends Command
             $ch = curl_init($url);
             $fp = fopen($outputPath, 'w+');
 
-            curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 500);
             curl_setopt($ch, CURLOPT_FILE, $fp);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
