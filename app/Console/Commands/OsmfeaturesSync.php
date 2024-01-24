@@ -30,6 +30,7 @@ class OsmfeaturesSync extends Command
         $originalPath = storage_path('osm/pbf/' . $name . '.pbf');
         $extractedPbfPath = storage_path('osm/pbf/' . $name . '-extracted.pbf');
 
+
         if (!$skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
