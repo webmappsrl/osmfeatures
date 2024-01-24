@@ -69,6 +69,7 @@ class OsmfeaturesSync extends Command
 
             if ($osmiumReturnVar != 0) {
                 $this->error("Errore durante l'estrazione con osmium.");
+
                 return false;
             }
 
