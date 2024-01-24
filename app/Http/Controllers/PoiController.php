@@ -20,7 +20,7 @@ use Illuminate\Http\Response;
  *       description="API server"
  *   )
  * )
- 
+
  * @OA\Schema(
  *     schema="PoiItem",
  *     type="object",
@@ -36,7 +36,7 @@ use Illuminate\Http\Response;
  *         example="2021-03-10T02:00:00Z"
  *     )
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="GeoJsonFeature",
  *     type="object",
@@ -70,7 +70,6 @@ use Illuminate\Http\Response;
  *     )
  * )
  */
-
 class PoiController extends Controller
 {
     /**
@@ -128,7 +127,7 @@ class PoiController extends Controller
     {
         $poi = Poi::find($id);
 
-        if (!$poi) {
+        if (! $poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
 
