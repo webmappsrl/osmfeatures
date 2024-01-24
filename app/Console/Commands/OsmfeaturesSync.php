@@ -23,12 +23,13 @@ class OsmfeaturesSync extends Command
 
         $this->info("Inizio sincronizzazione per $name...");
 
-        if (!file_exists(storage_path('app/osm'))) {
-            mkdir(storage_path('app/osm'));
+        if (!file_exists(storage_path('osm/pbf'))) {
+            mkdir(storage_path('osm/pbf'), 0777, true);
         }
 
-        $originalPath = storage_path("app/osm/original_$name.pbf");
-        $extractedPbfPath = storage_path("app/osm/$name.pbf");
+        $originalPath = storage_path('osm/pbf/' . $name . '.pbf');
+        $extractedPbfPath = storage_path('osm/pbf/' . $name . '-extracted.pbf');
+
 
         if (!$skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
