@@ -23,18 +23,18 @@ class OsmfeaturesSync extends Command
 
         $this->info("Inizio sincronizzazione per $name...");
 
-        if (!file_exists(storage_path('app/osm'))) {
+        if (! file_exists(storage_path('app/osm'))) {
             mkdir(storage_path('app/osm'));
         }
 
         $originalPath = storage_path("app/osm/original_$name.pbf");
         $extractedPbfPath = storage_path("app/osm/$name.pbf");
 
-        if (!$skipDownload) {
+        if (! $skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
-        if (!file_exists($extractedPbfPath) && $bbox) {
+        if (! file_exists($extractedPbfPath) && $bbox) {
             $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
         } else {
             //se non è stato specificato un bbox, utilizza il file PBF originale per l'importazione
@@ -48,7 +48,7 @@ class OsmfeaturesSync extends Command
     {
         if ($pbfUrl) {
             $this->info("Scaricando il file PBF da $pbfUrl...");
-            if (!$this->downloadPbf($pbfUrl, $originalPath)) {
+            if (! $this->downloadPbf($pbfUrl, $originalPath)) {
                 return false;
             }
         } else {
@@ -134,7 +134,7 @@ class OsmfeaturesSync extends Command
             ) {
                 // Mostra la quantità di dati scaricati / dimensione del file
                 if ($downloadSize > 0) {
-                    $this->output->write("\rScaricati: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
+                    $this->output->write("\rScaricati: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
                 }
             });
 
@@ -146,8 +146,8 @@ class OsmfeaturesSync extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (!$data) {
-                echo 'cURL error: ' . curl_error($ch);
+            if (! $data) {
+                echo 'cURL error: '.curl_error($ch);
                 $this->error('Errore durante il download del file PBF.');
 
                 return false;
@@ -157,8 +157,8 @@ class OsmfeaturesSync extends Command
 
             return true;
         } catch (Exception $e) {
-            $this->error('Errore durante il download del file PBF: ' . $e->getMessage());
-            Log::error('Errore di cURL durante il download del file PBF: ' . $e->getMessage());
+            $this->error('Errore durante il download del file PBF: '.$e->getMessage());
+            Log::error('Errore di cURL durante il download del file PBF: '.$e->getMessage());
 
             return false;
         }
@@ -174,6 +174,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }
