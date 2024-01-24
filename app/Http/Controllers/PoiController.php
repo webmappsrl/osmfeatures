@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Poi;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @OA\OpenApi(
@@ -125,12 +126,12 @@ class PoiController extends Controller
      */
     public function show($id)
     {
-        $poi = Poi::find($id);
+        $poi = Poi::where('osm_id', $id)->first();
 
         if (! $poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
-
+        $geom = DB::select("SELECT ST_AsGeoJSON(?) AS geojson", [$poi->geom])[0]->geojson;
         $geojsonFeature = [
             'type' => 'Feature',
             'properties' => [
@@ -140,7 +141,7 @@ class PoiController extends Controller
                 'osm_id' => $poi->osm_id,
                 'osm_type' => $poi->osm_type,
             ],
-            'geometry' => json_decode($poi->geom), // Assumendo che 'geom' sia già in formato GeoJSON
+            'geometry' => json_decode($geom, true),
         ];
 
         return response()->json($geojsonFeature);
