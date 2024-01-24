@@ -26,11 +26,11 @@ class OsmfeaturesSync extends Command
         $originalPath = storage_path("app/osm/original_$name.pbf");
         $extractedPbfPath = storage_path("app/osm/$name.pbf");
 
-        if (!$skipDownload) {
+        if (! $skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
-        if (!file_exists($extractedPbfPath) && $bbox) {
+        if (! file_exists($extractedPbfPath) && $bbox) {
             $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
         } else {
             //se non è stato specificato un bbox, utilizza il file PBF originale per l'importazione
@@ -44,11 +44,12 @@ class OsmfeaturesSync extends Command
     {
         if ($pbfUrl) {
             $this->info("Scaricando il file PBF da $pbfUrl...");
-            if (!$this->downloadPbf($pbfUrl, $originalPath)) {
+            if (! $this->downloadPbf($pbfUrl, $originalPath)) {
                 return false;
             }
         } else {
-            $this->error("URL del file PBF non fornito.");
+            $this->error('URL del file PBF non fornito.');
+
             return false;
         }
 
@@ -64,12 +65,14 @@ class OsmfeaturesSync extends Command
 
             if ($osmiumReturnVar != 0) {
                 $this->error("Errore durante l'estrazione con osmium.");
+
                 return false;
             }
 
             $this->info("Estrazione completata: $extractedPbfPath");
         } else {
-            $this->error("File PBF non trovato o bbox non specificato.");
+            $this->error('File PBF non trovato o bbox non specificato.');
+
             return false;
         }
 
@@ -86,15 +89,17 @@ class OsmfeaturesSync extends Command
         $luaPath = 'storage/app/osm/lua/pois.lua';
         $osm2pgsqlCmd = "osm2pgsql -d $dbName -H $dbHost -U $dbUser -W -O flex -S $luaPath $extractedPbfPath";
 
-        $this->info("Stai per eseguire osm2pgsql. Inserisci la password del database.");
+        $this->info('Stai per eseguire osm2pgsql. Inserisci la password del database.');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
         if ($osm2pgsqlReturnVar != 0) {
             $this->error("Errore durante l'importazione con osm2pgsql.");
+
             return false;
         }
 
-        $this->info("Importazione completata con successo.");
+        $this->info('Importazione completata con successo.');
+
         return true;
     }
 
@@ -125,7 +130,7 @@ class OsmfeaturesSync extends Command
             ) {
                 // Mostra la quantità di dati scaricati / dimensione del file
                 if ($downloadSize > 0) {
-                    $this->output->write("\rScaricati: " . $this->formatBytes($downloaded) . " / " . $this->formatBytes($downloadSize));
+                    $this->output->write("\rScaricati: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
                 }
             });
 
@@ -137,24 +142,27 @@ class OsmfeaturesSync extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (!$data) {
-                echo 'cURL error: ' . curl_error($ch);
-                $this->error("Errore durante il download del file PBF.");
+            if (! $data) {
+                echo 'cURL error: '.curl_error($ch);
+                $this->error('Errore durante il download del file PBF.');
+
                 return false;
             }
 
             $this->info("Download completato: $outputPath");
+
             return true;
         } catch (Exception $e) {
-            $this->error("Errore durante il download del file PBF: " . $e->getMessage());
-            Log::error("Errore di cURL durante il download del file PBF: " . $e->getMessage());
+            $this->error('Errore durante il download del file PBF: '.$e->getMessage());
+            Log::error('Errore di cURL durante il download del file PBF: '.$e->getMessage());
+
             return false;
         }
     }
 
     protected function formatBytes($bytes, $precision = 2)
     {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
         $bytes = max($bytes, 0);
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
@@ -162,6 +170,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }
