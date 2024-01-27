@@ -13,9 +13,9 @@ return [
     |
     */
 
-    'version' => '1.3.1', //x-release-please-version
-    'release' => '1.3.1', // x-release-please-version
-    'release_date' => '24/01/2024',
+    'version' => '1.3.0', //x-release-please-version
+    'release' => '1.3.0', // x-release-please-version
+    'release_date' => '27/01/2024',
 
     /*
     |--------------------------------------------------------------------------
