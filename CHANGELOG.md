@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
+
+
+### Bug Fixes
+
+* change command to use env password and input database host ([5f1bbca](https://github.com/webmappsrl/osmfeatures/commit/5f1bbca6100371ae89d639283398f505eb88a881))
+* fixed typo in sync command ([692cd5c](https://github.com/webmappsrl/osmfeatures/commit/692cd5c251ba34c1eb43f1867c20523dd816ef1c))
+
 ## [1.3.1](https://github.com/webmappsrl/osmfeatures/compare/v1.3.0...v1.3.1) (2024-01-24)
 
 
