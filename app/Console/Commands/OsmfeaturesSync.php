@@ -25,8 +25,8 @@ class OsmfeaturesSync extends Command
 
         $this->info("Inizio sincronizzazione per $name...");
 
-        if (!file_exists(storage_path('app/osm/pbf'))) {
-            mkdir(storage_path('app/osm/pbf'));
+        if (!file_exists(storage_path('osm/pbf'))) {
+            mkdir(storage_path('osm/pbf'));
         }
 
         $originalPath = storage_path("osm/pbf/original_$name.pbf");
