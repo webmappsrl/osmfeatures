@@ -8,6 +8,7 @@ class OsmfeaturesSync extends Command
 {
     protected $signature = 'osmfeatures:sync 
                             {name : Il nome del file finale dopo l\'estrazione con osmium. Obbligatorio}
+                            {db_host : Host del database PostgreSQL. Obbligatorio.}
                             {pbf? : URL del file PBF da scaricare. Non richiesto se si usa l\'opzione --skip-download}
                             {bbox? : Bounding box per l\'estrazione dei dati (formato: minLon,minLat,maxLon,maxLat). Non richiesto se si usa l\'opzione --skip-download}
                             {--skip-download : Salta il download del file e usa un file PBF esistente nella cartella storage/app/osm/ riconoscibile dal nome specificato.}';
@@ -17,6 +18,7 @@ class OsmfeaturesSync extends Command
     public function handle()
     {
         $name = $this->argument('name');
+        $dbHost = $this->argument('db_host');
         $pbfUrl = $this->argument('pbf');
         $bbox = $this->argument('bbox');
         $skipDownload = $this->option('skip-download');
@@ -41,7 +43,7 @@ class OsmfeaturesSync extends Command
             $extractedPbfPath = $originalPath;
         }
 
-        $this->osm2pgsqlSync($name, $extractedPbfPath);
+        $this->osm2pgsqlSync($name, $extractedPbfPath, $dbHost);
     }
 
     protected function handleDownload($pbfUrl, $originalPath)
@@ -83,16 +85,15 @@ class OsmfeaturesSync extends Command
         return true;
     }
 
-    protected function osm2pgsqlSync($name, $extractedPbfPath)
+    protected function osm2pgsqlSync($name, $extractedPbfPath, $dbHost)
     {
         $this->info("Importazione dei dati in corso con osm2pgsql per $name...");
 
-        $dbName = 'osmfeatures';
-        $dbHost = '172.31.0.2';
-        $dbUser = 'osmfeatures';
+        $dbName = env('DB_DATABASE', 'osmfeatures');
+        $dbUser = env('DB_USERNAME', 'osmfeatures');
+        $dbPassword = env('DB_PASSWORD', 'osmfeatures');
         $luaPath = 'storage/osm/lua/pois.lua';
-        $osm2pgsqlCmd = "osm2pgsql -d $dbName -H $dbHost -U $dbUser -W -O flex -S $luaPath $extractedPbfPath";
-
+        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H $dbHost -U $dbUser -O flex -S $luaPath $extractedPbfPath";
         $this->info('Stai per eseguire osm2pgsql. Inserisci la password del database.');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
