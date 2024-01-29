@@ -17,6 +17,7 @@
 
 * fix on deploy dev sync command ([c2afc55](https://github.com/webmappsrl/osmfeatures/commit/c2afc552f92acbdaf978996a8e05b5bb9ea42911))
 * fix on deploy_dev ([dd14453](https://github.com/webmappsrl/osmfeatures/commit/dd144538820ba533a31b2181a4564fb232578e6e))
+* fix on deploy_prod ([519f812](https://github.com/webmappsrl/osmfeatures/commit/519f8122a7a555c2a1cd16c9e30d6e8b23455d57))
 * fix on github action ([8cde9c0](https://github.com/webmappsrl/osmfeatures/commit/8cde9c009eec613aa57621d7d67d8beeeb6406ad))
 * fixed typo in sync command ([174e118](https://github.com/webmappsrl/osmfeatures/commit/174e1180485b845d3d75a99da04db6a5e96094d1))
 
