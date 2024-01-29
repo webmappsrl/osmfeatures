@@ -17,7 +17,7 @@ php artisan migrate:fresh
 php artisan db:seed 
 
 #osmium and osm2pgsql sync for montepisano
-php artisan osmfeatures:sync
+#php artisan osmfeatures:sync
 
 php artisan optimize:clear
 php artisan config:clear
