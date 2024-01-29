@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
+
+
+### Bug Fixes
+
+* change command to use env password and input database host ([5f1bbca](https://github.com/webmappsrl/osmfeatures/commit/5f1bbca6100371ae89d639283398f505eb88a881))
+* fixed typo in sync command ([692cd5c](https://github.com/webmappsrl/osmfeatures/commit/692cd5c251ba34c1eb43f1867c20523dd816ef1c))
+
+## [1.3.1](https://github.com/webmappsrl/osmfeatures/compare/v1.3.0...v1.3.1) (2024-01-24)
+=======
 ## [1.4.0](https://github.com/webmappsrl/osmfeatures/compare/v1.3.2...v1.4.0) (2024-01-29)
 
 
@@ -13,16 +23,10 @@
 * updated pois.lua to import only certain subclasses ([ee7db9c](https://github.com/webmappsrl/osmfeatures/commit/ee7db9c3b50681506d968ae3698ecd180ab59cfc))
 
 
+
 ### Bug Fixes
 
-* fix on deploy dev sync command ([c2afc55](https://github.com/webmappsrl/osmfeatures/commit/c2afc552f92acbdaf978996a8e05b5bb9ea42911))
-* fix on deploy_dev ([dd14453](https://github.com/webmappsrl/osmfeatures/commit/dd144538820ba533a31b2181a4564fb232578e6e))
-* fix on deploy_prod ([519f812](https://github.com/webmappsrl/osmfeatures/commit/519f8122a7a555c2a1cd16c9e30d6e8b23455d57))
-* fix on github action ([8cde9c0](https://github.com/webmappsrl/osmfeatures/commit/8cde9c009eec613aa57621d7d67d8beeeb6406ad))
-* fixed typo in sync command ([174e118](https://github.com/webmappsrl/osmfeatures/commit/174e1180485b845d3d75a99da04db6a5e96094d1))
 
-
-### Miscellaneous Chores
 
 * clean_code ([d295bc5](https://github.com/webmappsrl/osmfeatures/commit/d295bc59f52bd1f441f1fb8b36cdc63598278ea9))
 
