@@ -2,20 +2,19 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Poi extends Resource
+class AdminArea extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Poi>
+     * @var class-string<\App\Models\AdminArea>
      */
-    public static $model = \App\Models\Poi::class;
+    public static $model = \App\Models\AdminArea::class;
 
     public static function newModel()
     {
@@ -30,7 +29,7 @@ class Poi extends Resource
      *
      * @var string
      */
-    public static $title = 'osm_id';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -38,13 +37,13 @@ class Poi extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'class', 'subclass', 'osm_id',
+        'osm_id', 'name'
     ];
 
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  NovaRequest  $request
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function fields(NovaRequest $request)
@@ -52,16 +51,15 @@ class Poi extends Resource
         return [
             Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
                 function ($value) {
-                    return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
+                    return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
                 }
             )->asHtml(),
             Text::make('Name'),
-            Text::make('Class'),
-            Text::make('Subclass'),
+            Text::make('OSM Type', 'osm_type'),
+            Text::make('Admin Level', 'admin_level'),
             Text::make('Tags')->displayUsing(
                 function ($value) {
                     $json = json_decode($value, true);
-                    //wordwrap the json to make it more readable and add a color to the keys
                     $json = preg_replace(
                         '/(".*?"):(.*?)(,|$)/',
                         '<span style="color:darkgreen;">$1</span>: $2$3<br>',
@@ -78,7 +76,7 @@ class Poi extends Resource
     /**
      * Get the cards available for the request.
      *
-     * @param  NovaRequest  $request
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function cards(NovaRequest $request)
@@ -89,7 +87,7 @@ class Poi extends Resource
     /**
      * Get the filters available for the resource.
      *
-     * @param  NovaRequest  $request
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function filters(NovaRequest $request)
@@ -100,7 +98,7 @@ class Poi extends Resource
     /**
      * Get the lenses available for the resource.
      *
-     * @param  NovaRequest  $request
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function lenses(NovaRequest $request)
@@ -111,7 +109,7 @@ class Poi extends Resource
     /**
      * Get the actions available for the resource.
      *
-     * @param  NovaRequest  $request
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return array
      */
     public function actions(NovaRequest $request)

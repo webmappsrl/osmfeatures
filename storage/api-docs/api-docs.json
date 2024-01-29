@@ -65,6 +65,63 @@
                     }
                 }
             }
+        },
+        "/api/v1/features/admin-areas/list": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "List all Admin Areas",
+                "description": "Returns a list of Admin Areas with their details",
+                "operationId": "listAdminAreas",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AdminAreaItem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/features/admin-areas/{id}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Admin Area by ID",
+                "description": "Returns a single Admin Area in GeoJSON format",
+                "operationId": "getAdminAreaById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Admin Area ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AdminAreaGeojsonFeature"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Admin Area not found"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -126,6 +183,88 @@
                                     "type": "number"
                                 },
                                 "example": [11.8805, 43.4635]
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminAreaItem": {
+                "properties": {
+                    "osm_id": {
+                        "type": "integer",
+                        "example": 39150
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-03-10T02:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "AdminAreaGeojsonFeature": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "Feature"
+                    },
+                    "properties": {
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Lampedusa e Linosa"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2021-03-10T02:00:00Z"
+                            },
+                            "admin_level": {
+                                "type": "string",
+                                "example": "8"
+                            },
+                            "osm_id": {
+                                "type": "integer",
+                                "example": 39150
+                            },
+                            "osm_type": {
+                                "type": "string",
+                                "example": "R"
+                            },
+                            "tags": {
+                                "type": "json",
+                                "example": "{\"name\": \"Lampedusa e Linosa\", \"type\": \"boundary\", \"name:ar\": \"لنبذوشة ونموشة\", \"name:es\": \"Lampedusa y Linosa\", \"name:it\": \"Lampedusa e Linosa\", \"name:la\": \"Lopadusa\", \"name:ru\": \"Лампедуза и Линоза\", \"boundary\": \"administrative\", \"wikidata\": \"Q224813\", \"ref:ISTAT\": \"084020\", \"wikipedia\": \"it:Lampedusa e Linosa\", \"admin_level\": \"8\", \"postal_code\": \"92031\", \"ref:catasto\": \"E431\"}"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "Polygon"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "example": [
+                                    [
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635]
+                                    ]
+                                ]
                             }
                         },
                         "type": "object"

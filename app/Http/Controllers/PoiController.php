@@ -139,6 +139,7 @@ class PoiController extends Controller
                 'subclass' => $poi->subclass,
                 'osm_id' => $poi->osm_id,
                 'osm_type' => $poi->osm_type,
+                'tags' => $poi->tags,
             ],
             'geometry' => json_decode($geom, true),
         ];
