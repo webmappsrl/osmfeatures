@@ -7,7 +7,7 @@ local pois = osm2pgsql.define_table({
         { column = 'class', not_null = true },
         { column = 'subclass' },
         { column = 'geom', type = 'point', not_null = true },
-        { column = 'tags', type = 'jsonb' }, -- Add this line
+        { column = 'tags', type = 'jsonb' },
 }})
 
 function format_timestamp(unix_timestamp)
@@ -16,7 +16,7 @@ end
 
 function process_poi(object, geom)
     local a = {
-        updated_at = object.timestamp and format_timestamp(object.timestamp) or nil,
+        updated_at = object.timestamp or nil,
         name = object.tags.name,
         geom = geom,
         tags = object.tags,
