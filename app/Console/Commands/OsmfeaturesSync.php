@@ -7,112 +7,116 @@ use Illuminate\Console\Command;
 class OsmfeaturesSync extends Command
 {
     protected $signature = 'osmfeatures:sync 
-                            {name : Il nome del file finale dopo l\'estrazione con osmium. Obbligatorio}
-                            {db_host : Host del database PostgreSQL. Obbligatorio.}
-                            {pbf? : URL del file PBF da scaricare. Non richiesto se si usa l\'opzione --skip-download}
-                            {bbox? : Bounding box per l\'estrazione dei dati (formato: minLon,minLat,maxLon,maxLat). Non richiesto se si usa l\'opzione --skip-download}
-                            {--skip-download : Salta il download del file e usa un file PBF esistente nella cartella storage/app/osm/ riconoscibile dal nome specificato.}';
+                            {name : The name of the final file after extraction with osmium. Required}
+                            {db_host : PostgreSQL database host. Required.}
+                            {pbf? : URL of the PBF file to download. Not required if --skip-download option is used}
+                            {bbox? : Bounding box for data extraction (format: minLon,minLat,maxLon,maxLat). Not required if --skip-download option is used}
+                            {--skip-download : Skip the file download and use an existing PBF file in the storage/app/osm/ folder recognizable by the specified name.}';
 
-    protected $description = 'Sincronizza dati OpenStreetMap scaricando un file PBF, utilizza osmium per estrarre una specifica area basata su bounding box, e salva il risultato.';
+    protected $description = 'Synchronize OpenStreetMap data by downloading a PBF file, use osmium to extract a specific area based on bounding box, and save the result.';
 
     public function handle()
     {
+        // Get arguments and options
         $name = $this->argument('name');
         $dbHost = $this->argument('db_host');
         $pbfUrl = $this->argument('pbf');
         $bbox = $this->argument('bbox');
         $skipDownload = $this->option('skip-download');
 
-        $this->info("Inizio sincronizzazione per $name...");
+        $this->info("Starting synchronization for $name...");
 
-        if (! file_exists(storage_path('osm/pbf'))) {
+        // Create directory if it doesn't exist
+        if (!file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'));
         }
 
+        // Define paths
         $originalPath = storage_path("osm/pbf/original_$name.pbf");
         $extractedPbfPath = storage_path("osm/pbf/$name.pbf");
 
-        if (! $skipDownload) {
+        // Handle download
+        if (!$skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
-        if (! file_exists($extractedPbfPath) && $bbox) {
+        // Handle extraction
+        if (!file_exists($extractedPbfPath) && $bbox) {
             $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
         } else {
-            //se non è stato specificato un bbox, utilizza il file PBF originale per l'importazione
+            // If no bbox is specified, use the original PBF file for import
             $extractedPbfPath = $originalPath;
         }
 
+        // Sync with osm2pgsql
         $this->osm2pgsqlSync($name, $extractedPbfPath, $dbHost);
     }
 
-    protected function handleDownload($pbfUrl, $originalPath)
-    {
-        if ($pbfUrl) {
-            $this->info("Scaricando il file PBF da $pbfUrl...");
-            if (! $this->downloadPbf($pbfUrl, $originalPath)) {
-                return false;
-            }
-        } else {
-            $this->error('URL del file PBF non fornito.');
-
-            return false;
-        }
-
-        return true;
-    }
-
+    /**
+     * Extracts a specific area of interest from a PBF file using osmium.
+     *
+     * @param string $bbox The bounding box of the area to extract.
+     * @param string $originalPath The path of the original PBF file.
+     * @param string $extractedPbfPath The path where the extracted file should be saved.
+     * @return bool Returns true if the extraction was successful, false otherwise.
+     */
     protected function osmiumExtraction($bbox, $originalPath, $extractedPbfPath)
     {
         if ($bbox && file_exists($originalPath)) {
-            $this->info("Estrazione dell'area di interesse [ $bbox ] da$originalPath...");
+            $this->info("Extracting area of interest [ $bbox ] from $originalPath...");
             $osmiumCmd = "osmium extract -b $bbox $originalPath -o $extractedPbfPath";
             exec($osmiumCmd, $osmiumOutput, $osmiumReturnVar);
 
             if ($osmiumReturnVar != 0) {
-                $this->error("Errore durante l'estrazione con osmium.");
-
+                $this->error("Error during extraction with osmium.");
                 return false;
             }
 
-            $this->info("Estrazione completata: $extractedPbfPath");
+            $this->info("Extraction completed: $extractedPbfPath");
         } else {
-            $this->error('File PBF non trovato o bbox non specificato.');
-
+            $this->error('PBF file not found or bbox not specified.');
             return false;
         }
 
         return true;
     }
 
+    /**
+     * Imports data from a PBF file into a PostgreSQL database using osm2pgsql.
+     *
+     * @param string $name The name of the import operation.
+     * @param string $extractedPbfPath The path of the PBF file to import.
+     * @param string $dbHost The host of the PostgreSQL database.
+     * @return bool Returns true if the import was successful, false otherwise.
+     */
     protected function osm2pgsqlSync($name, $extractedPbfPath, $dbHost)
     {
-        $this->info("Importazione dei dati in corso con osm2pgsql per $name...");
+        $this->info("Importing data with osm2pgsql for $name...");
 
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
         $luaPath = 'storage/osm/lua/pois.lua';
         $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H $dbHost -U $dbUser -O flex -S $luaPath $extractedPbfPath";
-        $this->info('Stai per eseguire osm2pgsql. Inserisci la password del database.');
+        $this->info('About to run osm2pgsql. Enter the database password.');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
         if ($osm2pgsqlReturnVar != 0) {
-            $this->error("Errore durante l'importazione con osm2pgsql.");
-
+            $this->error("Error during import with osm2pgsql.");
             return false;
         }
 
-        $this->info('Importazione completata con successo.');
+        $this->info('Import successfully completed.');
 
         return true;
     }
 
     /**
-     * Scarica un file PBF da un URL specificato.
+     * Downloads a PBF file from a specified URL.
      *
-     * @param string $url URL del file PBF da scaricare
-     * @param string $outputPath Percorso in cui salvare il file scaricato
+     * @param string $url The URL of the PBF file to download.
+     * @param string $outputPath The path where the downloaded file should be saved.
+     * @return bool Returns true if the download was successful, false otherwise.
      */
     protected function downloadPbf($url, $outputPath)
     {
@@ -124,7 +128,7 @@ class OsmfeaturesSync extends Command
             curl_setopt($ch, CURLOPT_FILE, $fp);
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
-            // Imposta la callback per il progresso del download
+            // Set the callback for download progress
             curl_setopt($ch, CURLOPT_NOPROGRESS, false);
             curl_setopt($ch, CURLOPT_PROGRESSFUNCTION, function (
                 $resource,
@@ -133,38 +137,45 @@ class OsmfeaturesSync extends Command
                 $uploadSize,
                 $uploaded
             ) {
-                // Mostra la quantità di dati scaricati / dimensione del file
+                // Show the amount of data downloaded / file size
                 if ($downloadSize > 0) {
-                    $this->output->write("\rScaricati: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
+                    $this->output->write("\rDownloaded: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
                 }
             });
 
             $data = curl_exec($ch);
 
-            // Va a capo dopo il completamento del download
+            // Go to the line after the download is complete
             $this->output->write("\n");
 
             curl_close($ch);
             fclose($fp);
 
-            if (! $data) {
-                echo 'cURL error: '.curl_error($ch);
-                $this->error('Errore durante il download del file PBF.');
+            if (!$data) {
+                echo 'cURL error: ' . curl_error($ch);
+                $this->error('Error during the PBF file download.');
 
                 return false;
             }
 
-            $this->info("Download completato: $outputPath");
+            $this->info("Download completed: $outputPath");
 
             return true;
         } catch (Exception $e) {
-            $this->error('Errore durante il download del file PBF: '.$e->getMessage());
-            Log::error('Errore di cURL durante il download del file PBF: '.$e->getMessage());
+            $this->error('Error during the PBF file download: ' . $e->getMessage());
+            Log::error('cURL error during the PBF file download: ' . $e->getMessage());
 
             return false;
         }
     }
 
+    /**
+     * Formats a size in bytes into a human-readable string.
+     *
+     * @param int $bytes The size in bytes to format.
+     * @param int $precision The number of decimal places to include in the formatted string.
+     * @return string Returns the formatted size string.
+     */
     protected function formatBytes($bytes, $precision = 2)
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
@@ -175,6 +186,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision).' '.$units[$pow];
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }
