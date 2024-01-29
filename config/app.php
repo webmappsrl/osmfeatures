@@ -13,7 +13,6 @@ return [
     |
     */
 
-
     'version' => '1.4.0', //x-release-please-version
     'release' => '1.4.0', // x-release-please-version
     'release_date' => '29/01/2024',
