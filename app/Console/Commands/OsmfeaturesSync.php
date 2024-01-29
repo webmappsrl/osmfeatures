@@ -41,7 +41,7 @@ class OsmfeaturesSync extends Command
         }
 
         // Handle extraction
-        if (!file_exists($extractedPbfPath) && $bbox) {
+        if ($bbox) {
             $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
         } else {
             // If no bbox is specified, use the original PBF file for import
