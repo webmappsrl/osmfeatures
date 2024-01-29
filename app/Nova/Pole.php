@@ -4,17 +4,19 @@ namespace App\Nova;
 
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class AdminArea extends Resource
+class Pole extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\AdminArea>
+     * @var class-string<\App\Models\Pole>
      */
-    public static $model = \App\Models\AdminArea::class;
+    public static $model = \App\Models\Pole::class;
 
     public static function newModel()
     {
@@ -29,7 +31,7 @@ class AdminArea extends Resource
      *
      * @var string
      */
-    public static $title = 'name';
+    public static $title = 'osm_id';
 
     /**
      * The columns that should be searched.
@@ -51,16 +53,25 @@ class AdminArea extends Resource
         return [
             Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
                 function ($value) {
-                    return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
+                    return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
                 }
             )->asHtml(),
             Text::make('Name'),
+            DateTime::make('Updated At'),
             Text::make('OSM Type', 'osm_type')->displayUsing(
                 function ($value) {
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
             )->asHtml(),
-            Text::make('Admin Level', 'admin_level'),
+
+            Text::make('REF', 'ref'),
+            Text::make('Elevation', 'ele')->displayUsing(
+                function ($value) {
+                    return $value ?  $value . ' m' : '';
+                }
+            ),
+            Text::make('Destination', 'destination'),
+            Text::make('Support', 'support'),
             Text::make('Tags')->displayUsing(
                 function ($value) {
                     $json = json_decode($value, true);
@@ -73,7 +84,6 @@ class AdminArea extends Resource
                     return $json;
                 }
             )->asHtml(),
-
         ];
     }
 

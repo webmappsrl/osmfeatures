@@ -65,7 +65,7 @@ class Poi extends Resource
                     $json = preg_replace(
                         '/(".*?"):(.*?)(,|$)/',
                         '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-                        wordwrap(json_encode($json), 200, '<br>', true)
+                        wordwrap(json_encode($json), 75, '<br>', true)
                     );
 
                     return $json;

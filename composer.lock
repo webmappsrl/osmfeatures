@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9e15a0b160ffbaa593b7044a6984ea8",
+    "content-hash": "bc79a5b49a237ad22394bd5fc8718e0b",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -7564,7 +7564,7 @@
         },
         {
             "name": "wm/wm-internal",
-            "version": "dev-develop",
+            "version": "dev-feature/release_20240129",
             "dist": {
                 "type": "path",
                 "url": "./wm-internal",

@@ -4,26 +4,58 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\text;
+
 class OsmfeaturesSync extends Command
 {
-    protected $signature = 'osmfeatures:sync 
-                            {name : The name of the final file after extraction with osmium. Required}
-                            {db_host : PostgreSQL database host. Required.}
-                            {lua_file : Lua file to use for osm2pgsql (example: pois, admin_areas, etc.). Required}
-                            {pbf? : URL of the PBF file to download. Not required if --skip-download option is used}
-                            {bbox? : Bounding box for data extraction (format: minLon,minLat,maxLon,maxLat). Not required if --skip-download option is used}
-                            {--skip-download : Skip the file download and use an existing PBF file in the storage/app/osm/ folder recognizable by the specified name.}';
+    protected $signature = 'osmfeatures:sync';
 
     protected $description = 'Synchronize OpenStreetMap data by downloading a PBF file, use osmium to extract a specific area based on bounding box, and save the result.';
 
     public function handle()
     {
         // Get arguments and options
-        $name = $this->argument('name');
-        $dbHost = $this->argument('db_host');
-        $pbfUrl = $this->argument('pbf');
-        $bbox = $this->argument('bbox');
-        $skipDownload = $this->option('skip-download');
+        $name = text(
+            label: 'Name of the final file after extraction with osmium',
+            placeholder: 'Montepisano_pois',
+            hint: 'The final file will be saved in storage/app/osm/pbf/ with the specified name.',
+            required: true
+        );
+        $dbHost = text(
+            label: 'PostgreSQL database host',
+            placeholder: 'localhost',
+            hint: 'To find the database host for a docker container, run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' <container_name>',
+            required: true
+        );
+        $luaFile = text(
+            label: 'Lua file to use for osm2pgsql',
+            placeholder: 'pois',
+            hint: 'The Lua file must be saved in storage/osm/lua/ with the specified name (eg. pois.lua).',
+            required: true,
+        );
+        $pbfUrl = text(
+            label: 'URL of the PBF file to download',
+            placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
+            hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
+            required: false,
+        );
+        $bbox = text(
+            label: 'Bounding box for data extraction',
+            placeholder: '10.2,43.5,10.3,43.6',
+            hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
+            required: false
+        );
+        $skipDownload = confirm(
+            label: 'Skip download?',
+            default: false,
+            hint: 'If you already have the PBF file, you can skip the download and use the --skip-download option.'
+        );
+
+        // $dbHost = $this->argument('db_host');
+        // $pbfUrl = $this->argument('pbf');
+        // $bbox = $this->argument('bbox');
+        // $skipDownload = $this->option('skip-download');
 
         $this->info("Starting synchronization for $name...");
 
@@ -50,7 +82,7 @@ class OsmfeaturesSync extends Command
         }
 
         // Sync with osm2pgsql
-        $this->osm2pgsqlSync($name, $extractedPbfPath, $dbHost);
+        $this->osm2pgsqlSync($name, $extractedPbfPath, $dbHost, $luaFile);
     }
 
     /**
@@ -115,14 +147,14 @@ class OsmfeaturesSync extends Command
      * @param string $dbHost The host of the PostgreSQL database.
      * @return bool Returns true if the import was successful, false otherwise.
      */
-    protected function osm2pgsqlSync($name, $extractedPbfPath, $dbHost)
+    protected function osm2pgsqlSync($name, $extractedPbfPath, $dbHost, $luaFile)
     {
         $this->info("Importing data with osm2pgsql for $name...");
 
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaPath = 'storage/osm/lua/' . $this->argument('lua_file') . '.lua';
+        $luaPath = 'storage/osm/lua/' . $luaFile . '.lua';
         if (!file_exists($luaPath)) {
             $this->error('Lua file not found at:' . $luaPath);
 
