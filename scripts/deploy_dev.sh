@@ -17,7 +17,7 @@ php artisan migrate:fresh
 php artisan db:seed 
 
 #osmium and osm2pgsql sync for montepisano
-php artisan osmfeatures:sync montepisano 172.31.0.3 https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf 10.3,43.6,10.7,43.9
+php artisan osmfeatures:sync
 
 php artisan optimize:clear
 php artisan config:clear
