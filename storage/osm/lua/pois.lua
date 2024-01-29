@@ -15,23 +15,53 @@ function format_timestamp(unix_timestamp)
 end
 
 function process_poi(object, geom)
+
     local a = {
+
         updated_at = object.timestamp and format_timestamp(object.timestamp) or nil,
+
         name = object.tags.name,
+
         geom = geom
+
     }
 
-    if object.tags.amenity then
+    if object.tags.amenity and ( 
+
+           object.tags.amenity == 'place_of_worship' or 
+
+           object.tags.amenity == 'drinking_water' 
+
+        )
+
+        then
+
         a.class = 'amenity'
+
         a.subclass = object.tags.amenity
-    elseif object.tags.shop then
-        a.class = 'shop'
-        a.subclass = object.tags.shop
+
+    elseif object.tags.natural and (
+
+           object.tags.natural == 'peak' or
+
+           object.tags.natural == 'spring'
+
+        )
+
+        then
+
+        a.class = 'natural'
+
+        a.subclass = object.tags.natural   
+
     else
+
         return
+
     end
 
     pois:insert(a)
+
 end
 
 function osm2pgsql.process_node(object)
