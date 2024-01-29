@@ -22,7 +22,7 @@ function process_admin_area(object)
     local admin_level = object.tags.admin_level or 'unknown'
 
     local a = {
-        updated_at = format_timestamp(object.timestamp),
+        updated_at = format_timestamp(object.timestamp) or nil,
         name = object.tags.name or 'unknown',
         tags = object.tags,
         geom = object:as_multipolygon(),

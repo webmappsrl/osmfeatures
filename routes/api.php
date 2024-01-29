@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\AdminAreaController;
-use App\Http\Controllers\PoiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PoiController;
+use App\Http\Controllers\PoleController;
+use App\Http\Controllers\AdminAreaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,6 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/features/pois/{id}', [PoiController::class, 'show']);
     Route::get('/features/admin-areas/list', [AdminAreaController::class, 'list']);
     Route::get('/features/admin-areas/{id}', [AdminAreaController::class, 'show']);
+    Route::get('/features/poles/list', [PoleController::class, 'list']);
+    Route::get('/features/poles/{id}', [PoleController::class, 'show']);
 });
