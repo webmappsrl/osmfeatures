@@ -14,51 +14,59 @@ class OsmfeaturesSync extends Command
 
     public function handle()
     {
-        // Get arguments and options
-        $name = text(
-            label: 'Name of the final file after extraction with osmium',
-            placeholder: 'Montepisano_pois',
-            hint: 'The final file will be saved in storage/app/osm/pbf/ with the specified name.',
-            required: true,
-            default: 'Montepisano_pois',
-        );
-        $dbHost = text(
-            label: 'PostgreSQL database host',
-            placeholder: 'localhost',
-            hint: 'To find the database host for a docker container, run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' <container_name>',
-            required: true,
-            default: '172.30.0.3',
-        );
-        $luaFile = text(
-            label: 'Lua file to use for osm2pgsql',
-            placeholder: 'pois',
-            hint: 'The Lua file must be saved in storage/osm/lua/ with the specified name (eg. pois.lua).',
-            required: true,
-            default: 'pois',
-        );
-        $pbfUrl = text(
-            label: 'URL of the PBF file to download',
-            placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
-            hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
-            required: false,
-            default: 'https://download.geofabrik.de/europe/centro-latest.osm.pbf',
-        );
-        $bbox = text(
-            label: 'Bounding box for data extraction',
-            placeholder: '10.2,43.5,10.3,43.6',
-            hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
-            required: false
-        );
-        $skipDownload = confirm(
-            label: 'Skip download?',
-            default: false,
-            hint: 'If you already have the PBF file, you can skip the download and use the --skip-download option.'
-        );
+        $isCiEnvironment = env('CI_ENVIRONMENT') === 'true';
+        if (!$isCiEnvironment) {
+            $name = text(
+                label: 'Name of the final file after extraction with osmium',
+                placeholder: 'Montepisano_pois',
+                hint: 'The final file will be saved in storage/app/osm/pbf/ with the specified name.',
+                required: true,
+                default: 'Montepisano_pois',
+            );
+            $dbHost = text(
+                label: 'PostgreSQL database host',
+                placeholder: 'localhost',
+                hint: 'To find the database host for a docker container, run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' <container_name>',
+                required: true,
+                default: '172.30.0.3',
+            );
+            $luaFile = text(
+                label: 'Lua file to use for osm2pgsql',
+                placeholder: 'pois',
+                hint: 'The Lua file must be saved in storage/osm/lua/ with the specified name (eg. pois.lua).',
+                required: true,
+                default: 'pois',
+            );
+            $pbfUrl = text(
+                label: 'URL of the PBF file to download',
+                placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
+                hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
+                required: false,
+                default: 'https://download.geofabrik.de/europe/centro-latest.osm.pbf',
+            );
+            $bbox = text(
+                label: 'Bounding box for data extraction',
+                placeholder: '10.2,43.5,10.3,43.6',
+                hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
+                required: false
+            );
+            $skipDownload = confirm(
+                label: 'Skip download?',
+                default: false,
+                hint: 'If you already have the PBF file, you can skip the download and use the --skip-download option.'
+            );
+        } else {
+            $name = env('DEFAULT_NAME');
+            $dbHost = env('DEFAULT_HOST');
+            $luaFile = env('DEFAULT_LUA');
+            $pbfUrl = env('DEFAULT_PBF');
+        }
+
 
         $this->info("Starting synchronization for $name...");
 
         // Create directory if it doesn't exist
-        if (! file_exists(storage_path('osm/pbf'))) {
+        if (!file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'));
         }
 
@@ -67,7 +75,7 @@ class OsmfeaturesSync extends Command
         $extractedPbfPath = storage_path("osm/pbf/$name.pbf");
 
         // Handle download
-        if (! $skipDownload) {
+        if (!$skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
@@ -94,7 +102,7 @@ class OsmfeaturesSync extends Command
     {
         if ($pbfUrl) {
             $this->info("Downloading PBF file from $pbfUrl...");
-            if (! $this->downloadPbf($pbfUrl, $originalPath)) {
+            if (!$this->downloadPbf($pbfUrl, $originalPath)) {
                 return false;
             }
         } else {
@@ -152,9 +160,9 @@ class OsmfeaturesSync extends Command
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaPath = 'storage/osm/lua/'.$luaFile.'.lua';
-        if (! file_exists($luaPath)) {
-            $this->error('Lua file not found at:'.$luaPath);
+        $luaPath = 'storage/osm/lua/' . $luaFile . '.lua';
+        if (!file_exists($luaPath)) {
+            $this->error('Lua file not found at:' . $luaPath);
 
             return false;
         }
@@ -201,7 +209,7 @@ class OsmfeaturesSync extends Command
             ) {
                 // Show the amount of data downloaded / file size
                 if ($downloadSize > 0) {
-                    $this->output->write("\rDownloaded: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
+                    $this->output->write("\rDownloaded: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
                 }
             });
 
@@ -213,8 +221,8 @@ class OsmfeaturesSync extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (! $data) {
-                echo 'cURL error: '.curl_error($ch);
+            if (!$data) {
+                echo 'cURL error: ' . curl_error($ch);
                 $this->error('Error during the PBF file download.');
 
                 return false;
@@ -224,8 +232,8 @@ class OsmfeaturesSync extends Command
 
             return true;
         } catch (Exception $e) {
-            $this->error('Error during the PBF file download: '.$e->getMessage());
-            Log::error('cURL error during the PBF file download: '.$e->getMessage());
+            $this->error('Error during the PBF file download: ' . $e->getMessage());
+            Log::error('cURL error during the PBF file download: ' . $e->getMessage());
 
             return false;
         }
@@ -248,6 +256,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision).' '.$units[$pow];
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }
