@@ -16,7 +16,7 @@ end
 
 function process_poi(object, geom)
     local a = {
-        updated_at = object.timestamp or nil,
+        updated_at =format_timestamp(object.timestamp),
         name = object.tags.name,
         geom = geom,
         tags = object.tags,

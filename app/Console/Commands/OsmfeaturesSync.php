@@ -9,6 +9,7 @@ class OsmfeaturesSync extends Command
     protected $signature = 'osmfeatures:sync 
                             {name : The name of the final file after extraction with osmium. Required}
                             {db_host : PostgreSQL database host. Required.}
+                            {lua_file : Lua file to use for osm2pgsql (example: pois, admin_areas, etc.). Required}
                             {pbf? : URL of the PBF file to download. Not required if --skip-download option is used}
                             {bbox? : Bounding box for data extraction (format: minLon,minLat,maxLon,maxLat). Not required if --skip-download option is used}
                             {--skip-download : Skip the file download and use an existing PBF file in the storage/app/osm/ folder recognizable by the specified name.}';
@@ -121,7 +122,12 @@ class OsmfeaturesSync extends Command
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaPath = 'storage/osm/lua/pois.lua';
+        $luaPath = 'storage/osm/lua/' . $this->argument('lua_file') . '.lua';
+        if (!file_exists($luaPath)) {
+            $this->error('Lua file not found at:' . $luaPath);
+
+            return false;
+        }
         $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H $dbHost -U $dbUser -O flex -S $luaPath $extractedPbfPath";
         $this->info('About to run osm2pgsql...');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
