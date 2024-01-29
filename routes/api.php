@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAreaController;
 use App\Http\Controllers\PoiController;
 use App\Http\Controllers\PoleController;
-use App\Http\Controllers\AdminAreaController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
