@@ -1,25 +1,17 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Nome della tua API",
-        "description": "Una breve descrizione della tua API",
+        "title": "OSM features API",
+        "description": "Api documentation",
         "contact": {
-            "email": "support@example.com"
+            "email": "info@webmapp.it"
         },
         "version": "1.0.0"
     },
-    "servers": [
-        {
-            "url": "http://my-default-host.com",
-            "description": "API server"
-        }
-    ],
     "paths": {
-        "/api/features/pois/list": {
+        "/api/v1/features/pois/list": {
             "get": {
-                "tags": [
-                    "POIs"
-                ],
+                "tags": ["API V1"],
                 "summary": "List all POIs",
                 "description": "Returns a list of POIs with their IDs and updated timestamps",
                 "operationId": "listPois",
@@ -40,11 +32,9 @@
                 }
             }
         },
-        "/api/features/pois/{id}": {
+        "/api/v1/features/pois/{id}": {
             "get": {
-                "tags": [
-                    "POIs"
-                ],
+                "tags": ["API V1"],
                 "summary": "Get POI by ID",
                 "description": "Returns a single POI in GeoJSON format",
                 "operationId": "getPoiById",
@@ -102,19 +92,24 @@
                     "properties": {
                         "properties": {
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "Duomo di Arezzo"
                             },
                             "class": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "amenity"
                             },
                             "subclass": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "place_of_worship"
                             },
                             "osm_id": {
-                                "type": "integer"
+                                "type": "integer",
+                                "example": 22720153
                             },
                             "osm_type": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "W"
                             }
                         },
                         "type": "object"
@@ -129,7 +124,8 @@
                                 "type": "array",
                                 "items": {
                                     "type": "number"
-                                }
+                                },
+                                "example": [11.8805, 43.4635]
                             }
                         },
                         "type": "object"

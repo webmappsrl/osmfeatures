@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\DB;
  *   @OA\Info(
  *     title="Nome della tua API",
  *     version="1.0.0",
- *     description="Una breve descrizione della tua API",
+ *     description="Api documentation",
  *     @OA\Contact(
- *         email="support@example.com"
+ *         email="info@webmapp.it"
  *     )
  *   ),
  *   @OA\Server(
@@ -48,11 +48,11 @@ use Illuminate\Support\Facades\DB;
  *     @OA\Property(
  *         property="properties",
  *         type="object",
- *         @OA\Property(property="name", type="string"),
- *         @OA\Property(property="class", type="string"),
- *         @OA\Property(property="subclass", type="string"),
- *         @OA\Property(property="osm_id", type="integer"),
- *         @OA\Property(property="osm_type", type="string")
+ *         @OA\Property(property="name", type="string", example="Duomo di Arezzo"),
+ *         @OA\Property(property="class", type="string, example="amenity"),
+ *         @OA\Property(property="subclass", type="string, example="place_of_worship"),
+ *         @OA\Property(property="osm_id", type="integer, example="22720153"),
+ *         @OA\Property(property="osm_type", type="string, example="W")
  *     ),
  *     @OA\Property(
  *         property="geometry",
@@ -74,7 +74,7 @@ class PoiController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/features/pois/list",
+     *     path="/api/v1/features/pois/list",
      *     operationId="listPois",
      *     tags={"POIs"},
      *     summary="List all POIs",
@@ -100,7 +100,7 @@ class PoiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/features/pois/{id}",
+     *     path="/api/v1/features/pois/{id}",
      *     operationId="getPoiById",
      *     tags={"POIs"},
      *     summary="Get POI by ID",
@@ -127,7 +127,7 @@ class PoiController extends Controller
     {
         $poi = Poi::where('osm_id', $id)->first();
 
-        if (! $poi) {
+        if (!$poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$poi->geom])[0]->geojson;
