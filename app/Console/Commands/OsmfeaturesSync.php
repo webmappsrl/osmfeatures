@@ -43,6 +43,7 @@ class OsmfeaturesSync extends Command
                 hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
                 required: false,
                 default: 'https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf',
+
             );
             $bbox = text(
                 label: 'Bounding box for data extraction',
