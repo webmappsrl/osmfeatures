@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.4.0](https://github.com/webmappsrl/osmfeatures/compare/v1.3.2...v1.4.0) (2024-01-29)
+
+
+### Features
+
+* added tags field to pois sync ([102059a](https://github.com/webmappsrl/osmfeatures/commit/102059a94bbcef358b56cf12c504cc6779cef737))
+* deploy dev optimized to launch osm2pgsql sync for montepisano ([321a828](https://github.com/webmappsrl/osmfeatures/commit/321a8284c6d059ff92f87eb345a1b143ed027d1b))
+* enhanced API documentation ([8614d40](https://github.com/webmappsrl/osmfeatures/commit/8614d408c6c3f78360a68aa8b1b85febc452e912))
+* enhanced sync command with laravel prompts and created import for poles, model, nova and APIs ([43786f6](https://github.com/webmappsrl/osmfeatures/commit/43786f62b4c6bcbd2e0106998743a96e97895de6))
+* sync admin areas, nova resource, model, apis ([901046f](https://github.com/webmappsrl/osmfeatures/commit/901046f8c3f68cc446e0918a3cdef48d625ffb6c))
+* updated pois.lua to import only certain subclasses ([ee7db9c](https://github.com/webmappsrl/osmfeatures/commit/ee7db9c3b50681506d968ae3698ecd180ab59cfc))
+
+
+### Bug Fixes
+
+* fix on deploy dev sync command ([c2afc55](https://github.com/webmappsrl/osmfeatures/commit/c2afc552f92acbdaf978996a8e05b5bb9ea42911))
+* fix on deploy_dev ([dd14453](https://github.com/webmappsrl/osmfeatures/commit/dd144538820ba533a31b2181a4564fb232578e6e))
+* fix on github action ([8cde9c0](https://github.com/webmappsrl/osmfeatures/commit/8cde9c009eec613aa57621d7d67d8beeeb6406ad))
+* fixed typo in sync command ([174e118](https://github.com/webmappsrl/osmfeatures/commit/174e1180485b845d3d75a99da04db6a5e96094d1))
+
+
+### Miscellaneous Chores
+
+* clean_code ([d295bc5](https://github.com/webmappsrl/osmfeatures/commit/d295bc59f52bd1f441f1fb8b36cdc63598278ea9))
+
 ## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
 
 ### Bug Fixes
