@@ -27,7 +27,6 @@ class AdminAreaController extends Controller
      */
     public function list()
     {
-
         $adminAreas = AdminArea::all(['osm_id', 'updated_at'])->mapWithKeys(function ($area) {
             return [$area->osm_id => $area->updated_at];
         });
@@ -64,7 +63,7 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::where('osm_id', $id)->first();
 
-        if (!$adminArea) {
+        if (! $adminArea) {
             return response()->json(['message' => 'Admin Area non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
