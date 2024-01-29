@@ -27,7 +27,7 @@ class OsmfeaturesSync extends Command
         $this->info("Starting synchronization for $name...");
 
         // Create directory if it doesn't exist
-        if (!file_exists(storage_path('osm/pbf'))) {
+        if (! file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'));
         }
 
@@ -36,12 +36,12 @@ class OsmfeaturesSync extends Command
         $extractedPbfPath = storage_path("osm/pbf/$name.pbf");
 
         // Handle download
-        if (!$skipDownload) {
+        if (! $skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
         // Handle extraction
-        if (!file_exists($extractedPbfPath) && $bbox) {
+        if (! file_exists($extractedPbfPath) && $bbox) {
             $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
         } else {
             // If no bbox is specified, use the original PBF file for import
@@ -68,13 +68,15 @@ class OsmfeaturesSync extends Command
             exec($osmiumCmd, $osmiumOutput, $osmiumReturnVar);
 
             if ($osmiumReturnVar != 0) {
-                $this->error("Error during extraction with osmium.");
+                $this->error('Error during extraction with osmium.');
+
                 return false;
             }
 
             $this->info("Extraction completed: $extractedPbfPath");
         } else {
             $this->error('PBF file not found or bbox not specified.');
+
             return false;
         }
 
@@ -102,7 +104,8 @@ class OsmfeaturesSync extends Command
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
         if ($osm2pgsqlReturnVar != 0) {
-            $this->error("Error during import with osm2pgsql.");
+            $this->error('Error during import with osm2pgsql.');
+
             return false;
         }
 
@@ -139,7 +142,7 @@ class OsmfeaturesSync extends Command
             ) {
                 // Show the amount of data downloaded / file size
                 if ($downloadSize > 0) {
-                    $this->output->write("\rDownloaded: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
+                    $this->output->write("\rDownloaded: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
                 }
             });
 
@@ -151,8 +154,8 @@ class OsmfeaturesSync extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (!$data) {
-                echo 'cURL error: ' . curl_error($ch);
+            if (! $data) {
+                echo 'cURL error: '.curl_error($ch);
                 $this->error('Error during the PBF file download.');
 
                 return false;
@@ -162,8 +165,8 @@ class OsmfeaturesSync extends Command
 
             return true;
         } catch (Exception $e) {
-            $this->error('Error during the PBF file download: ' . $e->getMessage());
-            Log::error('cURL error during the PBF file download: ' . $e->getMessage());
+            $this->error('Error during the PBF file download: '.$e->getMessage());
+            Log::error('cURL error during the PBF file download: '.$e->getMessage());
 
             return false;
         }
@@ -186,6 +189,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision) . ' ' . $units[$pow];
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }
