@@ -15,5 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/features/pois/list', [PoiController::class, 'list']);
-Route::get('/features/pois/{id}', [PoiController::class, 'show']);
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    Route::get('/features/pois/list', [PoiController::class, 'list']);
+    Route::get('/features/pois/{id}', [PoiController::class, 'show']);
+});
