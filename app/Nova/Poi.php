@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -57,6 +58,20 @@ class Poi extends Resource
             Text::make('Name'),
             Text::make('Class'),
             Text::make('Subclass'),
+            //create a text field to show the tags column as json on the index
+            Text::make('Tags')->displayUsing(
+                function ($value) {
+                    $json = json_decode($value, true);
+                    //wordwrap the json to make it more readable and add a color to the keys
+                    $json = preg_replace(
+                        '/(".*?"):(.*?)(,|$)/',
+                        '<span style="color:darkgreen;">$1</span>: $2$3<br>',
+                        wordwrap(json_encode($json), 200, '<br>', true)
+                    );
+
+                    return $json;
+                }
+            )->asHtml(),
 
         ];
     }
