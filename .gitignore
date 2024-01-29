@@ -15,3 +15,4 @@ yarn-error.log
 /docker/volumes/*
 docker-compose.yml
 /storage/osm/pbf/
+.php-cs-fixer.cache
