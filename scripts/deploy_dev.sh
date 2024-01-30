@@ -17,7 +17,7 @@ php artisan migrate:fresh
 php artisan db:seed 
 
 #osmium and osm2pgsql sync for pois
-php artisan osmfeatures:sync centro_italia_pois "172.30.0.3" pois
+php artisan osmfeatures:sync centro_italia_pois "172.30.0.3" pois --skip-download
 
 #osmium and osm2pgsql sync for admin areas
 php artisan osmfeatures:sync centro_italia_admin_areas "172.30.0.3" admin_areas --skip-download
