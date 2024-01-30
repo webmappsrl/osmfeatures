@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/webmappsrl/osmfeatures/compare/v1.5.1...v1.6.0) (2024-01-30)
+
+
+### Features
+
+* activated automatic sync in deploy dev workflow ([a6d8225](https://github.com/webmappsrl/osmfeatures/commit/a6d82252b33a11cc9d14ef2675cd278a2be5dd39))
+
 ## [1.5.1](https://github.com/webmappsrl/osmfeatures/compare/v1.5.0...v1.5.1) (2024-01-30)
 
 
