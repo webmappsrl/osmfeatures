@@ -27,4 +27,4 @@ jobs:
           username: ${{ secrets.USERNAMEDEV }}
           port: ${{ secrets.PORTDEV }}
           key: ${{ secrets.SSHKEYDEV }}
-          script: "source /var/www/html/geobox/scripts/aliases.sh && source /var/www/html/.zshrc && geobox_dump_restore osmfeatures && cd /root/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_dev.sh"
+          script: "source /var/www/html/geobox/scripts/aliases.sh && source /var/www/html/.zshrc && cd /root/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_dev.sh"
