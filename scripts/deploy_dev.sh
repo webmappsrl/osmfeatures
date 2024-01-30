@@ -16,7 +16,25 @@ php artisan migrate:fresh
 #Seed the db to create admin user
 php artisan db:seed 
 
-#osmium and osm2pgsql sync for montepisano
+#osmium and osm2pgsql sync for pois
+export DEFAULT_NAME="centro_italia_pois"
+export DEFAULT_LUA="pois"
+export DEFAULT_HOST="172.30.0.3"
+export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
+php artisan osmfeatures:sync
+
+#osmium and osm2pgsql sync for admin areas
+export DEFAULT_NAME="centro_italia_admin_areas"
+export DEFAULT_LUA="admin_areas"
+export DEFAULT_HOST="172.30.0.3"
+export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
+php artisan osmfeatures:sync
+
+#osmium and osm2pgsql sync for poles
+export DEFAULT_NAME="centro_italia_poles"
+export DEFAULT_LUA="poles"
+export DEFAULT_HOST="172.30.0.3"
+export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
 php artisan osmfeatures:sync
 
 php artisan optimize:clear

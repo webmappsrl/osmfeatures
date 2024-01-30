@@ -14,11 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI_ENVIRONMENT: "true"
-      DEFAULT_NAME: "Montepisano_pois"
+      DEFAULT_NAME: "centro_italia_pois"
       DEFAULT_HOST: "172.30.0.3"
       DEFAULT_LUA: "pois"
       DEFAULT_PBF: "https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
-
 
     steps:
       - name: Info
@@ -28,4 +27,4 @@ jobs:
           username: ${{ secrets.USERNAMEDEV }}
           port: ${{ secrets.PORTDEV }}
           key: ${{ secrets.SSHKEYDEV }}
-          script: "source /var/www/html/geobox/scripts/aliases.sh && source /var/www/html/.zshrc && geobox_dump_restore osmfeatures && cd /root/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_dev.sh"
+          script: "source /var/www/html/geobox/scripts/aliases.sh && source /var/www/html/.zshrc && cd /root/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_dev.sh"
