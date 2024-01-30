@@ -8,22 +8,22 @@ echo "Deployment started ..."
 (php artisan down) || true
 
 # Install composer dependencies
-composer install  --no-interaction --prefer-dist --optimize-autoloader
+# composer install  --no-interaction --prefer-dist --optimize-autoloader
 
-# Regenerate the db
-php artisan migrate:fresh
+# # Regenerate the db
+# php artisan migrate:fresh
 
-#Seed the db to create admin user
-php artisan db:seed 
+# #Seed the db to create admin user
+# php artisan db:seed 
 
 #osmium and osm2pgsql sync for pois
-php artisan osmfeatures:sync centro_italia_pois "172.30.0.3" pois
+# php artisan osmfeatures:sync centro_italia_pois "172.30.0.3" pois
 
 #osmium and osm2pgsql sync for admin areas
-php artisan osmfeatures:sync centro_italia_admin_areas "172.30.0.3" admin_areas
+php artisan osmfeatures:sync centro_italia_admin_areas "172.30.0.3" admin_areas --skip-download
 
 #osmium and osm2pgsql sync for poles
-php artisan osmfeatures:sync centro_italia_poles "172.30.0.3"  poles
+php artisan osmfeatures:sync centro_italia_poles "172.30.0.3" poles --skip-download
 
 php artisan optimize:clear
 php artisan config:clear
