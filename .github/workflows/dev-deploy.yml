@@ -14,11 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI_ENVIRONMENT: "true"
-      DEFAULT_NAME: "Montepisano_pois"
+      DEFAULT_NAME: "centro_italia_pois"
       DEFAULT_HOST: "172.30.0.3"
       DEFAULT_LUA: "pois"
       DEFAULT_PBF: "https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
-
 
     steps:
       - name: Info
