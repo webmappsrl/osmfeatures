@@ -17,25 +17,13 @@ php artisan migrate:fresh
 php artisan db:seed 
 
 #osmium and osm2pgsql sync for pois
-export DEFAULT_NAME="centro_italia_pois"
-export DEFAULT_LUA="pois"
-export DEFAULT_HOST="172.30.0.3"
-export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
-php artisan osmfeatures:sync
+php artisan osmfeatures:sync centro_italia_pois "172.30.0.3" pois
 
 #osmium and osm2pgsql sync for admin areas
-export DEFAULT_NAME="centro_italia_admin_areas"
-export DEFAULT_LUA="admin_areas"
-export DEFAULT_HOST="172.30.0.3"
-export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
-php artisan osmfeatures:sync
+php artisan osmfeatures:sync centro_italia_admin_areas "172.30.0.3" admin_areas
 
 #osmium and osm2pgsql sync for poles
-export DEFAULT_NAME="centro_italia_poles"
-export DEFAULT_LUA="poles"
-export DEFAULT_HOST="172.30.0.3"
-export DEFAULT_PBF="https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf"
-php artisan osmfeatures:sync
+php artisan osmfeatures:sync centro_italia_poles "172.30.0.3"  poles
 
 php artisan optimize:clear
 php artisan config:clear
