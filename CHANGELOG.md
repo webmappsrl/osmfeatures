@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/webmappsrl/osmfeatures/compare/v1.4.0...v1.5.0) (2024-01-29)
+
+
+### Features
+
+* added admin permission for prd ([0bd76ab](https://github.com/webmappsrl/osmfeatures/commit/0bd76abc5573e27a3543c8599326a0a5f1c8a536))
+
+
+### Bug Fixes
+
+* fixed url for geofabrik download default ([a272078](https://github.com/webmappsrl/osmfeatures/commit/a2720783f1b4dc42880b9f8072fce514ca55a96a))
+
 ## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
 
 
