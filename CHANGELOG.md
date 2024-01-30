@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/webmappsrl/osmfeatures/compare/v1.5.0...v1.5.1) (2024-01-30)
+
+
+### Bug Fixes
+
+* changed default name for automatic download on deploy dev ([ab37c53](https://github.com/webmappsrl/osmfeatures/commit/ab37c539dae8eeb8a0b36f689c1dea0a3825596e))
+
 ## [1.5.0](https://github.com/webmappsrl/osmfeatures/compare/v1.4.0...v1.5.0) (2024-01-29)
 
 
