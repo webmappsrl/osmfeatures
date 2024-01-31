@@ -203,3 +203,72 @@ Durante l'esecuzione degli script potrebbero verificarsi problemi di scrittura s
 Xdebug potrebbe non trovare il file di log configurato nel .ini, quindi generare vari warnings
 
 -   creare un file in `/var/log/xdebug.log` all'interno del container phpfpm. Eseguire un `chown www-data /var/log/xdebug.log`. Creare questo file solo se si ha esigenze di debug errori xdebug (impossibile analizzare il codice tramite breakpoint) visto che potrebbe crescere esponenzialmente nel tempo
+-
+
+## Risorse
+
+-   [osm data](https://webmappsrl.gitbook.io/osmdata-2.0/)
+
+---
+
+# Documentazione del Comando `osmfeatures:sync`
+
+Il comando `osmfeatures:sync` è una parte integrante del progetto `osmfeatures`, che utilizza osm2pgsql e osmium per la sincronizzazione e l'elaborazione dei dati OSM (OpenStreetMap). Questo documento fornisce una guida su come utilizzare questo comando, inclusi i parametri, le opzioni e le loro funzioni.
+
+## Panoramica del Comando
+
+Il comando `artisan osmfeatures:sync` é progettato per essere flessibile e configurabile, consentendo agli sviluppatori di specificare diverse opzioni per il processo di importazione.
+
+### Struttura del Comando
+
+```bash
+osmfeatures:sync {defaultName?} {defaultHost?} {defaultLua?} {--skip-download} {defaultPbf?}
+```
+
+### Parametri e Opzioni
+
+Il comando supporta diversi parametri e opzioni:
+
+1. **defaultName**: Il nome del file finale che verrá salvato. Obbligatorio.
+
+2. **defaultHost**: PostgreSQL database host. Per trovare il valore lanciare il comando `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_name>`. Obbligatorio.
+
+3. **defaultLua**: Il nome del file .lua (da digitare senza l'estensione \*.lua) da utilizzare per l'importazione con osm2pgsql. Questo file deve essere presente nella cartella `storage/app/osm/lua`. Obbligatorio.
+
+4. **Opzione --skip-download**: Se non si vuole scaricare nuovamente il file PBF, utilizzare questa opzione. NOTA: é necessario che il file PBF sia già presente nella cartella `storage/app/osm/pbf`.
+
+5. **defaultPbf**: Accetta un URL da cui scaricare il pbf. Non obbligatorio se si utilizza l'opzione `--skip-download`.
+
+6. **bbox**: Bounding box per filtrare i dati OSM con osmium. Accetta una stringa di coordinate separate da virgola. Ad esempio, `10.0,10.0,11.0,11.0`.
+
+## Esempio di Utilizzo
+
+Utilizzando il package Laravel Prompts, il comando `osmfeatures:sync` guida l'utente attraverso le opzioni disponibili. Non sará necessario, quindi, digitare tutta la lista di parametri necessari. Per esempio, se si lancia:
+
+```bash
+osmfeatures:sync
+```
+
+---
+
+Nel terminale verrà visualizzato un elenco di opzioni:
+
+## ![Esempio di Utilizzo](storage/app/public/readme.png)
+
+Questo esempio scarica un file da geofabrik, lo nomina Montepisano e lo salva in `storage/app/osm/pbf`. Il file viene quindi elaborato con osm2pgsql utilizzando il file lua `pois.lua`, che defiinisce la tabella e le colonne nel database, oltre ai dati che importeremo dal file .pbf scaricato in precedenza . NOTA: il file lua deve essere presente nella cartella `storage/app/osm/lua`.
+
+In questo esempio specifico non viene utilizzata l'opzione `--skip-download`, quindi il file viene scaricato da geofabrik. Se si vuole utilizzare un file già presente nella cartella `storage/app/osm/pbf`, utilizzare l'opzione `--skip-download` ed il comando prenderà il file dalla cartella basandosi sul nome specificato nel primo parametro.
+
+Il campo `bbox` è opzionale. Se non viene specificato, il comando importerà tutti i dati OSM dal file .pbf. Se si vuole importare solo una parte dei dati, utilizzare il parametro `bbox` per filtrare i dati OSM prima dell'importazione utilizzando osmium.
+
+## Documentazione di osm2pgsql e osmium
+
+-   **osm2pgsql**: Utilizzato per convertire i dati OSM in un formato utilizzabile dal database PostgreSQL. Documentazione dettagliata disponibile su [osm2pgsql.org](https://osm2pgsql.org/doc/manual.html).
+
+-   **osmium**: Uno strumento per lavorare con i dati OSM, utilizzato per filtrare e manipolare i dati prima dell'importazione. Documentazione disponibile su [Osmium Tool](https://osmcode.org/osmium-tool/manual.html).
+
+## Laravel Prompts
+
+L'interfaccia di prompt di Laravel migliora l'esperienza dello sviluppatore fornendo una guida interattiva attraverso le opzioni del comando. Per maggiori informazioni, fare riferimento alla [documentazione di Laravel](https://laravel.com/docs/10.x/prompts#main-content).
+
+---
