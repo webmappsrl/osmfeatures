@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.0](https://github.com/webmappsrl/osmfeatures/compare/v1.6.0...v1.7.0) (2024-01-31)
+
+
+### Features
+
+* added osm2pgsql import for all the lua files in deploy dev script ([b771cd9](https://github.com/webmappsrl/osmfeatures/commit/b771cd90ed6cabefff5bb5dd7bf3abf79a439368))
+* updated documentation ([c47fcc7](https://github.com/webmappsrl/osmfeatures/commit/c47fcc70670ebed19996e9e61942466b3d441397))
+
+
+### Bug Fixes
+
+* added skip download to workflow ([77fc843](https://github.com/webmappsrl/osmfeatures/commit/77fc8433ac47913c2d0ad586aa650f7e01f0b93d))
+* dev-deploy ([1c33f99](https://github.com/webmappsrl/osmfeatures/commit/1c33f99f1f8ce758531b43457d40183ffea748c7))
+* skip download on deploy dev sync ([1e0ea9d](https://github.com/webmappsrl/osmfeatures/commit/1e0ea9d2e95742a1e5d1e52b8aedee29fa4c89ed))
+
 ## [1.6.0](https://github.com/webmappsrl/osmfeatures/compare/v1.5.1...v1.6.0) (2024-01-30)
 
 
