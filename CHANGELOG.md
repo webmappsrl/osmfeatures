@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.6.0](https://github.com/webmappsrl/osmfeatures/compare/v1.5.1...v1.6.0) (2024-01-30)
+
+
+### Features
+
+* activated automatic sync in deploy dev workflow ([a6d8225](https://github.com/webmappsrl/osmfeatures/commit/a6d82252b33a11cc9d14ef2675cd278a2be5dd39))
+
+## [1.5.1](https://github.com/webmappsrl/osmfeatures/compare/v1.5.0...v1.5.1) (2024-01-30)
+
+
+### Bug Fixes
+
+* changed default name for automatic download on deploy dev ([ab37c53](https://github.com/webmappsrl/osmfeatures/commit/ab37c539dae8eeb8a0b36f689c1dea0a3825596e))
+
+## [1.5.0](https://github.com/webmappsrl/osmfeatures/compare/v1.4.0...v1.5.0) (2024-01-29)
+
+
+### Features
+
+* added admin permission for prd ([0bd76ab](https://github.com/webmappsrl/osmfeatures/commit/0bd76abc5573e27a3543c8599326a0a5f1c8a536))
+
+
+### Bug Fixes
+
+* fixed url for geofabrik download default ([a272078](https://github.com/webmappsrl/osmfeatures/commit/a2720783f1b4dc42880b9f8072fce514ca55a96a))
+
 ## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
 
 
