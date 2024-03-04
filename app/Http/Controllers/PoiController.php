@@ -92,7 +92,7 @@ class PoiController extends Controller
     public function list()
     {
         $pois = Poi::all(['osm_id', 'updated_at'])->mapWithKeys(function ($poi) {
-            return [$poi->osm_id => $poi->updated_at];
+            return [$poi->osm_id => $poi->updated_at->toIso8601String()];
         });
 
         return response()->json($pois);
@@ -127,7 +127,7 @@ class PoiController extends Controller
     {
         $poi = Poi::where('osm_id', $id)->first();
 
-        if (! $poi) {
+        if (!$poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$poi->geom])[0]->geojson;
