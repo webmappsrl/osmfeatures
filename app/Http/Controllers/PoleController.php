@@ -28,7 +28,7 @@ class PoleController extends Controller
     public function list()
     {
         $poles = Pole::all(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
-            return [$pole->osm_id => $pole->updated_at];
+            return [$pole->osm_id => $pole->updated_at->toIso8601String()];
         });
 
         return response()->json($poles);
@@ -63,7 +63,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('osm_id', $id)->first();
 
-        if (! $pole) {
+        if (!$pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
