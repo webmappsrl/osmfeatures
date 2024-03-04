@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\OsmTagsProcessor;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Pole extends Model
 {
-    use HasFactory;
+    use HasFactory, OsmTagsProcessor;
 
     protected $table = 'poles';
 

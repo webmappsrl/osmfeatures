@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\OsmTagsProcessor;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AdminArea extends Pivot
 {
+    use HasFactory, OsmTagsProcessor;
     protected $table = 'admin_areas';
 
     protected $primaryKey = 'osm_id'; //set the primary key to osm_id because we do not have an id column
