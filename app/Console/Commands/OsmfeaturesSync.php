@@ -8,7 +8,7 @@ use function Laravel\Prompts\text;
 
 class OsmfeaturesSync extends Command
 {
-    protected $signature = 'osmfeatures:sync {defaultName?} {defaultHost?} {defaultLua?} {--skip-download} {defaultPbf?}';
+    protected $signature = 'osmfeatures:sync {defaultName?} {defaultLua?} {--skip-download} {defaultPbf?}';
 
     protected $description = 'Synchronize OpenStreetMap data by downloading a PBF file, use osmium to extract a specific area based on bounding box, and save the result.';
 
@@ -22,13 +22,13 @@ class OsmfeaturesSync extends Command
             required: true,
             default: $this->argument('defaultName') ?? 'Montepisano_pois',
         );
-        $dbHost = text(
-            label: 'PostgreSQL database host',
-            placeholder: 'localhost',
-            hint: 'Run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' postgres_osmfeatures',
-            required: true,
-            default: $this->argument('defaultHost') ?? '172.31.0.3',
-        );
+        // $dbHost = text(
+        //     label: 'PostgreSQL database host',
+        //     placeholder: 'localhost',
+        //     hint: 'Run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' postgres_osmfeatures',
+        //     required: true,
+        //     default: $this->argument('defaultHost') ?? 'db',
+        // );
         $luaFile = text(
             label: 'Lua file to use for osm2pgsql',
             placeholder: 'pois',
@@ -159,7 +159,7 @@ class OsmfeaturesSync extends Command
 
             return false;
         }
-        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H $dbHost -U $dbUser -O flex -S $luaPath $extractedPbfPath";
+        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -S $luaPath $extractedPbfPath";
         $this->info('About to run osm2pgsql...');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
