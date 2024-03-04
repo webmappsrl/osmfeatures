@@ -67,7 +67,7 @@ class Pole extends Resource
             Text::make('REF', 'ref'),
             Text::make('Elevation', 'ele')->displayUsing(
                 function ($value) {
-                    return $value ? $value . ' m' : '';
+                    return $value ? $value.' m' : '';
                 }
             ),
             Text::make('Destination', 'destination'),
@@ -85,7 +85,7 @@ class Pole extends Resource
                 }
             )->asHtml(),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),

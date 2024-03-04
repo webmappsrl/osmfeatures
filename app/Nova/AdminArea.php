@@ -74,7 +74,7 @@ class AdminArea extends Resource
                 }
             )->asHtml(),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),

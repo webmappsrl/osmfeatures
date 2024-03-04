@@ -10,8 +10,8 @@ class Pole extends Model
     use HasFactory;
 
     protected $table = 'poles';
-    protected $primaryKey = 'osm_id'; //set the primary key to osm_id because we do not have an id column
 
+    protected $primaryKey = 'osm_id'; //set the primary key to osm_id because we do not have an id column
 
     protected $fillable = [
         'osm_id',
@@ -29,6 +29,7 @@ class Pole extends Model
     public function getWikidata(): ?string
     {
         $tags = json_decode($this->tags, true);
+
         return $tags['wikidata'] ?? null;
     }
 }
