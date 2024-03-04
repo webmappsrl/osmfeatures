@@ -78,6 +78,16 @@ class AdminArea extends Resource
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
+            Text::make('WikiMedia', function () {
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
+            Text::make('WikiPedia', function () {
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
 
         ];
     }
@@ -103,6 +113,8 @@ class AdminArea extends Resource
     {
         return [
             new \App\Nova\Filters\WikiDataFilter(),
+            new \App\Nova\Filters\WikiMediaFilter(),
+            new \App\Nova\Filters\WikiPediaFilter(),
         ];
     }
 
