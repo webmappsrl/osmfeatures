@@ -82,7 +82,7 @@ class OsmfeaturesSync extends Command
         }
 
         // Sync with osm2pgsql
-        $this->osm2pgsqlSync($name, $extractedPbfPath, $dbHost, $luaFile);
+        $this->osm2pgsqlSync($name, $extractedPbfPath, $luaFile);
     }
 
     /**
@@ -144,10 +144,9 @@ class OsmfeaturesSync extends Command
      *
      * @param string $name The name of the import operation.
      * @param string $extractedPbfPath The path of the PBF file to import.
-     * @param string $dbHost The host of the PostgreSQL database.
      * @return bool Returns true if the import was successful, false otherwise.
      */
-    protected function osm2pgsqlSync($name, $extractedPbfPath, $dbHost, $luaFile)
+    protected function osm2pgsqlSync($name, $extractedPbfPath, $luaFile)
     {
         $this->info("Importing data with osm2pgsql for $name...");
 
