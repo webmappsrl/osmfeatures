@@ -92,7 +92,7 @@ class PoiController extends Controller
     public function list()
     {
         $pois = Poi::all(['osm_id', 'updated_at'])->mapWithKeys(function ($poi) {
-            return [$poi->osm_id => $poi->updated_at];
+            return [$poi->osm_id => $poi->updated_at->toIso8601String()];
         });
 
         return response()->json($pois);

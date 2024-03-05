@@ -28,7 +28,7 @@ class PoleController extends Controller
     public function list()
     {
         $poles = Pole::all(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
-            return [$pole->osm_id => $pole->updated_at];
+            return [$pole->osm_id => $pole->updated_at->toIso8601String()];
         });
 
         return response()->json($poles);

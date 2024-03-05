@@ -17,6 +17,13 @@ class Poi extends Resource
      */
     public static $model = \App\Models\Poi::class;
 
+    /**
+     * The single value that should be used to represent the resource when being displayed.
+     *
+     * @var string
+     */
+    public static $title = 'osm_id';
+
     public static function newModel()
     {
         $model = parent::newModel();
@@ -24,13 +31,6 @@ class Poi extends Resource
 
         return $model;
     }
-
-    /**
-     * The single value that should be used to represent the resource when being displayed.
-     *
-     * @var string
-     */
-    public static $title = 'osm_id';
 
     /**
      * The columns that should be searched.
@@ -71,7 +71,21 @@ class Poi extends Resource
                     return $json;
                 }
             )->asHtml(),
-
+            Text::make('WikiData', function () {
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
+            Text::make('WikiMedia', function () {
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
+            Text::make('WikiPedia', function () {
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
         ];
     }
 
@@ -94,7 +108,11 @@ class Poi extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            new Filters\WikiDataFilter(),
+            new Filters\WikiMediaFilter(),
+            new Filters\WikiPediaFilter(),
+        ];
     }
 
     /**

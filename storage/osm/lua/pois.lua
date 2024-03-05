@@ -10,9 +10,11 @@ local pois = osm2pgsql.define_table({
         { column = 'tags', type = 'jsonb' },
 }})
 
+
 function format_timestamp(unix_timestamp)
     return os.date('%Y-%m-%d %H:%M:%S', unix_timestamp)
 end
+
 
 function process_poi(object, geom)
     local a = {

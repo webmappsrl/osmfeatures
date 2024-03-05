@@ -84,6 +84,21 @@ class Pole extends Resource
                     return $json;
                 }
             )->asHtml(),
+            Text::make('WikiData', function () {
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
+            Text::make('WikiMedia', function () {
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
+            Text::make('WikiPedia', function () {
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+            })->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->asHtml(),
         ];
     }
 
@@ -106,7 +121,11 @@ class Pole extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [];
+        return [
+            new Filters\WikiDataFilter(),
+            new Filters\WikiMediaFilter(),
+            new Filters\WikiPediaFilter(),
+        ];
     }
 
     /**
