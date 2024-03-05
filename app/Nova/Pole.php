@@ -57,7 +57,8 @@ class Pole extends Resource
                 }
             )->asHtml(),
             Text::make('Name'),
-            DateTime::make('Updated At'),
+            DateTime::make('Updated At')
+                ->sortable(),
             Text::make('OSM Type', 'osm_type')->displayUsing(
                 function ($value) {
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";

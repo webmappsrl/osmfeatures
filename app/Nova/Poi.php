@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -55,6 +56,8 @@ class Poi extends Resource
                     return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
                 }
             )->asHtml(),
+            DateTime::make('Updated At')
+                ->sortable(),
             Text::make('Name'),
             Text::make('Class'),
             Text::make('Subclass'),

@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -54,6 +55,8 @@ class AdminArea extends Resource
                     return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
                 }
             )->asHtml(),
+            DateTime::make('Updated At')
+                ->sortable(),
             Text::make('Name'),
             Text::make('OSM Type', 'osm_type')->displayUsing(
                 function ($value) {

@@ -14,13 +14,37 @@ class OsmfeaturesSync extends Command
 
     public function handle()
     {
-        $name = text(
-            label: 'Name of the final file after extraction with osmium',
-            placeholder: 'Montepisano_pois',
-            hint: 'The final file will be saved in storage/app/osm/pbf/ with the specified name.',
-            required: true,
-            default: $this->argument('defaultName') ?? 'Montepisano_pois',
+        $skipDownload = confirm(
+            label: 'Skip download and use a local  PBF file?',
+            default: $this->option('skip-download'),
+            hint: 'If you already have the PBF file, you can skip the download.'
         );
+
+        if (! $skipDownload) {
+            $pbfUrl = text(
+                label: 'URL of the PBF file to download',
+                placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
+                hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
+                required: true,
+                default: $this->argument('defaultPbf') ?? 'https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf',
+            );
+
+            $name = text(
+                label: 'Name of the PBF file to save',
+                placeholder: 'italy_latest',
+                hint: 'The final file will be saved in storage/app/osm/pbf/ with the specified name.',
+                required: true,
+                default: $this->argument('defaultName') ?? 'italy_centro_latest',
+            );
+        } else {
+            $name = text(
+                label: 'Name of the PBF file to use',
+                placeholder: 'italy-latest.osm.pbf',
+                hint: 'The file must be saved in storage/osm/pbf/ with the specified name.',
+                required: true,
+                default: 'italy_centro_latest',
+            );
+        }
 
         // $dbHost = text(
         //     label: 'PostgreSQL database host',
@@ -37,25 +61,14 @@ class OsmfeaturesSync extends Command
             required: true,
             default: $this->argument('defaultLua') ?? 'pois',
         );
-        $pbfUrl = text(
-            label: 'URL of the PBF file to download',
-            placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
-            hint: 'If you want to skip the download, leave this field empty and use the --skip-download option.',
-            required: false,
-            default: $this->argument('defaultPbf') ?? 'https://download.geofabrik.de/europe/italy/centro-latest.osm.pbf',
 
-        );
-        $bbox = text(
-            label: 'Bounding box for data extraction',
-            placeholder: '10.2,43.5,10.3,43.6',
-            hint: 'Not required. If you want to skip the download, leave this field empty and use the --skip-download option.',
-            required: false
-        );
-        $skipDownload = confirm(
-            label: 'Skip download?',
-            default: $this->option('skip-download'),
-            hint: 'If you already have the PBF file, you can skip the download and use the --skip-download option.'
-        );
+        //deactivated for now (osmium extraction is not working)
+        // $bbox = text(
+        //     label: 'Bounding box for data extraction',
+        //     placeholder: '10.2,43.5,10.3,43.6',
+        //     hint: 'Not required. If you want to skip the download, leave this field empty and use the --skip-download option.',
+        //     required: false
+        // );
 
         $this->info("Starting synchronization for $name...");
 
@@ -66,23 +79,32 @@ class OsmfeaturesSync extends Command
 
         // Define paths
         $originalPath = storage_path("osm/pbf/original_$name.pbf");
-        $extractedPbfPath = storage_path("osm/pbf/extracted_$name.pbf");
+
+        //check if the file exists
+        if (! file_exists($originalPath) && $skipDownload) {
+            $this->error('PBF file not found at:'.$originalPath.' Please make sure the file exists.');
+
+            return false;
+        }
+
+        //deactivated for now (osmium extraction is not working)
+        //$extractedPbfPath = storage_path("osm/pbf/extracted_$name.pbf");
 
         // Handle download
         if (! $skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
-        // Handle extraction
-        if ($bbox) {
-            $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
-        } else {
-            // If no bbox is specified, use the original PBF file for import
-            $extractedPbfPath = $originalPath;
-        }
+        // Handle extraction with osmium deactivated for now (osmium extraction is not working)
+        // if ($bbox) {
+        //     $this->osmiumExtraction($bbox, $originalPath, $extractedPbfPath);
+        // } else {
+        //     // If no bbox is specified, use the original PBF file for import
+        //     $extractedPbfPath = $originalPath;
+        // }
 
         // Sync with osm2pgsql
-        $this->osm2pgsqlSync($name, $extractedPbfPath, $luaFile);
+        $this->osm2pgsqlSync($name, $originalPath, $luaFile);
     }
 
     /**
@@ -146,7 +168,7 @@ class OsmfeaturesSync extends Command
      * @param string $extractedPbfPath The path of the PBF file to import.
      * @return bool Returns true if the import was successful, false otherwise.
      */
-    protected function osm2pgsqlSync($name, $extractedPbfPath, $luaFile)
+    protected function osm2pgsqlSync($name, $pbfPath, $luaFile)
     {
         $this->info("Importing data with osm2pgsql for $name...");
 
@@ -159,7 +181,7 @@ class OsmfeaturesSync extends Command
 
             return false;
         }
-        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -x -S $luaPath $extractedPbfPath";
+        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -x -S $luaPath $pbfPath";
         $this->info('About to run osm2pgsql...');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
