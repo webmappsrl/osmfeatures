@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.8.0](https://github.com/webmappsrl/osmfeatures/compare/v1.7.0...v1.8.0) (2024-03-05)
+
+
+### Features
+
+* added filters for wikis in nova resources admin areas poles and pois ([c7a76f0](https://github.com/webmappsrl/osmfeatures/commit/c7a76f0b6d7e48ebf7d071c17d30df40517e3c9b))
+* added wiki field in nova for admin areas poles and poi resources ([4085397](https://github.com/webmappsrl/osmfeatures/commit/40853970706e41fcf0885105560eaeef875224ba))
+* added wikimedia field for pois poles and admin areas nova ([66b6fc6](https://github.com/webmappsrl/osmfeatures/commit/66b6fc6d9d3e84ceda4a28930b1fa374f2075da9))
+* created trait for processing osm tags data ([9e33d86](https://github.com/webmappsrl/osmfeatures/commit/9e33d8604cd12991beaac042c579062b54db1880))
+* implemented wikidata filter ([bf3a80f](https://github.com/webmappsrl/osmfeatures/commit/bf3a80f9b000d8cda097f369de3b0e347c85c178))
+* updated readme and uploaded screenshot ([515855a](https://github.com/webmappsrl/osmfeatures/commit/515855aab58e6aaaa61fee5323d5222ac4f506a7))
+
+
+### Bug Fixes
+
+* deactivated migrate:fresh in deploy dev ([45b6b65](https://github.com/webmappsrl/osmfeatures/commit/45b6b653275c71fdadb7715b848bb02ab01533d5))
+* fixed admin user seeder ([bb76bd8](https://github.com/webmappsrl/osmfeatures/commit/bb76bd8d2abdbe240422e9980fce58db7173aada))
+* fixed date to iso format in APIs ([26458e0](https://github.com/webmappsrl/osmfeatures/commit/26458e08afd6d03045af8c1c874aba81081c50c7))
+* fixed db host for osm2pgsql command (to test in develop and github actions) ([f790814](https://github.com/webmappsrl/osmfeatures/commit/f7908147973cf68396359970a08348452d2b37aa))
+* fixed updated_at in pbf import ([03478ba](https://github.com/webmappsrl/osmfeatures/commit/03478bab939a7cfb10b86a7509c91cecea1e1f54))
+* temporarily deactivated automatic sync on dev deploy (db host issue) ([1b13dfd](https://github.com/webmappsrl/osmfeatures/commit/1b13dfd05cd59344bfdcf63772afc1f1729134f9))
+
 ## [1.7.0](https://github.com/webmappsrl/osmfeatures/compare/v1.6.0...v1.7.0) (2024-01-31)
 
 
