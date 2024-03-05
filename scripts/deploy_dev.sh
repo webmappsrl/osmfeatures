@@ -25,6 +25,8 @@ php artisan db:seed
 # #osmium and osm2pgsql sync for poles
 # php artisan osmfeatures:sync isole_italia_poles poles --skip-download
 
+
+
 php artisan optimize:clear
 php artisan config:clear
 

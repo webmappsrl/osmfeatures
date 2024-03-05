@@ -8,13 +8,15 @@ use function Laravel\Prompts\text;
 
 class OsmfeaturesSync extends Command
 {
+
     protected $signature = 'osmfeatures:sync {defaultName?} {defaultLua?} {--skip-download} {defaultPbf?}';
+
 
     protected $description = 'Synchronize OpenStreetMap data by downloading a PBF file, use osmium to extract a specific area based on bounding box, and save the result.';
 
     public function handle()
     {
-        $dbHost = exec('bash docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' postgres_osmfeatures');
+
         $name = text(
             label: 'Name of the final file after extraction with osmium',
             placeholder: 'Montepisano_pois',
@@ -22,6 +24,7 @@ class OsmfeaturesSync extends Command
             required: true,
             default: $this->argument('defaultName') ?? 'Montepisano_pois',
         );
+
         // $dbHost = text(
         //     label: 'PostgreSQL database host',
         //     placeholder: 'localhost',
@@ -29,6 +32,7 @@ class OsmfeaturesSync extends Command
         //     required: true,
         //     default: $this->argument('defaultHost') ?? 'db',
         // );
+
         $luaFile = text(
             label: 'Lua file to use for osm2pgsql',
             placeholder: 'pois',

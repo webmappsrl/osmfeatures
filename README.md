@@ -253,7 +253,9 @@ osmfeatures:sync
 
 Nel terminale verrà visualizzato un elenco di opzioni:
 
+
 ## ![Esempio di Utilizzo](public/images/readme.png)
+
 
 Questo esempio scarica un file da geofabrik, lo nomina Montepisano e lo salva in `storage/app/osm/pbf`. Il file viene quindi elaborato con osm2pgsql utilizzando il file lua `pois.lua`, che defiinisce la tabella e le colonne nel database, oltre ai dati che importeremo dal file .pbf scaricato in precedenza . NOTA: il file lua deve essere presente nella cartella `storage/app/osm/lua`.
 
