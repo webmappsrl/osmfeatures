@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.9.0](https://github.com/webmappsrl/osmfeatures/compare/v1.8.0...v1.9.0) (2024-03-05)
+
+
+### Features
+
+* improved sync command and added updated_at in nova index ([f857fbb](https://github.com/webmappsrl/osmfeatures/commit/f857fbb759a98d55928232d6823c80953d399189))
+
+
+### Bug Fixes
+
+* fixed typo in sync command ([365a319](https://github.com/webmappsrl/osmfeatures/commit/365a319a1f5e0fd879c52f0236173b52e67465d3))
+* fixed typo in sync command ([5d200fa](https://github.com/webmappsrl/osmfeatures/commit/5d200fad5628243ce5a1f0468eae411a95a04802))
+
 ## [1.8.0](https://github.com/webmappsrl/osmfeatures/compare/v1.7.0...v1.8.0) (2024-03-05)
 
 
