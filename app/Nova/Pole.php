@@ -56,19 +56,19 @@ class Pole extends Resource
                     return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
                 }
             )->asHtml(),
-            Text::make('Name'),
-            DateTime::make('Updated At')
-                ->sortable(),
             Text::make('OSM Type', 'osm_type')->displayUsing(
                 function ($value) {
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
-            )->asHtml(),
-
+            )->asHtml()
+                ->sortable(),
+            Text::make('Name'),
+            DateTime::make('Updated At')
+                ->sortable(),
             Text::make('REF', 'ref'),
             Text::make('Elevation', 'ele')->displayUsing(
                 function ($value) {
-                    return $value ? $value.' m' : '';
+                    return $value ? $value . ' m' : '';
                 }
             ),
             Text::make('Destination', 'destination'),
@@ -86,17 +86,17 @@ class Pole extends Resource
                 }
             )->asHtml(),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
