@@ -10,7 +10,7 @@ class Place extends Model
 {
     use HasFactory, OsmTagsProcessor;
 
-    protected $table = 'pois';
+    protected $table = 'places';
 
     protected $fillable = ['osm_id', 'name', 'class', 'subclass', 'geom', 'updated_at'];
 

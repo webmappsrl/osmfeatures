@@ -7,31 +7,22 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use PHPUnit\Util\Filter;
 
-class Place extends Resource
+class HikingWay extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Place>
+     * @var class-string<\App\Models\HikingWay>
      */
-    public static $model = \App\Models\Place::class;
+    public static $model = \App\Models\HikingWay::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'osm_id';
-
-    public static function newModel()
-    {
-        $model = parent::newModel();
-        $model->setKeyName('osm_id');
-
-        return $model;
-    }
+    public static $title = 'id';
 
     /**
      * The columns that should be searched.
@@ -39,7 +30,7 @@ class Place extends Resource
      * @var array
      */
     public static $search = [
-        'name', 'class', 'subclass', 'osm_id',
+        'id',
     ];
 
     /**
@@ -65,8 +56,6 @@ class Place extends Resource
             DateTime::make('Updated At')
                 ->sortable(),
             Text::make('Name'),
-            Text::make('Class')->sortable(),
-            Text::make('Subclass')->sortable(),
             Text::make('Tags')->displayUsing(
                 function ($value) {
                     $json = json_decode($value, true);
@@ -121,7 +110,6 @@ class Place extends Resource
             new Filters\WikiDataFilter(),
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
-            new Filters\ClassFilter(),
         ];
     }
 
