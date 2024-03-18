@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Traits\OsmTagsProcessor;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class HikingWay extends Model
 {
