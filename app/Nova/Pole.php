@@ -68,35 +68,38 @@ class Pole extends Resource
             Text::make('REF', 'ref'),
             Text::make('Elevation', 'ele')->displayUsing(
                 function ($value) {
-                    return $value ? $value.' m' : '';
+                    return $value ? $value . ' m' : '';
                 }
             ),
             Text::make('Destination', 'destination'),
             Text::make('Support', 'support'),
-            Text::make('Tags')->displayUsing(
-                function ($value) {
-                    $json = json_decode($value, true);
-                    $json = preg_replace(
-                        '/(".*?"):(.*?)(,|$)/',
-                        '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-                        wordwrap(json_encode($json), 75, '<br>', true)
-                    );
+            // Text::make('Tags')->displayUsing(
+            //     function ($value) {
+            //         $json = json_decode($value, true);
+            //         $json = preg_replace(
+            //             '/(".*?"):(.*?)(,|$)/',
+            //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
+            //             wordwrap(json_encode($json), 75, '<br>', true)
+            //         );
 
-                    return $json;
-                }
-            )->asHtml(),
+            //         return $json;
+            //     }
+            // )->asHtml(),
+            Text::make('Tags', function () {
+                return '<a style="color:blue;" href="' . route('tags-details', ['resource' => 'Pole', 'resourceId' => $this->osm_id]) . '" target="_blank">Tags</a>';
+            })->asHtml(),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
