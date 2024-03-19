@@ -14,6 +14,7 @@ class TagController extends Controller
         $tags = $resource->tags;
         $tagsArray = json_decode($tags, true);
         $tagsPretty = json_encode($tagsArray, JSON_PRETTY_PRINT);
+
         return view('tags-details', compact('tagsPretty'));
     }
 }
