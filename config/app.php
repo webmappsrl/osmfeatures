@@ -15,7 +15,7 @@ return [
 
     'version' => '1.9.0', //x-release-please-version
     'release' => '1.9.0', // x-release-please-version
-    'release_date' => '29/01/2024',
+    'release_date' => '23/03/2024',
 
     /*
     |--------------------------------------------------------------------------
