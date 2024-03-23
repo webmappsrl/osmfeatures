@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/webmappsrl/osmfeatures/compare/v1.10.0...v1.10.1) (2024-03-23)
+
+
+### Bug Fixes
+
+* error on hiking ways ([88e0e5b](https://github.com/webmappsrl/osmfeatures/commit/88e0e5b4bdc98751df32f9759a9077027d68c95f))
+
 ## [1.10.0](https://github.com/webmappsrl/osmfeatures/compare/v1.9.0...v1.10.0) (2024-03-23)
 
 
