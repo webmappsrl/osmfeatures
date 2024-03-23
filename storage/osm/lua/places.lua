@@ -63,3 +63,12 @@ function osm2pgsql.process_way(object)
     end
 end
 
+function osm2pgsql.process_relation(object)
+    if object.tags.type == 'multipolygon' then
+        local multipolygon = object:as_multipolygon()
+        local centroid = multipolygon:centroid()
+        process_place(object, centroid)
+    end
+end
+
+
