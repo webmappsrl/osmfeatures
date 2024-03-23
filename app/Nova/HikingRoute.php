@@ -2,10 +2,11 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\DateTime;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class HikingRoute extends Resource
@@ -69,9 +70,12 @@ class HikingRoute extends Resource
             //         return $json;
             //     }
             // )->asHtml(),
-            Text::make('Tags', function () {
-                return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'hikingRoute', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            })->asHtml(),
+            // Text::make('Tags', function () {
+            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'hikingRoute', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
+            // })->asHtml(),
+            Tooltip::make('Tags', 'tags')
+            ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+            ->content($this->tags),
             Text::make('WikiData', function () {
                 return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
             })->hideWhenCreating()

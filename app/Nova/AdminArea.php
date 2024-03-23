@@ -2,10 +2,11 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\DateTime;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AdminArea extends Resource
@@ -76,21 +77,24 @@ class AdminArea extends Resource
             //         return $json;
             //     }
             // )->asHtml(),
-            Text::make('Tags', function () {
-                return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'adminArea', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            })->asHtml(),
+            // Text::make('Tags', function () {
+            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'adminArea', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
+            // })->asHtml(),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
