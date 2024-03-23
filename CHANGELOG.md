@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.10.0](https://github.com/webmappsrl/osmfeatures/compare/v1.9.0...v1.10.0) (2024-03-23)
+
+
+### Features
+
+* added filter for classes in places nova ([d6c4bf8](https://github.com/webmappsrl/osmfeatures/commit/d6c4bf833849db0ce428d816afa574cddeaf507c))
+* added hiking routes model and nova resource ([acfdc0c](https://github.com/webmappsrl/osmfeatures/commit/acfdc0c9ca745d64ee987182d28a273f69a69cba))
+* added osm type filters for nova resources ([101ebe0](https://github.com/webmappsrl/osmfeatures/commit/101ebe07f7a04bbea3353da3e89acc157f2ca3cd))
+* added places model and nova resource ([e103028](https://github.com/webmappsrl/osmfeatures/commit/e103028913811a9f62d38ee17d5c025002746684))
+* added tooltip to tags in nova resources ([3574d90](https://github.com/webmappsrl/osmfeatures/commit/3574d90917f2ea4af069f1e84b88f5b6f88d786d))
+* created hiking routes lua file ([44538dd](https://github.com/webmappsrl/osmfeatures/commit/44538ddafd47be98169bcf232988c849b973dd84))
+* created places lua file ([cc5cb95](https://github.com/webmappsrl/osmfeatures/commit/cc5cb95b62d046e2fa942a3f2df78bf014ea7365))
+
+
+### Bug Fixes
+
+* fixed osm type in poi, pole, admin area nova resources ([494a03d](https://github.com/webmappsrl/osmfeatures/commit/494a03dba23940a71070fd1cff055210559bb3e6))
+* fixed places lua file to import relations ([c612b89](https://github.com/webmappsrl/osmfeatures/commit/c612b896806fdec35519ab3f31451e5947f53f80))
+* fixed updated_at and tags ([f3c9922](https://github.com/webmappsrl/osmfeatures/commit/f3c9922cc7e09b657b257174b6f0c77a1fbd584d))
+
 ## [1.9.0](https://github.com/webmappsrl/osmfeatures/compare/v1.8.0...v1.9.0) (2024-03-05)
 
 
