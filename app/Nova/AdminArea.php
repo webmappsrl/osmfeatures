@@ -121,6 +121,7 @@ class AdminArea extends Resource
             new Filters\WikiDataFilter(),
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
+            new Filters\OsmTypeFilter(),
         ];
     }
 

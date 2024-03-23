@@ -127,6 +127,7 @@ class Place extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\ClassFilter(),
+            new Filters\OsmTypeFilter(),
         ];
     }
 
