@@ -3,11 +3,13 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\NovaTooltipField\Tooltip;
 
 class HikingWay extends Resource
 {
@@ -54,8 +56,9 @@ class HikingWay extends Resource
                 }
             )->asHtml()
                 ->sortable(),
-            DateTime::make('Updated At')
-                ->sortable(),
+            Text::make('Updated At', function () {
+                return Carbon::parse($this->updated_at)->toIso8601String();
+            }),
             Text::make('Name'),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
@@ -70,9 +73,12 @@ class HikingWay extends Resource
             //         return $json;
             //     }
             // )->asHtml(),
-            Text::make('Tags', function () {
-                return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'hikingWay', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            })->asHtml(),
+            // Text::make('Tags', function () {
+            //     return '<a style="color:blue;" href="' . route('tags-details', ['resource' => 'hikingWay', 'resourceId' => $this->osm_id]) . '" target="_blank">Tags</a>';
+            // })->asHtml(),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags),
             Text::make('WikiData', function () {
                 return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
             })->hideWhenCreating()
