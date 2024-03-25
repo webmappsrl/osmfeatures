@@ -146,10 +146,10 @@ function osm2pgsql.process_way(object)
             refs[#refs + 1] = rel_ref
             ids[#ids + 1] = rel_id
         end
-        table_sort(refs)
-        table_sort(ids)
-        a.rel_refs = table_concat(refs, ',')
-        a.rel_ids = table_concat(ids, ',')
+        table.sort(refs)
+        table.sort(ids)
+        a.rel_refs = table.concat(refs, ',')
+        a.rel_ids = table.concat(ids, ',')
     end
     hiking_ways:insert(a)
 end
