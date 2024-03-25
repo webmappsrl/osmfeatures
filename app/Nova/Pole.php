@@ -55,7 +55,14 @@ class Pole extends Resource
         return [
             Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
                 function ($value) {
-                    return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
+                    switch ($this->osm_type) {
+                        case 'N':
+                            return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
+                        case 'W':
+                            return "<a style='color:green;' href='https://www.openstreetmap.org/way/$value' target='_blank'>$value</a>";
+                        case 'R':
+                            return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
+                    }
                 }
             )->asHtml(),
             Text::make('OSM Type', 'osm_type')->displayUsing(
