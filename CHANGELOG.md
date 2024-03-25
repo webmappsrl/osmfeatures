@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/webmappsrl/osmfeatures/compare/v1.10.1...v1.10.2) (2024-03-25)
+
+
+### Bug Fixes
+
+* fixed osm id link for node way and relations ([c0909f6](https://github.com/webmappsrl/osmfeatures/commit/c0909f6ed275147d968a0c1c888c070e3488fee8))
+
 ## [1.10.1](https://github.com/webmappsrl/osmfeatures/compare/v1.10.0...v1.10.1) (2024-03-23)
 
 
