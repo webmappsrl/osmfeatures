@@ -28,14 +28,15 @@ class UpdateOsmPbf extends Command
     public function handle()
     {
         $pbf = $this->argument('pbf_file');
-        $pbfPath = storage_path('osm/pbf/original_' . $pbf . '.pbf');
+        $pbfPath = storage_path('osm/pbf/original_'.$pbf.'.pbf');
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
 
-        //check if pbf_file name exists in storage/osm/lua 
-        if (!file_exists($pbfPath)) {
-            $this->error('The file ' . $pbf . ' does not exist in storage/osm/lua');
+        //check if pbf_file name exists in storage/osm/lua
+        if (! file_exists($pbfPath)) {
+            $this->error('The file '.$pbf.' does not exist in storage/osm/lua');
+
             return;
         }
 
@@ -50,15 +51,17 @@ class UpdateOsmPbf extends Command
             exec($osm2pgsqlInit, $output, $return_var);
             if ($return_var !== 0) {
                 $this->error('Error executing osm2pgsql-replication init');
+
                 return;
             }
             //osm2pgsql-replication update command
             $osm2pgsqlUpdate = "PGPASSWORD=$dbPassword osm2pgsql-replication update -d $dbName -H 'db' -U $dbUser -- -O flex -x -S $luaFile";
             //execute osm2pgsql-replication update
-            $this->info('Executing osm2pgsql-replication update for ' . $luaFile);
+            $this->info('Executing osm2pgsql-replication update for '.$luaFile);
             exec($osm2pgsqlUpdate, $output, $return_var);
             if ($return_var !== 0) {
                 $this->error('Error executing osm2pgsql-replication update');
+
                 return;
             }
         }
