@@ -2,15 +2,16 @@
 
 namespace Tests\Feature\Api;
 
-use Tests\TestCase;
 use App\Models\Pole;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class PolesApiTest extends TestCase
 {
     use DatabaseTransactions;
+
     /**
      * Return code 200
      * @test
@@ -29,7 +30,6 @@ class PolesApiTest extends TestCase
      */
     public function list_poles_api_returns_poles()
     {
-
         $response = $this->get('/api/v1/features/poles/list');
 
         //ensure the response return some result and not an empty json
@@ -44,7 +44,7 @@ class PolesApiTest extends TestCase
     {
         //get a random place from the database
         $pole = Pole::all()->random();
-        $response = $this->get('/api/v1/features/poles/' . $pole->osm_id);
+        $response = $this->get('/api/v1/features/poles/'.$pole->osm_id);
 
         //ensure that the response has a 200 status code
         $response->assertStatus(200);
@@ -58,14 +58,14 @@ class PolesApiTest extends TestCase
     {
         //get a random poi from the database
         $pole = Pole::all()->random();
-        $response = $this->get('/api/v1/features/poles/' . $pole->osm_id);
+        $response = $this->get('/api/v1/features/poles/'.$pole->osm_id);
 
         //ensure that the response is not empty and has the correct structure
         $this->assertNotEmpty($response->json());
         $response->assertJsonStructure([
             'type',
             'properties',
-            'geometry'
+            'geometry',
         ]);
     }
 }

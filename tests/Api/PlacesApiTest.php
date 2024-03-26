@@ -3,12 +3,13 @@
 namespace Tests\Api;
 
 use App\Models\Place;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class PlacesApiTest extends TestCase
 {
     use DatabaseTransactions;
+
     /**
      * Return code 200
      * @test
@@ -27,7 +28,6 @@ class PlacesApiTest extends TestCase
      */
     public function list_places_api_returns_places()
     {
-
         $response = $this->get('/api/v1/features/places/list');
 
         //ensure the response return some result and not an empty json
@@ -42,7 +42,7 @@ class PlacesApiTest extends TestCase
     {
         //get a random place from the database
         $place = Place::all()->random();
-        $response = $this->get('/api/v1/features/places/' . $place->osm_id);
+        $response = $this->get('/api/v1/features/places/'.$place->osm_id);
 
         //ensure that the response has a 200 status code
         $response->assertStatus(200);
@@ -56,14 +56,14 @@ class PlacesApiTest extends TestCase
     {
         //get a random poi from the database
         $place = Place::all()->random();
-        $response = $this->get('/api/v1/features/places/' . $place->osm_id);
+        $response = $this->get('/api/v1/features/places/'.$place->osm_id);
 
         //ensure that the response is not empty and has the correct structure
         $this->assertNotEmpty($response->json());
         $response->assertJsonStructure([
             'type',
             'properties',
-            'geometry'
+            'geometry',
         ]);
     }
 }
