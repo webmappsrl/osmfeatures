@@ -222,7 +222,7 @@ Il comando `artisan osmfeatures:sync` é progettato per essere flessibile e conf
 ### Struttura del Comando
 
 ```bash
-osmfeatures:sync {defaultName?} {defaultHost?} {defaultLua?} {--skip-download} {defaultPbf?}
+osmfeatures:sync {defaultName?} {defaultLua?} {--skip-download} {defaultPbf?}
 ```
 
 ### Parametri e Opzioni
@@ -231,15 +231,11 @@ Il comando supporta diversi parametri e opzioni:
 
 1. **defaultName**: Il nome del file finale che verrá salvato. Obbligatorio.
 
-2. **defaultHost**: PostgreSQL database host. Per trovare il valore lanciare il comando `docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container_name>`. Obbligatorio.
+2. **defaultLua**: Il nome del file .lua (da digitare senza l'estensione \*.lua) da utilizzare per l'importazione con osm2pgsql. Questo file deve essere presente nella cartella `storage/app/osm/lua`. Obbligatorio.
 
-3. **defaultLua**: Il nome del file .lua (da digitare senza l'estensione \*.lua) da utilizzare per l'importazione con osm2pgsql. Questo file deve essere presente nella cartella `storage/app/osm/lua`. Obbligatorio.
+3. **Opzione --skip-download**: Se non si vuole scaricare nuovamente il file PBF, utilizzare questa opzione. NOTA: é necessario che il file PBF sia già presente nella cartella `storage/app/osm/pbf`.
 
-4. **Opzione --skip-download**: Se non si vuole scaricare nuovamente il file PBF, utilizzare questa opzione. NOTA: é necessario che il file PBF sia già presente nella cartella `storage/app/osm/pbf`.
-
-5. **defaultPbf**: Accetta un URL da cui scaricare il pbf. Non obbligatorio se si utilizza l'opzione `--skip-download`.
-
-6. **bbox**: Bounding box per filtrare i dati OSM con osmium. Accetta una stringa di coordinate separate da virgola. Ad esempio, `10.0,10.0,11.0,11.0`.
+4. **defaultPbf**: Accetta un URL da cui scaricare il pbf. Non obbligatorio se si utilizza l'opzione `--skip-download`.
 
 ## Esempio di Utilizzo
 
@@ -253,15 +249,11 @@ osmfeatures:sync
 
 Nel terminale verrà visualizzato un elenco di opzioni:
 
+## ![Esempio di Utilizzo](public/images/readmee.png)
 
-## ![Esempio di Utilizzo](public/images/readme.png)
+Questo esempio utilizza l'opzione `skip download` e prende un file scaricato in precedenza da geofabrik salvato in `storage/app/osm/pbf` e nominato 'italy_centro_latest'. Il file viene quindi elaborato con osm2pgsql utilizzando `pois.lua`, che defiinisce la tabella e le colonne nel database, oltre ai dati che importeremo dal file .pbf scaricato in precedenza . NOTA: il file lua deve essere presente nella cartella `storage/app/osm/lua`.
 
-
-Questo esempio scarica un file da geofabrik, lo nomina Montepisano e lo salva in `storage/app/osm/pbf`. Il file viene quindi elaborato con osm2pgsql utilizzando il file lua `pois.lua`, che defiinisce la tabella e le colonne nel database, oltre ai dati che importeremo dal file .pbf scaricato in precedenza . NOTA: il file lua deve essere presente nella cartella `storage/app/osm/lua`.
-
-In questo esempio specifico non viene utilizzata l'opzione `--skip-download`, quindi il file viene scaricato da geofabrik. Se si vuole utilizzare un file già presente nella cartella `storage/app/osm/pbf`, utilizzare l'opzione `--skip-download` ed il comando prenderà il file dalla cartella basandosi sul nome specificato nel primo parametro.
-
-Il campo `bbox` è opzionale. Se non viene specificato, il comando importerà tutti i dati OSM dal file .pbf. Se si vuole importare solo una parte dei dati, utilizzare il parametro `bbox` per filtrare i dati OSM prima dell'importazione utilizzando osmium.
+In questo esempio specifico il PBF non viene scaricato da geofabrik. Se si vuole scaricare un nuovo file PBF da geofabrik, semplicemente rispondere "No" al prompt del comando. A quel punto vi sará chiesto di inserire l'URL del file PBF da scaricare ed il nome con la quale nominare il file, che sará salvato nella cartella `storage/app/osm/pbf`.
 
 ## Documentazione di osm2pgsql e osmium
 
@@ -274,3 +266,9 @@ Il campo `bbox` è opzionale. Se non viene specificato, il comando importerà tu
 L'interfaccia di prompt di Laravel migliora l'esperienza dello sviluppatore fornendo una guida interattiva attraverso le opzioni del comando. Per maggiori informazioni, fare riferimento alla [documentazione di Laravel](https://laravel.com/docs/10.x/prompts#main-content).
 
 ---
+
+## Processi di aggiornamento e manutenzione dei dati OSM
+
+E'stato schedulato un comando per l'aggiornamento dei dati OSM. Questo comando è stato progettato per essere eseguito automaticamente ogni giorno alle 00:00, aggiornando i dati OSM con le modifiche più recenti. Il comando è stato configurato per scaricare i dati OSM dell'intera Italia da [Geofabrik](https://download.geofabrik.de/europe/italy.html) e sincronizzarli con il database PostgreSQL eseguendo un loop su tutti i file lua presenti nella cartella `storage/app/osm/lua`.
+
+Inoltre, per tenere aggiornato il timestamp delle Hiking Routes é stato creato un comando che aggiorna il dato partendo dal timestamp più recente delle way members associate. Questo fa si che se anche una sola delle way members viene modificata, il timestamp delle Hiking Routes verrà aggiornato. Questo comando è stato progettato per essere eseguito automaticamente ogni giorno alle ore 03:00.
