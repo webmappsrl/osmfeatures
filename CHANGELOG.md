@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.11.0](https://github.com/webmappsrl/osmfeatures/compare/v1.10.2...v1.11.0) (2024-03-26)
+
+
+### Features
+
+* implemented api for hiking routes and places ([a57f505](https://github.com/webmappsrl/osmfeatures/commit/a57f5052babeb4d2e30f54255b92638c5d323d3d))
+* implemented correct timestamp compute for hiking routes ([e1803bc](https://github.com/webmappsrl/osmfeatures/commit/e1803bc8abb5ff488f2b5ecab378560158611f37))
+* implemented osm2pgsql update pbf command 1st version ([30cc940](https://github.com/webmappsrl/osmfeatures/commit/30cc94017e4bc6e2e360c62e08aa863b77af78f1))
+* implemented update command for italy pbf ([01cd9ce](https://github.com/webmappsrl/osmfeatures/commit/01cd9cec2a434bb295cebe42c25434cb7363cd97))
+* updated readme ([7f4895d](https://github.com/webmappsrl/osmfeatures/commit/7f4895de0e26b5715b5d4f3c32681dc40c8209b7))
+
+
+### Bug Fixes
+
+* fixed hiking_routes lua file to import relation members ([d1f652b](https://github.com/webmappsrl/osmfeatures/commit/d1f652b9f8defc92b2a4adca7b0f93313dc6877b))
+
 ## [1.10.2](https://github.com/webmappsrl/osmfeatures/compare/v1.10.1...v1.10.2) (2024-03-25)
 
 
