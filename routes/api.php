@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\AdminAreaController;
-use App\Http\Controllers\PoiController;
-use App\Http\Controllers\PoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PoiController;
+use App\Http\Controllers\PoleController;
+use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\AdminAreaController;
+use App\Http\Controllers\HikingRouteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,4 +26,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/features/admin-areas/{id}', [AdminAreaController::class, 'show']);
     Route::get('/features/poles/list', [PoleController::class, 'list']);
     Route::get('/features/poles/{id}', [PoleController::class, 'show']);
+    Route::get('/features/hiking-routes/list', [HikingRouteController::class, 'list']);
+    Route::get('/features/hiking-routes/{id}', [HikingRouteController::class, 'show']);
+    Route::get('/features/places/list', [PlaceController::class, 'list']);
+    Route::get('/features/places/{id}', [PlaceController::class, 'show']);
 });

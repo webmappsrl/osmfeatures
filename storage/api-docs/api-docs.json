@@ -66,6 +66,63 @@
                 }
             }
         },
+        "/api/v1/features/places/list": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "List all Places",
+                "description": "Returns a list of Places with their IDs and updated timestamps",
+                "operationId": "listPlaces",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PoiItem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/features/places/{id}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Place by ID",
+                "description": "Returns a single Place in GeoJSON format",
+                "operationId": "getPlaceById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Place ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeoJsonFeature"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Place not found"
+                    }
+                }
+            }
+        },
         "/api/v1/features/admin-areas/list": {
             "get": {
                 "tags": ["API V1"],
@@ -119,6 +176,63 @@
                     },
                     "404": {
                         "description": "Admin Area not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/features/hiking-routes/list": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "List all Hiking Routes",
+                "description": "Returns a list of Hiking Routes with their details",
+                "operationId": "listHikingRoutes",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/HikingRouteItem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/features/hiking-routes/{id}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Hiking Routes by ID",
+                "description": "Returns a single Hiking Route in GeoJSON format",
+                "operationId": "getHikingRouteById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Hiking Route ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HikingRouteGeojsonFeature"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Hiking Route not found"
                     }
                 }
             }
@@ -302,6 +416,83 @@
                             "type": {
                                 "type": "string",
                                 "example": "Polygon"
+                            },
+                            "coordinates": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "number"
+                                        }
+                                    }
+                                },
+                                "example": [
+                                    [
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635],
+                                        [11.8805, 43.4635]
+                                    ]
+                                ]
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "HikingRouteItem": {
+                "properties": {
+                    "osm_id": {
+                        "type": "integer",
+                        "example": 39150
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2021-03-10T02:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "HikingRouteGeojsonFeature": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "Feature"
+                    },
+                    "properties": {
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Kyparissia Nature Trial"
+                            },
+                            "description": {
+                                "type": "string",
+                                "example": ""
+                            },
+                            "osm_id": {
+                                "type": "integer",
+                                "example": 39150
+                            },
+                            "osm_type": {
+                                "type": "string",
+                                "example": "R"
+                            },
+                            "tags": {
+                                "type": "json",
+                                "example": "{\"name\": \"Kyparissia Nature Trial\", \"type\": \"route\", \"route\": \"hiking\", \"hiking\": \"lwn\", \"name:en\": \"Kyparissia Nature Trial\", \"network\": \"lwn\", \"network:type\": \"lwn\"}"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "geometry": {
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "example": "MultilineString"
                             },
                             "coordinates": {
                                 "type": "array",
