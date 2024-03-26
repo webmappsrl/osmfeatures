@@ -39,6 +39,7 @@ local hiking_routes = osm2pgsql.define_table({
         { column = 'description_it', type= 'text' },
         { column = 'tags', type = 'jsonb'},
         { column = 'geom', type = 'multilinestring', projection = 4326 },
+        { column = 'members', type = 'jsonb' },
     }
 })
 
@@ -61,12 +62,9 @@ local hiking_ways = osm2pgsql.define_table({
         { column = 'ford', type='bool'},
         { column = 'tags', type = 'jsonb' },
         { column = 'geom', type = 'linestring' },
-        { column = 'rel_refs', type = 'text' }, 
-        { column = 'rel_ids',  type = 'int8' },
     }
 })
 
-local w2r = {}
 
 function process_hiking_route(object, geom)
 
@@ -106,15 +104,8 @@ function process_hiking_route(object, geom)
         description_it = object.tags['description:it'],
         tags = object.tags,
         geom = geom,
+        members = object.members,
     }
-   for _, member in ipairs(object.members) do
-            if member.type == 'w' then
-                if not w2r[member.ref] then
-                    w2r[member.ref] = {}
-                end
-                w2r[member.ref][object.id] = object.tags.ref
-            end
-        end
     hiking_routes:insert(a)
 end
 
@@ -137,20 +128,6 @@ function osm2pgsql.process_way(object)
         tags = object.tags,
         geom = object:as_linestring(),
     }
-
-    local d = w2r[object.id]
-    if d then
-        local refs = {}
-        local ids = {}
-        for rel_id, rel_ref in pairs(d) do
-            refs[#refs + 1] = rel_ref
-            ids[#ids + 1] = rel_id
-        end
-        table.sort(refs)
-        table.sort(ids)
-        a.rel_refs = table.concat(refs, ',')
-        a.rel_ids = table.concat(ids, ',')
-    end
     hiking_ways:insert(a)
 end
 
