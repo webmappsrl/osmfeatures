@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class HikingRouteController extends Controller
 {
-
-
     /**
      * @OA\Get(
      *     path="/api/v1/features/hiking-routes/list",
@@ -35,7 +33,6 @@ class HikingRouteController extends Controller
 
         return response()->json($hikingRoutes);
     }
-
 
     /**
      * @OA\Get(
