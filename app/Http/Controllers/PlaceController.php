@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class PlaceController extends Controller
 {
-
-
     /**
      * @OA\Get(
      *     path="/api/v1/features/places/list",
@@ -35,8 +33,6 @@ class PlaceController extends Controller
 
         return response()->json($places);
     }
-
-
 
     /**
      * @OA\Get(
@@ -67,7 +63,7 @@ class PlaceController extends Controller
     {
         $place = Place::where('osm_id', $id)->first();
 
-        if (!$place) {
+        if (! $place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
