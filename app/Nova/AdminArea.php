@@ -3,12 +3,14 @@
 namespace App\Nova;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\Fields\DateTime;
+use Rpj\Daterangepicker\DateHelper;
 use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AdminArea extends Resource
 {
@@ -68,8 +70,28 @@ class AdminArea extends Resource
                         return Carbon::parse($value)->toIso8601String();
                     }
                 )->sortable(),
-            Text::make('Name'),
-            Text::make('Admin Level', 'admin_level'),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags),
+            Text::make('Wiki', function () {
+                $links = [];
+
+                if ($this->getWikidata()) {
+                    $links[] = '<a style="padding:5px;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikidata-logo.png" /></a>';
+                }
+
+                if ($this->getWikimediaCommons()) {
+                    $links[] = '<a style="padding:5px;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikimedia-logo.png" /></a>';
+                }
+
+                if ($this->getWikipedia()) {
+                    $links[] = '<a style="padding:5px;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikipedia-logo.jpeg" /></a>';
+                }
+
+                return implode(' ', $links);
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            Text::make('Name')->hideFromIndex(),
+            Text::make('Admin Level', 'admin_level')->hideFromIndex(),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
             //         $json = json_decode($value, true);
@@ -85,24 +107,8 @@ class AdminArea extends Resource
             // Text::make('Tags', function () {
             //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'adminArea', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
             // })->asHtml(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags),
-            Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
+
+
 
         ];
     }
@@ -131,6 +137,7 @@ class AdminArea extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
+            new Daterangepicker('updated_at', DateHelper::THIS_MONTH, 'admin_areas.name', 'desc')
         ];
     }
 

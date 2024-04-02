@@ -21,7 +21,7 @@ class AdminAreaPolicy
      */
     public function view(User $user, AdminArea $adminArea): bool
     {
-        return false;
+        return true;
     }
 
     /**

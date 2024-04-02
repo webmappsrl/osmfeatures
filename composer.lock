@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "660a1d8227e382f94b86025298a4fc94",
+    "content-hash": "7a344f98b6cb5814df16bac16934baf3",
     "packages": [
         {
             "name": "abordage/nova-html-card",
@@ -4712,6 +4712,60 @@
                 }
             ],
             "time": "2023-09-01T06:07:32+00:00"
+        },
+        {
+            "name": "rpj/daterangepicker",
+            "version": "0.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rodrigopaco1986/simple-daterange-picker.git",
+                "reference": "e5a2de9345ee18ffaddb34018a6587b97ca34591"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rodrigopaco1986/simple-daterange-picker/zipball/e5a2de9345ee18ffaddb34018a6587b97ca34591",
+                "reference": "e5a2de9345ee18ffaddb34018a6587b97ca34591",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rpj\\Daterangepicker\\FilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rpj\\Daterangepicker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roger Rodrigo Paco Jaldin"
+                }
+            ],
+            "description": "A simple Date Range filter for Laravel Nova 4.",
+            "keywords": [
+                "date",
+                "daterange",
+                "filter",
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/rodrigopaco1986/simple-daterange-picker/issues",
+                "source": "https://github.com/rodrigopaco1986/simple-daterange-picker/tree/0.0.7"
+            },
+            "time": "2024-02-21T19:55:14+00:00"
         },
         {
             "name": "spatie/db-dumper",
