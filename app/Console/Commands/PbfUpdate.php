@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Osm2pgsqlCrontabUpdate;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +30,7 @@ class PbfUpdate extends Command
         $pbfUrl = 'https://download.geofabrik.de/europe/italy-latest.osm.pbf';
 
         // Create directory if it doesn't exist
-        if (! file_exists(storage_path('osm/pbf'))) {
+        if (!file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'));
         }
         $pbfPath = storage_path('osm/pbf/original_italy_latest.pbf');
@@ -38,7 +39,7 @@ class PbfUpdate extends Command
         $this->handleDownload($pbfUrl, $pbfPath);
 
         // Loop over all the lua files and perform the sync with osm2pgsql
-        $luaFiles = glob(storage_path('osm/lua').'/*.lua');
+        $luaFiles = glob(storage_path('osm/lua') . '/*.lua');
         foreach ($luaFiles as $luaFile) {
             $this->osm2pgsqlSync($pbfPath, pathinfo($luaFile, PATHINFO_FILENAME));
         }
@@ -58,8 +59,8 @@ class PbfUpdate extends Command
             try {
                 $this->downloadPbf($pbfUrl, $pbfPath);
             } catch (Exception $e) {
-                $this->error('Error during the PBF file download: '.$e->getMessage());
-                Log::error('Error during the PBF file download: '.$e->getMessage());
+                $this->error('Error during the PBF file download: ' . $e->getMessage());
+                Log::error('Error during the PBF file download: ' . $e->getMessage());
 
                 return false;
             }
@@ -100,7 +101,7 @@ class PbfUpdate extends Command
             ) {
                 // Show the amount of data downloaded / file size
                 if ($downloadSize > 0) {
-                    $this->output->write("\rDownloaded: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
+                    $this->output->write("\rDownloaded: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
                 }
             });
 
@@ -111,8 +112,8 @@ class PbfUpdate extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (! $data) {
-                echo 'cURL error: '.curl_error($ch);
+            if (!$data) {
+                echo 'cURL error: ' . curl_error($ch);
                 $this->error('Error during the PBF file download.');
 
                 return false;
@@ -122,8 +123,8 @@ class PbfUpdate extends Command
 
             return true;
         } catch (Exception $e) {
-            $this->error('Error during the PBF file download: '.$e->getMessage());
-            Log::error('cURL error during the PBF file download: '.$e->getMessage());
+            $this->error('Error during the PBF file download: ' . $e->getMessage());
+            Log::error('cURL error during the PBF file download: ' . $e->getMessage());
 
             return false;
         }
@@ -146,7 +147,7 @@ class PbfUpdate extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision).' '.$units[$pow];
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
     /**
@@ -159,13 +160,20 @@ class PbfUpdate extends Command
     protected function osm2pgsqlSync($pbfPath, $luaFile)
     {
         $this->info("Importing data with osm2pgsql for $luaFile.lua...");
+        $updateRecord = Osm2pgsqlCrontabUpdate::create([
+            'imported_at' => now(),
+            'from_lua' => $luaFile . '.lua',
+            'from_pbf' => $pbfPath,
+        ]);
 
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaPath = 'storage/osm/lua/'.$luaFile.'.lua';
-        if (! file_exists($luaPath)) {
-            $this->error('Lua file not found at:'.$luaPath);
+        $luaPath = 'storage/osm/lua/' . $luaFile . '.lua';
+        if (!file_exists($luaPath)) {
+            $this->error('Lua file not found at:' . $luaPath);
+            Log::error('Lua file not found at:' . $luaPath);
+            $updateRecord->update(['success' => false, 'log' => 'Lua file not found at:' . $luaPath]);
 
             return false;
         }
@@ -174,13 +182,13 @@ class PbfUpdate extends Command
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
         if ($osm2pgsqlReturnVar != 0) {
-            Log::error('Error during import with osm2pgsql.'.PHP_EOL.implode(PHP_EOL, $osm2pgsqlOutput));
-            $this->error('Error during import with osm2pgsql.'.PHP_EOL.implode(PHP_EOL, $osm2pgsqlOutput));
-
+            Log::error('Error during import with osm2pgsql.' . PHP_EOL . implode(PHP_EOL, $osm2pgsqlOutput));
+            $this->error('Error during import with osm2pgsql.' . PHP_EOL . implode(PHP_EOL, $osm2pgsqlOutput));
+            $updateRecord->update(['success' => false, 'log' => implode(PHP_EOL, $osm2pgsqlOutput)]);
             return false;
         }
 
-        $this->info('Import successfully completed for '.$luaFile.'.lua');
+        $this->info('Import successfully completed for ' . $luaFile . '.lua');
 
         return true;
     }

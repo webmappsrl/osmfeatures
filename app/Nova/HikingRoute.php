@@ -2,12 +2,13 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\DateTime;
 use Outl1ne\NovaTooltipField\Tooltip;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class HikingRoute extends Resource
 {
@@ -62,8 +63,12 @@ class HikingRoute extends Resource
                 }
             )->asHtml()
                 ->sortable(),
-            DateTime::make('Updated At')
-                ->sortable(),
+            DateTime::make('Updated_at')
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                )->sortable(),
             Text::make('Name'),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {

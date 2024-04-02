@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
@@ -61,8 +62,12 @@ class AdminArea extends Resource
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
             )->asHtml(),
-            DateTime::make('Updated At')
-                ->sortable(),
+            DateTime::make('Updated_at')
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                )->sortable(),
             Text::make('Name'),
             Text::make('Admin Level', 'admin_level'),
             // Text::make('Tags')->displayUsing(
@@ -84,17 +89,17 @@ class AdminArea extends Resource
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
                 ->content($this->tags),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
