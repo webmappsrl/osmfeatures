@@ -8,6 +8,11 @@ use Illuminate\Auth\Access\Response;
 
 class HikingWayPolicy
 {
+
+    public function before()
+    {
+        return false;
+    }
     /**
      * Determine whether the user can view any models.
      */

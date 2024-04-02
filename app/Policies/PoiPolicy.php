@@ -8,6 +8,10 @@ use Illuminate\Auth\Access\Response;
 
 class PoiPolicy
 {
+    public function before()
+    {
+        return false;
+    }
     /**
      * Determine whether the user can view any models.
      */

@@ -25,6 +25,7 @@ class HikingRoute extends Resource
      */
     public static $title = 'id';
 
+
     /**
      * The columns that should be searched.
      *
@@ -84,17 +85,17 @@ class HikingRoute extends Resource
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
                 ->content($this->tags),
             Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
+                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
+                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),
             Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
+                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
             })->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->asHtml(),

@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Nova\Menu\Menu;
+use Laravel\Nova\Menu\MenuGroup;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
@@ -19,6 +24,20 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
         parent::boot();
 
         $this->getFooter();
+
+        Nova::mainMenu(function (Request $request, Menu $menu) {
+            return [
+                MenuSection::make('Features', [
+                    MenuItem::make('Hiking Routes', 'resources/hiking-routes'),
+                    MenuItem::make('Poles', 'resources/poles'),
+                    MenuItem::make('Admin Areas', 'resources/admin-areas'),
+                    MenuItem::make('Places', 'resources/places'),
+                    MenuGroup::make('Admin', [
+                        MenuItem::make('Users', 'users'),
+                    ])->collapsable(),
+                ])
+            ];
+        });
     }
 
     /**
