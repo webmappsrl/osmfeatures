@@ -5,6 +5,7 @@ namespace App\Nova;
 use Carbon\Carbon;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
 use Rpj\Daterangepicker\DateHelper;
@@ -63,7 +64,10 @@ class AdminArea extends Resource
                 function ($value) {
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
-            )->asHtml(),
+            )->asHtml()
+                ->onlyOnIndex(),
+            Text::make('OSM Type')
+                ->onlyOnDetail(),
             DateTime::make('Updated_at')
                 ->displayUsing(
                     function ($value) {
@@ -72,23 +76,11 @@ class AdminArea extends Resource
                 )->sortable(),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags),
+                ->content($this->tags)
+                ->onlyOnIndex(),
+            Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
-                $links = [];
-
-                if ($this->getWikidata()) {
-                    $links[] = '<a style="padding:5px;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikidata-logo.png" /></a>';
-                }
-
-                if ($this->getWikimediaCommons()) {
-                    $links[] = '<a style="padding:5px;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikimedia-logo.png" /></a>';
-                }
-
-                if ($this->getWikipedia()) {
-                    $links[] = '<a style="padding:5px;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikipedia-logo.jpeg" /></a>';
-                }
-
-                return implode(' ', $links);
+                return $this->getWikiLinks();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
             Text::make('Name')->hideFromIndex(),
             Text::make('Admin Level', 'admin_level')->hideFromIndex(),
@@ -137,7 +129,7 @@ class AdminArea extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::THIS_MONTH, 'admin_areas.name', 'desc')
+            new Daterangepicker('updated_at', DateHelper::ALL, 'admin_areas.name', 'desc')
         ];
     }
 

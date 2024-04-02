@@ -21,7 +21,7 @@ class HikingRoutePolicy
      */
     public function view(User $user, HikingRoute $hikingRoute): bool
     {
-        return false;
+        return true;
     }
 
     /**
