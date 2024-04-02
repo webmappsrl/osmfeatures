@@ -4,11 +4,14 @@ namespace App\Nova;
 
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\DateTime;
+use Rpj\Daterangepicker\DateHelper;
 use Illuminate\Support\Facades\Date;
 use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Pole extends Resource
@@ -70,25 +73,25 @@ class Pole extends Resource
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
             )->asHtml()
-                ->sortable(),
-            Text::make('Name'),
+                ->sortable()
+                ->onlyOnIndex(),
+            Text::make('OSM Type')
+                ->onlyOnDetail(),
             DateTime::make('Updated_at')
                 ->displayUsing(
                     function ($value) {
                         return Carbon::parse($value)->toIso8601String();
                     }
                 )->sortable(),
-            Text::make('REF', 'ref'),
-            Text::make('Elevation', 'ele')->displayUsing(
-                function ($value) {
-                    return $value ? $value . ' m' : '';
-                }
-            ),
-            Text::make('Destination', 'destination'),
-            Text::make('Support', 'support'),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags)
+                ->onlyOnIndex(),
+            Code::make('Tags')->json()->hideFromIndex(),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
             //         $json = json_decode($value, true);
+            //         //wordwrap the json to make it more readable and add a color to the keys
             //         $json = preg_replace(
             //             '/(".*?"):(.*?)(,|$)/',
             //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
@@ -99,26 +102,12 @@ class Pole extends Resource
             //     }
             // )->asHtml(),
             // Text::make('Tags', function () {
-            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'Pole', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
+            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'place', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
             // })->asHtml(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags),
-            Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank">' . $this->getWikidata() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank">' . $this->getWikimediaCommons() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank">' . $this->getWikipedia() . '</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
+            Text::make('Wiki', function () {
+                return $this->getWikiLinks();
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            Text::make('Name'),
         ];
     }
 
@@ -146,6 +135,8 @@ class Pole extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
+            new Daterangepicker('updated_at', DateHelper::ALL, 'poles.name', 'desc')
+
         ];
     }
 

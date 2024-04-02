@@ -21,7 +21,7 @@ class PlacePolicy
      */
     public function view(User $user, Place $place): bool
     {
-        return false;
+        return true;
     }
 
     /**
