@@ -8,6 +8,7 @@ local hiking_routes = osm2pgsql.define_table({
          { column = 'updated_at'},
         { column = 'name', type = 'text' },
         { column = 'cai_scale', type = 'text' },
+        { column = 'osm2cai_status', type = 'integer'},
         { column = 'osmc_symbol', type = 'text' },
         { column = 'network', type= 'text' },
         { column = 'survey_date', type= 'text' },
@@ -68,11 +69,22 @@ local hiking_ways = osm2pgsql.define_table({
 
 
 function process_hiking_route(object, geom)
+    local osm2cai_status = 0
+
+    -- osm2cai_status will be 0 if cai:scale and source=survey:CAI are not present, will be 1 if cai:scale is present and source=survey:CAI is not present, will be 2 if source=survey:CAI is present and cai:scale is not present, will be 3 if both are present
+    if object.tags['cai:scale'] and object.tags.source == 'survey:CAI' then
+        osm2cai_status = 3
+    elseif object.tags['cai_scale'] then
+        osm2cai_status = 1
+    elseif object.tags.source == 'survey:CAI' then
+        osm2cai_status = 2
+    end
 
     local a = {
         name = object.tags.name,
         updated_at_osm = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
-        cai_scale = object.tags['cai:scale'],
+        cai_scale = object.tags['cai_scale'],
+        osm2cai_status = osm2cai_status,
         osmc_symbol = object.tags['osmc:symbol'],
         network = object.tags.network,
         survey_date = object.tags['survey:date'],
