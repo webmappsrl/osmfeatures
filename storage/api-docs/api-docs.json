@@ -13,8 +13,19 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Places",
-                "description": "Returns a list of Places with their IDs and updated timestamps",
+                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter places updated after the specified date.",
                 "operationId": "listPlaces",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Places updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -138,8 +149,19 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Hiking Routes",
-                "description": "Returns a list of Hiking Routes with their details",
+                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date.",
                 "operationId": "listHikingRoutes",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Hiking Routes updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -195,8 +217,19 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Poles",
-                "description": "Returns a list of Poles with their IDs and updated timestamps",
+                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter poles updated after the specified date.",
                 "operationId": "listPoles",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Poles updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",

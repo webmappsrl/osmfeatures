@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pole;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 
 class PoleController extends Controller
 {
@@ -14,7 +15,18 @@ class PoleController extends Controller
      *     operationId="listPoles",
      *     tags={"Poles"},
      *     summary="List all Poles",
-     *     description="Returns a list of Poles with their details",
+     *     description="Returns a list of Poles with their details. Optionally, provide an 'updated_at' parameter to filter poles updated after the specified date.",
+     *     @OA\Parameter(
+     *         name="updated_at",
+     *         in="query",
+     *         description="Filter by the updated timestamp. Only poles updated after this date will be returned. The date should be in ISO 8601 format.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2021-03-10T02:00:00Z"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -25,9 +37,18 @@ class PoleController extends Controller
      *     ),
      * )
      */
-    public function list()
+
+    public function list(Request $request)
     {
-        $poles = Pole::all(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
+        $updated_after = $request->query('updated_at');
+
+        $query = Pole::query();
+
+        if ($updated_after) {
+            $query->where('updated_at', '>', $updated_after);
+        }
+
+        $poles = $query->get(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
             return [$pole->osm_id => $pole->updated_at->toIso8601String()];
         });
 
@@ -63,7 +84,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('osm_id', $id)->first();
 
-        if (! $pole) {
+        if (!$pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;

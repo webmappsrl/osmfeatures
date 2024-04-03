@@ -14,7 +14,18 @@ class PlaceController extends Controller
      *     operationId="listPlaces",
      *     tags={"Places"},
      *     summary="List all Places",
-     *     description="Returns a list of Places with their details",
+     *     description="Returns a list of Places with their details. Optionally, provide an 'updated_at' parameter to filter places updated after the specified date.",
+     *     @OA\Parameter(
+     *         name="updated_at",
+     *         in="query",
+     *         description="Filter by the updated timestamp. Only places updated after this date will be returned. The date should be in ISO 8601 format.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2021-03-10T02:00:00Z"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -25,9 +36,18 @@ class PlaceController extends Controller
      *     ),
      * )
      */
-    public function list()
+
+    public function list(Request $request)
     {
-        $places = Place::all(['osm_id', 'updated_at'])->mapWithKeys(function ($place) {
+        $updated_at = $request->query('updated_at');
+
+        $query = Place::query();
+
+        if ($updated_at) {
+            $query->where('updated_at', '>', $updated_at);
+        }
+
+        $places = $query->get(['osm_id', 'updated_at'])->mapWithKeys(function ($place) {
             return [$place->osm_id => $place->updated_at->toIso8601String()];
         });
 
@@ -63,7 +83,7 @@ class PlaceController extends Controller
     {
         $place = Place::where('osm_id', $id)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
