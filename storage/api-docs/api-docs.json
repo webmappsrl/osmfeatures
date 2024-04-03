@@ -9,63 +9,6 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/v1/features/pois/list": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "List all POIs",
-                "description": "Returns a list of POIs with their IDs and updated timestamps",
-                "operationId": "listPois",
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PoiItem"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/features/pois/{id}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get POI by ID",
-                "description": "Returns a single POI in GeoJSON format",
-                "operationId": "getPoiById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "POI ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GeoJsonFeature"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "POI not found"
-                    }
-                }
-            }
-        },
         "/api/v1/features/places/list": {
             "get": {
                 "tags": ["API V1"],
