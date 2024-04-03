@@ -11,7 +11,7 @@ echo "Deployment started ..."
 composer install  --no-interaction --prefer-dist --optimize-autoloader
 
 # Regenerate the db
-# php artisan migrate:fresh
+php artisan migrate
 
 #Seed the db to create admin user
 php artisan db:seed 
