@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a344f98b6cb5814df16bac16934baf3",
+    "content-hash": "b3bdf82407efb76e2ba205b1f100a4b7",
     "packages": [
         {
             "name": "abordage/nova-html-card",
@@ -553,6 +553,60 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.2"
             },
             "time": "2022-10-27T11:44:00+00:00"
+        },
+        {
+            "name": "digital-creative/nova-range-input-filter",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcasia/nova-range-input-filter.git",
+                "reference": "80c799fdd9ee727936bb32a526c31bd1a257cf95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcasia/nova-range-input-filter/zipball/80c799fdd9ee727936bb32a526c31bd1a257cf95",
+                "reference": "80c799fdd9ee727936bb32a526c31bd1a257cf95",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DigitalCreative\\RangeInputFilter\\RangeInputFilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DigitalCreative\\RangeInputFilter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rafael Milewski"
+                }
+            ],
+            "description": "A Laravel Nova range input filter.",
+            "keywords": [
+                "filter",
+                "input",
+                "laravel",
+                "nova",
+                "range"
+            ],
+            "support": {
+                "issues": "https://github.com/dcasia/nova-range-input-filter/issues",
+                "source": "https://github.com/dcasia/nova-range-input-filter/tree/v1.1.0"
+            },
+            "time": "2023-10-02T13:34:16+00:00"
         },
         {
             "name": "doctrine/annotations",

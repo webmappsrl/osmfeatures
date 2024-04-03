@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use PHPUnit\Util\Filter;
 use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
@@ -11,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Textarea;
 use Rpj\Daterangepicker\DateHelper;
+use App\Nova\Filters\ElevationFilter;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -89,26 +89,27 @@ class Place extends Resource
                 ->content($this->tags)
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
-            // Text::make('Tags')->displayUsing(
-            //     function ($value) {
-            //         $json = json_decode($value, true);
-            //         //wordwrap the json to make it more readable and add a color to the keys
-            //         $json = preg_replace(
-            //             '/(".*?"):(.*?)(,|$)/',
-            //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-            //             wordwrap(json_encode($json), 75, '<br>', true)
-            //         );
-
-            //         return $json;
-            //     }
-            // )->asHtml(),
-            // Text::make('Tags', function () {
-            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'place', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            // })->asHtml(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
-            Text::make('Name'),
+            Text::make('Name')->displayUsing(
+                function ($value) {
+                    //max length should be 50 characters then break the line
+                    return wordwrap($value, 50, '<br>', true);
+                }
+            )->asHtml(),
+            Text::make('Class')
+                ->sortable(),
+            Text::make('Subclass')
+                ->sortable(),
+            Text::make('Elevation', 'tags')->sortable()->displayUsing(
+                function ($value) {
+                    $ele = json_decode($value, true)['ele'] ?? null;
+                    $ele = $ele ? $ele . ' m' : null;
+
+                    return $ele;
+                }
+            ),
         ];
     }
 
@@ -136,6 +137,13 @@ class Place extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\ClassFilter(),
+            new Filters\SubclassFilter(),
+            ElevationFilter::make()
+                ->dividerLabel('<>')
+                ->inputType('number')
+                ->placeholder('From', 'To')
+                ->fromAttributes(['min' => 0])
+                ->toAttributes(['max' => 10000]),
             new Filters\OsmTypeFilter(),
             new Daterangepicker('updated_at', DateHelper::ALL, 'places.name', 'desc')
 
