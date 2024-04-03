@@ -2,6 +2,8 @@
 
 namespace App\Nova\Filters;
 
+use AwesomeNova\Filters\DependentFilter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -14,6 +16,8 @@ class ClassFilter extends Filter
      * @var string
      */
     public $component = 'select-filter';
+
+    public $name = 'Class';
 
     /**
      * Apply the filter to the given query.
@@ -34,7 +38,7 @@ class ClassFilter extends Filter
      * @param  NovaRequest  $request
      * @return array
      */
-    public function options(NovaRequest $request)
+    public function options(Request $request, array $filters = [])
     {
         //query the database in the places table to get all the classes value not repeating it and return it as an array
         $query = 'SELECT DISTINCT class FROM places WHERE class IS NOT NULL';
