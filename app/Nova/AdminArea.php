@@ -3,15 +3,15 @@
 namespace App\Nova;
 
 use Carbon\Carbon;
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\DateTime;
-use Rpj\Daterangepicker\DateHelper;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class AdminArea extends Resource
 {
@@ -104,8 +104,6 @@ class AdminArea extends Resource
             // Text::make('Tags', function () {
             //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'adminArea', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
             // })->asHtml(),
-
-
 
         ];
     }

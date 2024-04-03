@@ -9,8 +9,8 @@ use Psy\Command\WhereamiCommand;
 
 class CaiScaleFilter extends Filter
 {
-
     public $name = 'CAI Scale';
+
     /**
      * The filter's component.
      *
@@ -21,7 +21,7 @@ class CaiScaleFilter extends Filter
     /**
      * Apply the filter to the given query.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder
@@ -34,7 +34,7 @@ class CaiScaleFilter extends Filter
     /**
      * Get the filter's available options.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @return array
      */
     public function options(NovaRequest $request)
@@ -48,6 +48,7 @@ class CaiScaleFilter extends Filter
         ksort($options);
         //remove the null value
         unset($options['']);
+
         return $options;
     }
 }

@@ -2,18 +2,18 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\Text;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Textarea;
-use Rpj\Daterangepicker\DateHelper;
 use App\Nova\Filters\ElevationFilter;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Code;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class Place extends Resource
 {
@@ -105,7 +105,7 @@ class Place extends Resource
             Text::make('Elevation', 'tags')->sortable()->displayUsing(
                 function ($value) {
                     $ele = json_decode($value, true)['ele'] ?? null;
-                    $ele = $ele ? $ele . ' m' : null;
+                    $ele = $ele ? $ele.' m' : null;
 
                     return $ele;
                 }
@@ -145,7 +145,7 @@ class Place extends Resource
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
             new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL, 'places.name', 'desc')
+            new Daterangepicker('updated_at', DateHelper::ALL, 'places.name', 'desc'),
 
         ];
     }

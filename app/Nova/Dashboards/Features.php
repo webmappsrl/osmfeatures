@@ -2,12 +2,12 @@
 
 namespace App\Nova\Dashboards;
 
-use App\Nova\Cards\HrCount;
-use Laravel\Nova\Dashboard;
-use App\Nova\Cards\PlacesCount;
 use App\Nova\Cards\AdminAreasCount;
+use App\Nova\Cards\HrCount;
 use App\Nova\Cards\LastLuaUpdate;
+use App\Nova\Cards\PlacesCount;
 use App\Nova\Cards\PolesCount;
+use Laravel\Nova\Dashboard;
 
 class Features extends Dashboard
 {

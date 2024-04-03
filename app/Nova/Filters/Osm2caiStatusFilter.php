@@ -8,7 +8,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Osm2caiStatusFilter extends Filter
 {
-
     public $name = 'OSM2CAI Status';
 
     /**
@@ -21,7 +20,7 @@ class Osm2caiStatusFilter extends Filter
     /**
      * Apply the filter to the given query.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder
@@ -34,12 +33,13 @@ class Osm2caiStatusFilter extends Filter
     /**
      * Get the filter's available options.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @return array
      */
     public function options(NovaRequest $request)
     {
         $options = [0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4'];
+
         return $options;
     }
 }

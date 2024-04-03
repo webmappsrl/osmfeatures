@@ -8,6 +8,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class WikiPediaFilter extends BooleanFilter
 {
     public $name = 'WikiPedia';
+
     /**
      * Apply the filter to the given query.
      *

@@ -2,16 +2,15 @@
 
 namespace App\Nova\Filters;
 
-use Laravel\Nova\Http\Requests\NovaRequest;
 use DigitalCreative\RangeInputFilter\RangeInputFilter;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class ElevationFilter extends RangeInputFilter
 {
-
     /**
      * Apply the filter to the given query.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder
@@ -25,11 +24,10 @@ class ElevationFilter extends RangeInputFilter
             ->whereRaw("CAST(tags->>'ele' AS NUMERIC) <= ?", [$to]);
     }
 
-
     /**
      * Get the filter's available options.
      *
-     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  NovaRequest  $request
      * @return array
      */
     public function options(NovaRequest $request)
