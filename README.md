@@ -1,11 +1,3 @@
-# Laravel Postgis Boilerplate
-
-Webmapp's Starting point
-
-## Laravel 10 Project based on Nova 4
-
-Boilerplate per Laravel 10 basato su php 8.2 e posgres + postgis. Supporto locale per web server php ed xdebug.
-
 ## INSTALL
 
 First of all install the [GEOBOX](https://github.com/webmappsrl/geobox) repo and configure the [ALIASES command](https://github.com/webmappsrl/geobox#aliases-and-global-shell-variable).
@@ -63,183 +55,61 @@ Replace `${instance name}` with the instance name (APP_NAME in .env file)
 geobox_serve osmfeatures
 ```
 
-### Differenze ambiente produzione locale
+### Known Issues
 
-Questo sistema di container docker è utilizzabile sia per lo sviluppo locale sia per un sistema in produzione. In locale abbiamo queste caratteristiche:
+During the execution of scripts, there might be writing issues on certain folders because by default the user inside the container is `www-data (id:33)` while in the host system the user has an ID of `1000`:
 
--   la possibilità di lanciare il processo processo `php artisan serve` all'interno del container phpfpm, quindi la configurazione della porta `DOCKER_SERVE_PORT` (default: `8000`) necessaria al progetto. Se servono più istanze laravel con processo artisan serve contemporaneamente in locale, valutare di dedicare una porta tcp dedicata ad ognuno di essi. Per fare questo basta solo aggiornare `DOCKER_SERVE_PORT`.
--   la presenza di xdebug, definito in fase di build dell'immagine durante l'esecuzione del comando
--   `APP_ENV=local`, `APP_DEBUG=true` e `LOG_LEVEL=debug` che istruiscono laravel su una serie di comportamenti per il debug e l'esecuzione locale dell'applicativo
--   Una password del db con complessità minore. **In produzione usare [password complesse](https://www.avast.com/random-password-generator#pc)**
+-   CChown/chmod of the folder where you intend to write, eg:
 
-### Inizializzazione tramite boilerplate
+NOTE: To execute the chown command, you might need root privileges. In this case, you need to access the docker container using the specific root user (-u 0). This is also valid for unlocking the ability to write in the /var/log folder for XDEBUG's functioning.
 
--   Download del codice del boilerplate in una nuova cartella `nuovoprogetto` e disattivare il collegamento tra locale/remote:
-    ```sh
-    git clone https://github.com/webmappsrl/laravel-postgis-boilerplate.git nuovoprogetto
-    cd nuovoprogetto
-    git remote remove origin
-    ```
--   Effettuare il link tra la repository locale e quella remota (repository vuota github)
-
-    ```sh
-    git remote add origin git@github.com:username/repo.git
-    ```
-
--   Copy file `.env-example` to `.env`
-
-    Questi valori nel file .env sono necessari per avviare l'ambiente docker. Hanno un valore di default e delle convenzioni associate, valutare la modifica:
-
-    -   `APP_NAME` (it's php container name and - postgrest container name, no space)
-    -   `DOCKER_PHP_PORT` (Incrementing starting from 9100 to 9199 range for MAC check with command "lsof -iTCP -sTCP:LISTEN")
-    -   `DOCKER_SERVE_PORT` (always 8000, only on local environment)
-    -   `DOCKER_PROJECT_DIR_NAME` (it's the folder name of the project)
-    -   `DB_DATABASE`
-    -   `DB_USERNAME`
-    -   `DB_PASSWORD`
-
-    Se siamo in produzione, rimuovere (o commentare) la riga:
-
-    ```yml
-    - ${DOCKER_SERVE_PORT}:8000
-    ```
-
-    dal file `docker-compose.yml`
-
--   Creare l'ambiente docker
-    ```sh
-    bash docker/init-docker.sh
-    ```
--   Digitare `y` durante l'esecuzione dello script per l'installazione di xdebug
-
--   Verificare che i container si siano avviati
-
-    ```sh
-    docker ps
-    ```
-
--   Avvio di una bash all'interno del container php per installare tutte le dipendenze e lanciare il comando php artisan serve (utilizzare `APP_NAME` al posto di `$nomeApp`):
-
-    ```sh
-    docker exec -it php81_$nomeApp bash
-    composer install
-    php artisan key:generate
-    php artisan optimize
-    php artisan migrate
-    php artisan serve --host 0.0.0.0
-    ```
-
--   A questo punto l'applicativo è in ascolto su <http://127.0.0.1:8000> (la porta è quella definita in `DOCKER_SERVE_PORT`)
-
-### Configurazione xdebug vscode (solo in locale)
-
-Assicurarsi di aver installato l'estensione [PHP Debug](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug).
-
-Una volta avviato il container con xdebug configurare il file `.vscode/launch.json`, in particolare il `pathMappings` tenendo presente che **sulla sinistra abbiamo la path dove risiede il progetto all'interno del container**, `${workspaceRoot}` invece rappresenta la pah sul sistema host. Eg:
-
-```json
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Listen for Xdebug",
-            "type": "php",
-            "request": "launch",
-            "port": 9200,
-            "pathMappings": {
-                "/var/www/html/geomixer2": "${workspaceRoot}"
-            }
-        }
-    ]
-}
-```
-
-Aggiornare `/var/www/html/geomixer2` con la path della cartella del progetto nel container phpfpm.
-
-Per utilizzare xdebug **su browser** utilizzare uno di questi 2 metodi:
-
--   Installare estensione xdebug per browser [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc)
--   Utilizzare il query param `XDEBUG_SESSION_START=1` nella url che si vuole debuggare
--   Altro, [vedi documentazione xdebug](https://xdebug.org/docs/step_debug#web-application)
-
-Invece **su cli** digitare questo prima di invocare il comando php da debuggare:
-
-```bash
-export XDEBUG_SESSION=1
-```
-
-### Scripts
-
-Ci sono vari scripts per il deploy nella cartella `scripts`. Per lanciarli basta lanciare una bash con la path dello script dentro il container php, eg (utilizzare `APP_NAME` al posto di `$nomeApp`):
-
-```bash
-docker exec -it php81_$nomeApp bash scripts/deploy_dev.sh
-```
-
-### Artisan commands
-
--   `db:dump_db`
-    Create a new sql file exporting all the current database in the local disk under the `database` directory
--   `db:download`
-    download a dump.sql from server
--   `db:restore`
-    Restore a last-dump.sql file (must be in root dir)
-
-### Problemi noti
-
-Durante l'esecuzione degli script potrebbero verificarsi problemi di scrittura su certe cartelle, questo perchè di default l'utente dentro il container è `www-data (id:33)` quando invece nel sistema host l'utente ha id `1000`:
-
--   Chown/chmod della cartella dove si intende scrivere, eg:
-
-    NOTA: per eseguire il comando chown potrebbe essere necessario avere i privilegi di root. In questo caso si deve effettuare l'accesso al cointainer del docker utilizzando lo specifico utente root (-u 0). Questo è valido anche sbloccare la possibilità di scrivere nella cartella /var/log per il funzionamento di Xdedug
-
-    Utilizzare il parametro `-u` per il comando `docker exec` così da specificare l'id utente, eg come utente root (utilizzare `APP_NAME` al posto di `$nomeApp`):
+    Use the -u parameter for the docker exec command to specify the user ID, eg as root user (use APP_NAME instead of $appName):
 
     ```bash
-    docker exec -u 0 -it php81_$nomeApp bash
+    docker exec -u 0 -it php81_$appName bash
     chown -R 33 storage
     ```
 
-Xdebug potrebbe non trovare il file di log configurato nel .ini, quindi generare vari warnings
+XDEBUG might not find the configured log file in the .ini, thus generating various warnings
 
--   creare un file in `/var/log/xdebug.log` all'interno del container phpfpm. Eseguire un `chown www-data /var/log/xdebug.log`. Creare questo file solo se si ha esigenze di debug errori xdebug (impossibile analizzare il codice tramite breakpoint) visto che potrebbe crescere esponenzialmente nel tempo
+-   create a file in `/var/log/xdebug.log` inside phpfpm container and run `chown www-data /var/log/xdebug.log`. Create this file only if you need to debug XDEBUG errors (unable to analyze the code via breakpoints) as it might grow exponentially over time.
 -
 
-## Risorse
+## Resources
 
 -   [osm data](https://webmappsrl.gitbook.io/osmdata-2.0/)
 
 ---
 
-# Documentazione del Comando `osmfeatures:sync`
+# Documentation for `osmfeatures:sync`
 
-Il comando `osmfeatures:sync` è una parte integrante del progetto `osmfeatures`, che utilizza osm2pgsql e osmium per la sincronizzazione e l'elaborazione dei dati OSM (OpenStreetMap). Questo documento fornisce una guida su come utilizzare questo comando, inclusi i parametri, le opzioni e le loro funzioni.
+The `osmfeatures:sync` command is the core of `osmfeatures`, which uses osm2pgsql and osmium for the synchronization and processing of OSM (OpenStreetMap) data. This document provides a guide on how to use this command, including parameters, options, and their functions.
 
-## Panoramica del Comando
+## Command Overview
 
-Il comando `artisan osmfeatures:sync` é progettato per essere flessibile e configurabile, consentendo agli sviluppatori di specificare diverse opzioni per il processo di importazione.
+The `artisan osmfeatures:sync` command is designed to be flexible and configurable, allowing developers to specify different options for the import process.
 
-### Struttura del Comando
+### Command Structure
 
 ```bash
 osmfeatures:sync {defaultName?} {defaultLua?} {--skip-download} {defaultPbf?}
 ```
 
-### Parametri e Opzioni
+### Parameters and Options
 
-Il comando supporta diversi parametri e opzioni:
+The command supports several parameters and options:
 
-1. **defaultName**: Il nome del file finale che verrá salvato. Obbligatorio.
+1. **defaultName**: The name of the final file that will be saved after the pbf download.
 
-2. **defaultLua**: Il nome del file .lua (da digitare senza l'estensione \*.lua) da utilizzare per l'importazione con osm2pgsql. Questo file deve essere presente nella cartella `storage/app/osm/lua`. Obbligatorio.
+2. **defaultLua**: IThe name of the .lua file (to be typed without the \*.lua extension) to be used for importing with osm2pgsql. This file must be present in the `storage/app/osm/lua` folder. Required.
 
-3. **Opzione --skip-download**: Se non si vuole scaricare nuovamente il file PBF, utilizzare questa opzione. NOTA: é necessario che il file PBF sia già presente nella cartella `storage/app/osm/pbf`.
+3. **Option --skip-download**: If you do not want to download the PBF file again, use this option. NOTE: It is necessary that the PBF file is already present in the `storage/app/osm/pbf` folder.
 
-4. **defaultPbf**: Accetta un URL da cui scaricare il pbf. Non obbligatorio se si utilizza l'opzione `--skip-download`.
+4. **defaultPbf**: Accepts a URL from which to download the PBF. Not required if using the `--skip-download` option.
 
-## Esempio di Utilizzo
+## Example of Use
 
-Utilizzando il package Laravel Prompts, il comando `osmfeatures:sync` guida l'utente attraverso le opzioni disponibili. Non sará necessario, quindi, digitare tutta la lista di parametri necessari. Per esempio, se si lancia:
+Using the Laravel Prompts package, the `osmfeatures:sync` command guides the user through the available options. It will not be necessary, therefore, to type the entire list of required parameters. For example, if you launch:
 
 ```bash
 osmfeatures:sync
@@ -247,28 +117,28 @@ osmfeatures:sync
 
 ---
 
-Nel terminale verrà visualizzato un elenco di opzioni:
+In the terminal, a list of options will be displayed:
 
 ## ![Esempio di Utilizzo](public/images/readmee.png)
 
-Questo esempio utilizza l'opzione `skip download` e prende un file scaricato in precedenza da geofabrik salvato in `storage/app/osm/pbf` e nominato 'italy_centro_latest'. Il file viene quindi elaborato con osm2pgsql utilizzando `pois.lua`, che defiinisce la tabella e le colonne nel database, oltre ai dati che importeremo dal file .pbf scaricato in precedenza . NOTA: il file lua deve essere presente nella cartella `storage/app/osm/lua`.
+This example uses the `skip download` option end takes a previously downloaded file from Geofabrik saved in `storage/app/osm/pbf` and named 'italy_centro_latest'. The file is then processed with osm2pgsql using `pois.lua`,which defines the table and columns in the database, in addition to the data that we will import from the previously downloaded .pbf file. NOTE: the lua file must be present in the `storage/app/osm/lua` folder.
 
-In questo esempio specifico il PBF non viene scaricato da geofabrik. Se si vuole scaricare un nuovo file PBF da geofabrik, semplicemente rispondere "No" al prompt del comando. A quel punto vi sará chiesto di inserire l'URL del file PBF da scaricare ed il nome con la quale nominare il file, che sará salvato nella cartella `storage/app/osm/pbf`.
+In this specific example, the PBF is not downloaded from Geofabrik. If you want to download a new PBF file from Geofabrik, simply answer "No" to the "**Skip Download and use a local PBF file?**" prompt. You will then be asked to enter the URL of the PBF file to download and the name for the file, which will be saved in the `storage/app/osm/pbf` folder.
 
-## Documentazione di osm2pgsql e osmium
+## Documentation for osm2pgsql and osmium
 
--   **osm2pgsql**: Utilizzato per convertire i dati OSM in un formato utilizzabile dal database PostgreSQL. Documentazione dettagliata disponibile su [osm2pgsql.org](https://osm2pgsql.org/doc/manual.html).
+-   **osm2pgsql**: Used to convert OSM data into a format usable by the PostgreSQL database. Detailed documentation available on [osm2pgsql.org](https://osm2pgsql.org/doc/manual.html).
 
--   **osmium**: Uno strumento per lavorare con i dati OSM, utilizzato per filtrare e manipolare i dati prima dell'importazione. Documentazione disponibile su [Osmium Tool](https://osmcode.org/osmium-tool/manual.html).
+-   **osmium**: A tool for working with OSM data, used to filter and manipulate data before import. Documentation available on [Osmium Tool](https://osmcode.org/osmium-tool/manual.html).
 
 ## Laravel Prompts
 
-L'interfaccia di prompt di Laravel migliora l'esperienza dello sviluppatore fornendo una guida interattiva attraverso le opzioni del comando. Per maggiori informazioni, fare riferimento alla [documentazione di Laravel](https://laravel.com/docs/10.x/prompts#main-content).
+The Laravel prompts interface enhances the developer experience by providing an interactive guide through the command options. For more information, refer to the [documentazione di Laravel](https://laravel.com/docs/10.x/prompts#main-content).
 
 ---
 
-## Processi di aggiornamento e manutenzione dei dati OSM
+## Updating and Maintaining OSM Data
 
-E'stato schedulato un comando per l'aggiornamento dei dati OSM. Questo comando è stato progettato per essere eseguito automaticamente ogni giorno alle 00:00, aggiornando i dati OSM con le modifiche più recenti. Il comando è stato configurato per scaricare i dati OSM dell'intera Italia da [Geofabrik](https://download.geofabrik.de/europe/italy.html) e sincronizzarli con il database PostgreSQL eseguendo un loop su tutti i file lua presenti nella cartella `storage/app/osm/lua`.
+A command for updating OSM data has been scheduled. This command is designed to run automatically every day at 00:00, updating the OSM data with the most recent changes. The command is configured to download OSM data for the entire Italy from [Geofabrik](https://download.geofabrik.de/europe/italy.html)and synchronize it with the PostgreSQL database by looping through all the lua files present in the `storage/app/osm/lua` folder.
 
-Inoltre, per tenere aggiornato il timestamp delle Hiking Routes é stato creato un comando che aggiorna il dato partendo dal timestamp più recente delle way members associate. Questo fa si che se anche una sola delle way members viene modificata, il timestamp delle Hiking Routes verrà aggiornato. Questo comando è stato progettato per essere eseguito automaticamente ogni giorno alle ore 03:00 ed andrá ad aggiornare la colonna "updated_at" della tabella "hiking_routes". La colonna "updated_at_osm" della tabella "hiking_routes" rappresenta invece il valore OSM originale della relation OpenStreetMap.
+Moreover, to keep the timestamp of the Hiking Routes updated, a command has been created that updates the data starting from the most recent timestamp of the associated way members. This means that if even one of the way members is modified, the timestamp of the Hiking Routes will be updated. This command is designed to run automatically every day at 03:00 and will update the "updated_at" column of the "hiking_routes" table. The "updated_at_osm" column of the "hiking_routes" table represents the original OSM value of the OpenStreetMap relation.
