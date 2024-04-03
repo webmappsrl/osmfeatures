@@ -4,6 +4,7 @@ local hiking_routes = osm2pgsql.define_table({
     ids = { type = 'any', type_column = 'osm_type', id_column = 'osm_id' },
     columns = {
         {column = 'id', sql_type = 'serial', create_only = true},
+         { column = 'updated_at_osm'},
          { column = 'updated_at'},
         { column = 'name', type = 'text' },
         { column = 'cai_scale', type = 'text' },
@@ -70,7 +71,7 @@ function process_hiking_route(object, geom)
 
     local a = {
         name = object.tags.name,
-        updated_at = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
+        updated_at_osm = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
         cai_scale = object.tags['cai:scale'],
         osmc_symbol = object.tags['osmc:symbol'],
         network = object.tags.network,
