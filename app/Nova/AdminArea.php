@@ -82,8 +82,13 @@ class AdminArea extends Resource
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
-            Text::make('Name'),
-            Text::make('Admin Level', 'admin_level'),
+            Text::make('Name')->displayUsing(
+                function ($value) {
+                    //max length should be 50 characters then break the line
+                    return wordwrap($value, 50, '<br>', true);
+                }
+            )->asHtml(),
+            Text::make('Level', 'admin_level'),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
             //         $json = json_decode($value, true);
@@ -129,7 +134,8 @@ class AdminArea extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL, 'admin_areas.name', 'desc')
+            new Daterangepicker('updated_at', DateHelper::ALL, 'admin_areas.name', 'desc'),
+            new Filters\AdminLevelFilter(),
         ];
     }
 
