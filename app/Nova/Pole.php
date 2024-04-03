@@ -10,6 +10,8 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\DateTime;
 use Rpj\Daterangepicker\DateHelper;
 use Illuminate\Support\Facades\Date;
+use App\Nova\Filters\PolesElevationFilter;
+use Illuminate\Support\Facades\DB;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -44,7 +46,7 @@ class Pole extends Resource
      * @var array
      */
     public static $search = [
-        'osm_id', 'name',
+        'osm_id', 'name', 'ref', 'destination'
     ];
 
     /**
@@ -88,26 +90,14 @@ class Pole extends Resource
                 ->content($this->tags)
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
-            // Text::make('Tags')->displayUsing(
-            //     function ($value) {
-            //         $json = json_decode($value, true);
-            //         //wordwrap the json to make it more readable and add a color to the keys
-            //         $json = preg_replace(
-            //             '/(".*?"):(.*?)(,|$)/',
-            //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-            //             wordwrap(json_encode($json), 75, '<br>', true)
-            //         );
-
-            //         return $json;
-            //     }
-            // )->asHtml(),
-            // Text::make('Tags', function () {
-            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'place', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            // })->asHtml(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
             Text::make('Name'),
+            Text::make('Ref'),
+            Text::make('Destination', function () {
+                return wordwrap($this->destination, 50, '<br>', true);
+            })->asHtml(),
         ];
     }
 
@@ -135,6 +125,12 @@ class Pole extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
+            PolesElevationFilter::make()
+                ->dividerLabel('<>')
+                ->inputType('number')
+                ->placeholder('From', 'To')
+                ->fromAttributes(['min' => DB::table('poles')->min('ele')])
+                ->toAttributes(['max' => DB::table('poles')->max('ele')]),
             new Daterangepicker('updated_at', DateHelper::ALL, 'poles.name', 'desc')
 
         ];
