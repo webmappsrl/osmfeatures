@@ -70,8 +70,19 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Admin Areas",
-                "description": "Returns a list of Admin Areas with their details",
+                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date.",
                 "operationId": "listAdminAreas",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Admin Area updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",

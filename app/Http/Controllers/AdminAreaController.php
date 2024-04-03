@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminArea;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,18 @@ class AdminAreaController extends Controller
      *     operationId="listAdminAreas",
      *     tags={"AdminAreas"},
      *     summary="List all Admin Areas",
-     *     description="Returns a list of Admin Areas with their details",
+     *     description="Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date.",
+     *     @OA\Parameter(
+     *         name="updated_after",
+     *         in="query",
+     *         description="Filter by the updated timestamp. Only areas updated after this date will be returned. The date should be in ISO 8601 format.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2021-03-10T02:00:00Z"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -25,9 +37,17 @@ class AdminAreaController extends Controller
      *     ),
      * )
      */
-    public function list()
+    public function list(Request $request)
     {
-        $adminAreas = AdminArea::all(['osm_id', 'updated_at'])->mapWithKeys(function ($area) {
+        $query = AdminArea::query();
+
+        $updated_at = $request->query('updated_at');
+
+        if ($updated_at) {
+            $query->where('updated_at', '>', $updated_at);
+        }
+
+        $adminAreas = $query->get(['osm_id', 'updated_at'])->mapWithKeys(function ($area) {
             return [$area->osm_id => $area->updated_at->toIso8601String()];
         });
 
@@ -63,7 +83,7 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::where('osm_id', $id)->first();
 
-        if (! $adminArea) {
+        if (!$adminArea) {
             return response()->json(['message' => 'Admin Area non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
