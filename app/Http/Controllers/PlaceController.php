@@ -58,7 +58,7 @@ class PlaceController extends Controller
             $query->where('updated_at', '>', $updated_at);
         }
 
-        $places = $query->paginate($perPage, ['osm_id', 'updated_at']);
+        $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($places);
     }

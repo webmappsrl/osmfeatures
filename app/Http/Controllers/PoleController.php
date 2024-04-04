@@ -67,7 +67,7 @@ class PoleController extends Controller
             $query->where('updated_at', '>', $updated_after);
         }
 
-        $poles = $query->paginate($perPage, ['osm_id', 'updated_at']);
+        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($poles);
     }

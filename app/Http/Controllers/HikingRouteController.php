@@ -58,7 +58,7 @@ class HikingRouteController extends Controller
             $query->where('updated_at', '>', $updated_at);
         }
 
-        $hikingRoutes = $query->paginate($perPage, ['osm_id', 'updated_at']);
+        $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($hikingRoutes);
     }

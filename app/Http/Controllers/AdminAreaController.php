@@ -58,7 +58,7 @@ class AdminAreaController extends Controller
             $query->where('updated_at', '>', $updated_at);
         }
 
-        $adminAreas = $query->paginate($perPage, ['osm_id', 'updated_at']);
+        $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($adminAreas);
     }
