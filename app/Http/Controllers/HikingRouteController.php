@@ -26,6 +26,16 @@ class HikingRouteController extends Controller
      *             example="2021-03-10T02:00:00Z"
      *         )
      *     ),
+     * @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number to retrieve. Each page contains 100 results.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example="1"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -40,6 +50,7 @@ class HikingRouteController extends Controller
     public function list(Request $request)
     {
         $updated_at = $request->query('updated_at');
+        $perPage = 100;
 
         $query = HikingRoute::query();
 
@@ -47,9 +58,7 @@ class HikingRouteController extends Controller
             $query->where('updated_at', '>', $updated_at);
         }
 
-        $hikingRoutes = $query->get(['osm_id', 'updated_at'])->mapWithKeys(function ($route) {
-            return [$route->osm_id => $route->updated_at->toIso8601String()];
-        });
+        $hikingRoutes = $query->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($hikingRoutes);
     }

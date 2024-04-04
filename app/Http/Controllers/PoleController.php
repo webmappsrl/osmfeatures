@@ -15,7 +15,7 @@ class PoleController extends Controller
      *     operationId="listPoles",
      *     tags={"Poles"},
      *     summary="List all Poles",
-     *     description="Returns a list of Poles with their details. Optionally, provide an 'updated_at' parameter to filter poles updated after the specified date.",
+     *     description="Returns a paginated list of Poles with their details. Optionally, provide an 'updated_at' parameter to filter poles updated after the specified date. Supports pagination with 100 results per page.",
      *     @OA\Parameter(
      *         name="updated_at",
      *         in="query",
@@ -27,20 +27,39 @@ class PoleController extends Controller
      *             example="2021-03-10T02:00:00Z"
      *         )
      *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number to retrieve. Each page contains 100 results.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example="1"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/PoleItem")
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/PoleItem")
+     *             ),
+     *             @OA\Property(property="current_page", type="integer"),
+     *             @OA\Property(property="last_page", type="integer"),
+     *             @OA\Property(property="total", type="integer")
      *         ),
      *     ),
      * )
      */
 
+
     public function list(Request $request)
     {
         $updated_after = $request->query('updated_at');
+        $perPage = 100;
 
         $query = Pole::query();
 
@@ -48,9 +67,7 @@ class PoleController extends Controller
             $query->where('updated_at', '>', $updated_after);
         }
 
-        $poles = $query->get(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
-            return [$pole->osm_id => $pole->updated_at->toIso8601String()];
-        });
+        $poles = $query->paginate($perPage, ['osm_id', 'updated_at']);
 
         return response()->json($poles);
     }

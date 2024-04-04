@@ -13,7 +13,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Places",
-                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter places updated after the specified date.",
+                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter places updated after the specified date. Paginated results are available, with each page containing 100 places. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPlaces",
                 "parameters": [
                     {
@@ -23,6 +23,15 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -81,7 +90,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Admin Areas",
-                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date.",
+                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date. Paginated results are available, with each page containing 100 areas. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listAdminAreas",
                 "parameters": [
                     {
@@ -91,6 +100,15 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -149,7 +167,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Hiking Routes",
-                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date.",
+                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date. Paginated results are available, with each page containing 100 routes. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listHikingRoutes",
                 "parameters": [
                     {
@@ -159,6 +177,15 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -217,7 +244,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Poles",
-                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter poles updated after the specified date.",
+                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter poles updated after the specified date. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPoles",
                 "parameters": [
                     {
@@ -227,6 +254,15 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
