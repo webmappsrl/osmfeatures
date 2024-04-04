@@ -12,7 +12,7 @@ class HikingRoute extends Model
 
     protected $table = 'hiking_routes';
 
-    protected $primaryKey = 'osm_id';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'updated_at',
