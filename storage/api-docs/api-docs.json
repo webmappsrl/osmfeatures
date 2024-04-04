@@ -322,7 +322,7 @@
         "schemas": {
             "PoiItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 123
                     },
@@ -386,7 +386,7 @@
             },
             "AdminAreaItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 39150
                     },
@@ -468,7 +468,7 @@
             },
             "HikingRouteItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 39150
                     },
@@ -546,7 +546,7 @@
             "PoleItem": {
                 "type": "object",
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 123
                     },
