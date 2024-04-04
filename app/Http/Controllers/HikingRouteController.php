@@ -46,7 +46,6 @@ class HikingRouteController extends Controller
      *     ),
      * )
      */
-
     public function list(Request $request)
     {
         $updated_at = $request->query('updated_at');

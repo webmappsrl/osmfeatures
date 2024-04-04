@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pole;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class PoleController extends Controller
 {
@@ -54,8 +54,6 @@ class PoleController extends Controller
      *     ),
      * )
      */
-
-
     public function list(Request $request)
     {
         $updated_after = $request->query('updated_at');
@@ -101,7 +99,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('id', $id)->first();
 
-        if (!$pole) {
+        if (! $pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
