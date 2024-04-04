@@ -28,7 +28,7 @@ class Pole extends Resource
     public static function newModel()
     {
         $model = parent::newModel();
-        $model->setKeyName('osm_id');
+        $model->setKeyName('id');
 
         return $model;
     }

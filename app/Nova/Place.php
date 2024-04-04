@@ -34,7 +34,7 @@ class Place extends Resource
     public static function newModel()
     {
         $model = parent::newModel();
-        $model->setKeyName('osm_id');
+        $model->setKeyName('id');
 
         return $model;
     }
@@ -102,14 +102,16 @@ class Place extends Resource
                 ->sortable(),
             Text::make('Subclass')
                 ->sortable(),
-            Text::make('Elevation', 'tags')->sortable()->displayUsing(
+            Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
-                    $ele = json_decode($value, true)['ele'] ?? null;
-                    $ele = $ele ? $ele.' m' : null;
-
-                    return $ele;
+                    if ($value) {
+                        return $value . ' m';
+                    } else {
+                        return ' ';
+                    }
                 }
             ),
+
         ];
     }
 
