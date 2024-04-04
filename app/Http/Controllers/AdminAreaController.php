@@ -58,7 +58,7 @@ class AdminAreaController extends Controller
             $query->where('updated_at', '>', $updated_at);
         }
 
-        $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
+        $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
         return response()->json($adminAreas);
     }
@@ -90,7 +90,7 @@ class AdminAreaController extends Controller
      */
     public function show($id)
     {
-        $adminArea = AdminArea::where('osm_id', $id)->first();
+        $adminArea = AdminArea::where('id', $id)->first();
 
         if (!$adminArea) {
             return response()->json(['message' => 'Admin Area non trovato'], 404);

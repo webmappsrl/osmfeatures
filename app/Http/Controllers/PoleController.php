@@ -67,7 +67,7 @@ class PoleController extends Controller
             $query->where('updated_at', '>', $updated_after);
         }
 
-        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['osm_id', 'updated_at']);
+        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
         return response()->json($poles);
     }
@@ -99,7 +99,7 @@ class PoleController extends Controller
      */
     public function show($id)
     {
-        $pole = Pole::where('osm_id', $id)->first();
+        $pole = Pole::where('id', $id)->first();
 
         if (!$pole) {
             return response()->json(['message' => 'Pole not found'], 404);
