@@ -9,6 +9,7 @@ local places = osm2pgsql.define_table({
         { column = 'subclass' },
         { column = 'geom', type = 'point', not_null = true },
         { column = 'tags', type = 'jsonb' },
+        { column = 'elevation', type = 'int' },
 }})
 
 -- mapping of OSM tags to our feature internal representation
@@ -19,6 +20,7 @@ function process_place(object, geom)
         name = object.tags.name,
         geom = geom,
         tags = object.tags,
+        elevation = object.tags.ele or nil,
         class = '',
         subclass = '',
     }
