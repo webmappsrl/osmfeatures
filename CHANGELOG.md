@@ -1,5 +1,68 @@
 # Changelog
 
+## [1.11.0](https://github.com/webmappsrl/osmfeatures/compare/v1.10.2...v1.11.0) (2024-03-26)
+
+
+### Features
+
+* implemented api for hiking routes and places ([a57f505](https://github.com/webmappsrl/osmfeatures/commit/a57f5052babeb4d2e30f54255b92638c5d323d3d))
+* implemented correct timestamp compute for hiking routes ([e1803bc](https://github.com/webmappsrl/osmfeatures/commit/e1803bc8abb5ff488f2b5ecab378560158611f37))
+* implemented osm2pgsql update pbf command 1st version ([30cc940](https://github.com/webmappsrl/osmfeatures/commit/30cc94017e4bc6e2e360c62e08aa863b77af78f1))
+* implemented update command for italy pbf ([01cd9ce](https://github.com/webmappsrl/osmfeatures/commit/01cd9cec2a434bb295cebe42c25434cb7363cd97))
+* updated readme ([7f4895d](https://github.com/webmappsrl/osmfeatures/commit/7f4895de0e26b5715b5d4f3c32681dc40c8209b7))
+
+
+### Bug Fixes
+
+* fixed hiking_routes lua file to import relation members ([d1f652b](https://github.com/webmappsrl/osmfeatures/commit/d1f652b9f8defc92b2a4adca7b0f93313dc6877b))
+
+## [1.10.2](https://github.com/webmappsrl/osmfeatures/compare/v1.10.1...v1.10.2) (2024-03-25)
+
+
+### Bug Fixes
+
+* fixed osm id link for node way and relations ([c0909f6](https://github.com/webmappsrl/osmfeatures/commit/c0909f6ed275147d968a0c1c888c070e3488fee8))
+
+## [1.10.1](https://github.com/webmappsrl/osmfeatures/compare/v1.10.0...v1.10.1) (2024-03-23)
+
+
+### Bug Fixes
+
+* error on hiking ways ([88e0e5b](https://github.com/webmappsrl/osmfeatures/commit/88e0e5b4bdc98751df32f9759a9077027d68c95f))
+
+## [1.10.0](https://github.com/webmappsrl/osmfeatures/compare/v1.9.0...v1.10.0) (2024-03-23)
+
+
+### Features
+
+* added filter for classes in places nova ([d6c4bf8](https://github.com/webmappsrl/osmfeatures/commit/d6c4bf833849db0ce428d816afa574cddeaf507c))
+* added hiking routes model and nova resource ([acfdc0c](https://github.com/webmappsrl/osmfeatures/commit/acfdc0c9ca745d64ee987182d28a273f69a69cba))
+* added osm type filters for nova resources ([101ebe0](https://github.com/webmappsrl/osmfeatures/commit/101ebe07f7a04bbea3353da3e89acc157f2ca3cd))
+* added places model and nova resource ([e103028](https://github.com/webmappsrl/osmfeatures/commit/e103028913811a9f62d38ee17d5c025002746684))
+* added tooltip to tags in nova resources ([3574d90](https://github.com/webmappsrl/osmfeatures/commit/3574d90917f2ea4af069f1e84b88f5b6f88d786d))
+* created hiking routes lua file ([44538dd](https://github.com/webmappsrl/osmfeatures/commit/44538ddafd47be98169bcf232988c849b973dd84))
+* created places lua file ([cc5cb95](https://github.com/webmappsrl/osmfeatures/commit/cc5cb95b62d046e2fa942a3f2df78bf014ea7365))
+
+
+### Bug Fixes
+
+* fixed osm type in poi, pole, admin area nova resources ([494a03d](https://github.com/webmappsrl/osmfeatures/commit/494a03dba23940a71070fd1cff055210559bb3e6))
+* fixed places lua file to import relations ([c612b89](https://github.com/webmappsrl/osmfeatures/commit/c612b896806fdec35519ab3f31451e5947f53f80))
+* fixed updated_at and tags ([f3c9922](https://github.com/webmappsrl/osmfeatures/commit/f3c9922cc7e09b657b257174b6f0c77a1fbd584d))
+
+## [1.9.0](https://github.com/webmappsrl/osmfeatures/compare/v1.8.0...v1.9.0) (2024-03-05)
+
+
+### Features
+
+* improved sync command and added updated_at in nova index ([f857fbb](https://github.com/webmappsrl/osmfeatures/commit/f857fbb759a98d55928232d6823c80953d399189))
+
+
+### Bug Fixes
+
+* fixed typo in sync command ([365a319](https://github.com/webmappsrl/osmfeatures/commit/365a319a1f5e0fd879c52f0236173b52e67465d3))
+* fixed typo in sync command ([5d200fa](https://github.com/webmappsrl/osmfeatures/commit/5d200fad5628243ce5a1f0468eae411a95a04802))
+
 ## [1.8.0](https://github.com/webmappsrl/osmfeatures/compare/v1.7.0...v1.8.0) (2024-03-05)
 
 

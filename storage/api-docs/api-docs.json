@@ -86,6 +86,63 @@
                 }
             }
         },
+        "/api/v1/features/places/list": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "List all Places",
+                "description": "Returns a list of Places with their IDs and updated timestamps",
+                "operationId": "listPlaces",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PoiItem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/features/places/{id}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Place by ID",
+                "description": "Returns a single Place in GeoJSON format",
+                "operationId": "getPlaceById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Place ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GeoJsonFeature"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Place not found"
+                    }
+                }
+            }
+        },
         "/api/v1/features/admin-areas/list": {
             "get": {
                 "tags": ["API V1"],
@@ -469,6 +526,7 @@
             "HikingRouteItem": {
                 "properties": {
                     "id": {
+
                         "type": "integer",
                         "example": 39150
                     },

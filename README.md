@@ -101,6 +101,7 @@ The command supports several parameters and options:
 
 1. **defaultName**: The name of the final file that will be saved after the pbf download.
 
+
 2. **defaultLua**: IThe name of the .lua file (to be typed without the \*.lua extension) to be used for importing with osm2pgsql. This file must be present in the `storage/app/osm/lua` folder. Required.
 
 3. **Option --skip-download**: If you do not want to download the PBF file again, use this option. NOTE: It is necessary that the PBF file is already present in the `storage/app/osm/pbf` folder.
@@ -110,6 +111,7 @@ The command supports several parameters and options:
 ## Example of Use
 
 Using the Laravel Prompts package, the `osmfeatures:sync` command guides the user through the available options. It will not be necessary, therefore, to type the entire list of required parameters. For example, if you launch:
+
 
 ```bash
 osmfeatures:sync
@@ -130,6 +132,7 @@ In this specific example, the PBF is not downloaded from Geofabrik. If you want 
 -   **osm2pgsql**: Used to convert OSM data into a format usable by the PostgreSQL database. Detailed documentation available on [osm2pgsql.org](https://osm2pgsql.org/doc/manual.html).
 
 -   **osmium**: A tool for working with OSM data, used to filter and manipulate data before import. Documentation available on [Osmium Tool](https://osmcode.org/osmium-tool/manual.html).
+
 
 ## Laravel Prompts
 

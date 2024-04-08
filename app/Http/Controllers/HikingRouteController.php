@@ -14,6 +14,7 @@ class HikingRouteController extends Controller
      *     operationId="listHikingRoutes",
      *     tags={"HikingRoutes"},
      *     summary="List all Hiking Routes",
+
      *     description="Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date.",
      *     @OA\Parameter(
      *         name="updated_at",
@@ -36,6 +37,7 @@ class HikingRouteController extends Controller
      *             example="1"
      *         )
      *     ),
+
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -46,7 +48,7 @@ class HikingRouteController extends Controller
      *     ),
      * )
      */
-    public function list(Request $request)
+  public function list(Request $request)
     {
         $updated_at = $request->query('updated_at');
         $perPage = 100;
@@ -58,6 +60,7 @@ class HikingRouteController extends Controller
         }
 
         $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
 
         return response()->json($hikingRoutes);
     }
