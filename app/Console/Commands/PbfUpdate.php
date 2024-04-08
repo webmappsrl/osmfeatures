@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-
 use App\Models\Osm2pgsqlCrontabUpdate;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -168,7 +167,6 @@ class PbfUpdate extends Command
             'from_pbf' => $pbfPath,
         ]);
 
-
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
@@ -178,7 +176,6 @@ class PbfUpdate extends Command
 
             Log::error('Lua file not found at:'.$luaPath);
             $updateRecord->update(['success' => false, 'log' => 'Lua file not found at:'.$luaPath]);
-
 
             return false;
         }
@@ -191,7 +188,6 @@ class PbfUpdate extends Command
             $this->error('Error during import with osm2pgsql.'.PHP_EOL.implode(PHP_EOL, $osm2pgsqlOutput));
 
             $updateRecord->update(['success' => false, 'log' => implode(PHP_EOL, $osm2pgsqlOutput)]);
-
 
             return false;
         }

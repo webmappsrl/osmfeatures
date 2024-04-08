@@ -89,9 +89,7 @@ class PlaceController extends Controller
      */
     public function show($id)
     {
-
         $place = Place::where('id', $id)->first();
-
 
         if (! $place) {
             return response()->json(['message' => 'place non trovato'], 404);

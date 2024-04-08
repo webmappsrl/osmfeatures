@@ -48,7 +48,7 @@ class HikingRouteController extends Controller
      *     ),
      * )
      */
-  public function list(Request $request)
+    public function list(Request $request)
     {
         $updated_at = $request->query('updated_at');
         $perPage = 100;
@@ -60,7 +60,6 @@ class HikingRouteController extends Controller
         }
 
         $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
-
 
         return response()->json($hikingRoutes);
     }
