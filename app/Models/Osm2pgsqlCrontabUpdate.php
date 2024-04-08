@@ -18,4 +18,6 @@ class Osm2pgsqlCrontabUpdate extends Model
         'success',
         'log',
     ];
+
+    public $timestamps = false;
 }

@@ -2,7 +2,6 @@
 
 namespace App\Nova;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Code;
 use Illuminate\Support\Carbon;
