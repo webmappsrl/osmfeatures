@@ -2,22 +2,21 @@
 
 namespace App\Nova\Filters;
 
-use AwesomeNova\Filters\DependentFilter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Psy\Command\WhereamiCommand;
 
-class ClassFilter extends Filter
+class CaiScaleFilter extends Filter
 {
+    public $name = 'CAI Scale';
+
     /**
      * The filter's component.
      *
      * @var string
      */
     public $component = 'select-filter';
-
-    public $name = 'Class';
 
     /**
      * Apply the filter to the given query.
@@ -29,7 +28,7 @@ class ClassFilter extends Filter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        return $query->where('class', $value);
+        return $query->where('cai_scale', $value);
     }
 
     /**
@@ -38,14 +37,18 @@ class ClassFilter extends Filter
      * @param  NovaRequest  $request
      * @return array
      */
-    public function options(Request $request, array $filters = [])
+    public function options(NovaRequest $request)
     {
-        //query the database in the places table to get all the classes value not repeating it and return it as an array
-        $query = 'SELECT DISTINCT class FROM places WHERE class IS NOT NULL';
-        $results = DB::select($query);
+        //get all the cai_scale distinct values from the hiking_Routes table
+        $cai_scales = DB::select('SELECT DISTINCT cai_scale FROM hiking_routes ORDER BY cai_scale ASC');
+        $options = [];
+        foreach ($cai_scales as $cai_scale) {
+            $options[$cai_scale->cai_scale] = $cai_scale->cai_scale;
+        }
+        ksort($options);
+        //remove the null value
+        unset($options['']);
 
-        return collect($results)->mapWithKeys(function ($item) {
-            return [$item->class => $item->class];
-        })->toArray();
+        return $options;
     }
 }

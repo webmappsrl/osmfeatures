@@ -3,11 +3,15 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class HikingRoute extends Resource
 {
@@ -31,7 +35,7 @@ class HikingRoute extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'osm_id', 'name', 'ref',
     ];
 
     /**
@@ -60,10 +64,28 @@ class HikingRoute extends Resource
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
             )->asHtml()
-                ->sortable(),
-            DateTime::make('Updated At')
-                ->sortable(),
-            Text::make('Name'),
+                ->sortable()
+                ->onlyOnIndex(),
+            Text::make('OSM Type')
+                ->onlyOnDetail(),
+            DateTime::make('Updated_at')
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                )->sortable(),
+            DateTime::make('Updated_at_osm')
+                ->sortable()
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                ),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags)
+                ->onlyOnIndex(),
+            Code::make('Tags')->json()->hideFromIndex(),
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
             //         $json = json_decode($value, true);
@@ -80,24 +102,30 @@ class HikingRoute extends Resource
             // Text::make('Tags', function () {
             //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'hikingRoute', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
             // })->asHtml(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags),
-            Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
+            Text::make('Wiki', function () {
+                return $this->getWikiLinks();
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            Text::make('Specs', function () {
+                $tags = json_decode($this->tags, true);
+                $ref = $tags['ref'] ?? 'N/A';
+                $source = $tags['source'] ?? 'N/A';
+                $cai_scale = $tags['cai_scale'] ?? 'N/A';
+                $name = $this->name ?? 'N/A';
+
+                $name = strlen($name) > 30 ? substr($name, 0, 30).'<br>'.substr($name, 30) : $name;
+
+                $html = '<div>';
+                $html .= "<p><strong>ref:</strong> {$ref}</p>";
+                $html .= "<p><strong>source:</strong> {$source}</p>";
+                $html .= "<p><strong>cai_scale:</strong> {$cai_scale}</p>";
+                $html .= '<p><strong>name:</strong> '.$name.'</p>';
+                $html .= '</div>';
+
+                return $html;
+            })
                 ->asHtml(),
-            Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
+            Text::make('Osm2cai Status')
+                ->sortable(),
         ];
     }
 
@@ -125,6 +153,10 @@ class HikingRoute extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
+            new Daterangepicker('updated_at', DateHelper::ALL, 'hiking_routes.name', 'desc'),
+            new Filters\CaiScaleFilter(),
+            new Filters\Osm2caiStatusFilter(),
+
         ];
     }
 

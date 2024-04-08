@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pole;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
@@ -14,22 +15,57 @@ class PoleController extends Controller
      *     operationId="listPoles",
      *     tags={"Poles"},
      *     summary="List all Poles",
-     *     description="Returns a list of Poles with their details",
+     *     description="Returns a paginated list of Poles with their details. Optionally, provide an 'updated_at' parameter to filter poles updated after the specified date. Supports pagination with 100 results per page.",
+     *     @OA\Parameter(
+     *         name="updated_at",
+     *         in="query",
+     *         description="Filter by the updated timestamp. Only poles updated after this date will be returned. The date should be in ISO 8601 format.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2021-03-10T02:00:00Z"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number to retrieve. Each page contains 100 results.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example="1"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/PoleItem")
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/PoleItem")
+     *             ),
+     *             @OA\Property(property="current_page", type="integer"),
+     *             @OA\Property(property="last_page", type="integer"),
+     *             @OA\Property(property="total", type="integer")
      *         ),
      *     ),
      * )
      */
-    public function list()
+    public function list(Request $request)
     {
-        $poles = Pole::all(['osm_id', 'updated_at'])->mapWithKeys(function ($pole) {
-            return [$pole->osm_id => $pole->updated_at->toIso8601String()];
-        });
+        $updated_after = $request->query('updated_at');
+        $perPage = 100;
+
+        $query = Pole::query();
+
+        if ($updated_after) {
+            $query->where('updated_at', '>', $updated_after);
+        }
+
+        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
         return response()->json($poles);
     }
@@ -61,7 +97,7 @@ class PoleController extends Controller
      */
     public function show($id)
     {
-        $pole = Pole::where('osm_id', $id)->first();
+        $pole = Pole::where('id', $id)->first();
 
         if (! $pole) {
             return response()->json(['message' => 'Pole not found'], 404);

@@ -7,6 +7,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class WikiDataFilter extends BooleanFilter
 {
+    public $name = 'WikiData';
+
     /**
      * Apply the filter to the given query.
      *
@@ -37,8 +39,8 @@ class WikiDataFilter extends BooleanFilter
     public function options(NovaRequest $request)
     {
         return [
-            'Has Wikidata' => 'has_wikidata',
-            'No Wikidata' => 'no_wikidata',
+            'Yes' => 'has_wikidata',
+            'No' => 'no_wikidata',
         ];
     }
 }

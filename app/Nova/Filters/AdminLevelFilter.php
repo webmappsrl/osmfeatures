@@ -2,13 +2,11 @@
 
 namespace App\Nova\Filters;
 
-use AwesomeNova\Filters\DependentFilter;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ClassFilter extends Filter
+class AdminLevelFilter extends Filter
 {
     /**
      * The filter's component.
@@ -17,7 +15,7 @@ class ClassFilter extends Filter
      */
     public $component = 'select-filter';
 
-    public $name = 'Class';
+    public $name = 'Admin Level';
 
     /**
      * Apply the filter to the given query.
@@ -29,7 +27,7 @@ class ClassFilter extends Filter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        return $query->where('class', $value);
+        return $query->where('admin_level', $value);
     }
 
     /**
@@ -38,14 +36,15 @@ class ClassFilter extends Filter
      * @param  NovaRequest  $request
      * @return array
      */
-    public function options(Request $request, array $filters = [])
+    public function options(NovaRequest $request)
     {
-        //query the database in the places table to get all the classes value not repeating it and return it as an array
-        $query = 'SELECT DISTINCT class FROM places WHERE class IS NOT NULL';
-        $results = DB::select($query);
+        $admin_levels = DB::select('SELECT DISTINCT admin_level FROM admin_areas ORDER BY admin_level ASC');
+        $options = [];
+        foreach ($admin_levels as $admin_level) {
+            $options[$admin_level->admin_level] = $admin_level->admin_level;
+        }
+        ksort($options);
 
-        return collect($results)->mapWithKeys(function ($item) {
-            return [$item->class => $item->class];
-        })->toArray();
+        return $options;
     }
 }

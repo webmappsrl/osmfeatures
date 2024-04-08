@@ -2,13 +2,17 @@
 
 namespace App\Nova;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class AdminArea extends Resource
 {
@@ -22,7 +26,7 @@ class AdminArea extends Resource
     public static function newModel()
     {
         $model = parent::newModel();
-        $model->setKeyName('osm_id');
+        $model->setKeyName('id');
 
         return $model;
     }
@@ -61,12 +65,32 @@ class AdminArea extends Resource
                 function ($value) {
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
+            )->asHtml()
+                ->onlyOnIndex(),
+            Text::make('OSM Type')
+                ->onlyOnDetail(),
+            DateTime::make('Updated_at')
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                )->sortable(),
+            Tooltip::make('Tags', 'tags')
+                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->content($this->tags)
+                ->onlyOnIndex(),
+            Code::make('Tags')->json()->hideFromIndex(),
+            Text::make('Wiki', function () {
+                return $this->getWikiLinks();
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            Text::make('Name')->displayUsing(
+                function ($value) {
+                    //max length should be 50 characters then break the line
+                    return wordwrap($value, 50, '<br>', true);
+                }
             )->asHtml(),
-            Text::make('Updated At', function () {
-                return Carbon::parse($this->updated_at)->toIso8601String();
-            }),
-            Text::make('Name'),
-            Text::make('Admin Level', 'admin_level'),
+            Text::make('Level', 'admin_level'),
+
             // Text::make('Tags')->displayUsing(
             //     function ($value) {
             //         $json = json_decode($value, true);
@@ -128,6 +152,8 @@ class AdminArea extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
+            new Daterangepicker('updated_at', DateHelper::ALL, 'admin_areas.name', 'desc'),
+            new Filters\AdminLevelFilter(),
         ];
     }
 

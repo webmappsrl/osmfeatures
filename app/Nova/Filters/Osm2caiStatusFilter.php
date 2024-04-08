@@ -2,12 +2,20 @@
 
 namespace App\Nova\Filters;
 
-use Laravel\Nova\Filters\BooleanFilter;
+use Illuminate\Support\Facades\DB;
+use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class WikiPediaFilter extends BooleanFilter
+class Osm2caiStatusFilter extends Filter
 {
-    public $name = 'WikiPedia';
+    public $name = 'OSM2CAI Status';
+
+    /**
+     * The filter's component.
+     *
+     * @var string
+     */
+    public $component = 'select-filter';
 
     /**
      * Apply the filter to the given query.
@@ -19,15 +27,7 @@ class WikiPediaFilter extends BooleanFilter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        if ($value['has_wikipedia']) {
-            return $query->whereRaw("jsonb_exists(cast(tags as jsonb), 'wikipedia')");
-        }
-
-        if ($value['no_wikipedia']) {
-            return $query->whereRaw("NOT jsonb_exists(cast(tags as jsonb), 'wikipedia')");
-        }
-
-        return $query;
+        return $query->where('osm2cai_status', $value);
     }
 
     /**
@@ -38,9 +38,8 @@ class WikiPediaFilter extends BooleanFilter
      */
     public function options(NovaRequest $request)
     {
-        return [
-            'Yes' => 'has_wikipedia',
-            'No' => 'no_wikipedia',
-        ];
+        $options = [0 => '0', 1 => '1', 2 => '2', 3 => '3', 4 => '4'];
+
+        return $options;
     }
 }

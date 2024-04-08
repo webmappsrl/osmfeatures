@@ -14,7 +14,30 @@ class HikingRouteController extends Controller
      *     operationId="listHikingRoutes",
      *     tags={"HikingRoutes"},
      *     summary="List all Hiking Routes",
-     *     description="Returns a list of Hiking Routes with their details",
+
+     *     description="Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date.",
+     *     @OA\Parameter(
+     *         name="updated_at",
+     *         in="query",
+     *         description="Filter by the updated timestamp. Only routes updated after this date will be returned. The date should be in ISO 8601 format.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             format="date-time",
+     *             example="2021-03-10T02:00:00Z"
+     *         )
+     *     ),
+     * @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number to retrieve. Each page contains 100 results.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="integer",
+     *             example="1"
+     *         )
+     *     ),
+
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -25,11 +48,19 @@ class HikingRouteController extends Controller
      *     ),
      * )
      */
-    public function list()
+  public function list(Request $request)
     {
-        $hikingRoutes = HikingRoute::all(['osm_id', 'updated_at'])->mapWithKeys(function ($route) {
-            return [$route->osm_id => $route->updated_at->toIso8601String()];
-        });
+        $updated_at = $request->query('updated_at');
+        $perPage = 100;
+
+        $query = HikingRoute::query();
+
+        if ($updated_at) {
+            $query->where('updated_at', '>', $updated_at);
+        }
+
+        $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
 
         return response()->json($hikingRoutes);
     }

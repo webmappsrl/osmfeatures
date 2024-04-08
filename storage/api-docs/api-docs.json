@@ -2,19 +2,39 @@
     "openapi": "3.0.0",
     "info": {
         "title": "OSM features API",
-        "description": "Api documentation",
+        "description": "The OSM Features API provides a comprehensive suite of endpoints for accessing OpenStreetMap (OSM) features in GeoJSON format, designed to streamline the integration and utilization of OSM data in applications. By leveraging daily syncs from the OSM database through osm2pgsql imports, the API ensures the delivery of up-to-date and efficiently processed data. Endpoints include retrieving lists and specific details of Places, Administrative Areas, Hiking Routes, and Poles, each identifiable by unique osmfeatures IDs and accompanied by their latest update timestamps. The API allows for fetching single items or lists, providing data in GeoJSON format. Every endpoint is provided with detailed descriptions, parameters and responses.",
         "contact": {
             "email": "info@webmapp.it"
         },
         "version": "1.0.0"
     },
     "paths": {
-        "/api/v1/features/pois/list": {
+        "/api/v1/features/places/list": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "List all POIs",
-                "description": "Returns a list of POIs with their IDs and updated timestamps",
-                "operationId": "listPois",
+                "summary": "List all Places",
+                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter places updated after the specified date. Paginated results are available, with each page containing 100 places. Use the 'page' parameter to specify the page number to retrieve.",
+                "operationId": "listPlaces",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Places updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -32,17 +52,17 @@
                 }
             }
         },
-        "/api/v1/features/pois/{id}": {
+        "/api/v1/features/places/{id}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get POI by ID",
-                "description": "Returns a single POI in GeoJSON format",
-                "operationId": "getPoiById",
+                "summary": "Get Place by ID",
+                "description": "Returns a single Place in GeoJSON format",
+                "operationId": "getPlaceById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "POI ID",
+                        "description": "Place ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -61,7 +81,7 @@
                         }
                     },
                     "404": {
-                        "description": "POI not found"
+                        "description": "Place not found"
                     }
                 }
             }
@@ -127,8 +147,28 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Admin Areas",
-                "description": "Returns a list of Admin Areas with their details",
+                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date. Paginated results are available, with each page containing 100 areas. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listAdminAreas",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Admin Area updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -184,8 +224,28 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Hiking Routes",
-                "description": "Returns a list of Hiking Routes with their details",
+                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date. Paginated results are available, with each page containing 100 routes. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listHikingRoutes",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Hiking Routes updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -241,8 +301,28 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Poles",
-                "description": "Returns a list of Poles with their IDs and updated timestamps",
+                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter poles updated after the specified date. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPoles",
+                "parameters": [
+                    {
+                        "name": "updated_at",
+                        "in": "query",
+                        "description": "Poles updated after this date",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -299,7 +379,7 @@
         "schemas": {
             "PoiItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 123
                     },
@@ -363,7 +443,7 @@
             },
             "AdminAreaItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 39150
                     },
@@ -445,7 +525,8 @@
             },
             "HikingRouteItem": {
                 "properties": {
-                    "osm_id": {
+                    "id": {
+
                         "type": "integer",
                         "example": 39150
                     },
@@ -523,7 +604,7 @@
             "PoleItem": {
                 "type": "object",
                 "properties": {
-                    "osm_id": {
+                    "id": {
                         "type": "integer",
                         "example": 123
                     },

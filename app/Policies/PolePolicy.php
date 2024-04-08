@@ -21,7 +21,7 @@ class PolePolicy
      */
     public function view(User $user, Pole $pole): bool
     {
-        return false;
+        return true;
     }
 
     /**

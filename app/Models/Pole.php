@@ -12,7 +12,7 @@ class Pole extends Model
 
     protected $table = 'poles';
 
-    protected $primaryKey = 'osm_id'; //set the primary key to osm_id because we do not have an id column
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'osm_id',

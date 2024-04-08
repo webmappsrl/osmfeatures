@@ -9,7 +9,9 @@
     "license": "MIT",
     "require": {
         "php": "^8.1.0",
+        "abordage/nova-html-card": "^0.3.1",
         "darkaonline/l5-swagger": "^8.5",
+        "digital-creative/nova-range-input-filter": "^1.1",
         "guzzlehttp/guzzle": "^7.2",
         "kongulov/nova-tab-translatable": "^2.1",
         "laravel/framework": "^10.0",
@@ -19,6 +21,7 @@
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.12",
         "outl1ne/nova-tooltip-field": "^1.0",
+        "rpj/daterangepicker": "^0.0.7",
         "spatie/db-dumper": "^3.3",
         "spatie/laravel-translatable": "^6.3",
         "wm/wm-internal": "*",

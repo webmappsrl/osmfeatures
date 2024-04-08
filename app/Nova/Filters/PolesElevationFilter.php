@@ -2,13 +2,12 @@
 
 namespace App\Nova\Filters;
 
-use Laravel\Nova\Filters\BooleanFilter;
+use DigitalCreative\RangeInputFilter\RangeInputFilter;
+use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class WikiPediaFilter extends BooleanFilter
+class PolesElevationFilter extends RangeInputFilter
 {
-    public $name = 'WikiPedia';
-
     /**
      * Apply the filter to the given query.
      *
@@ -19,15 +18,11 @@ class WikiPediaFilter extends BooleanFilter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        if ($value['has_wikipedia']) {
-            return $query->whereRaw("jsonb_exists(cast(tags as jsonb), 'wikipedia')");
-        }
+        $from = data_get($value, 'from');
+        $to = data_get($value, 'to');
 
-        if ($value['no_wikipedia']) {
-            return $query->whereRaw("NOT jsonb_exists(cast(tags as jsonb), 'wikipedia')");
-        }
-
-        return $query;
+        return $query->where('ele', '>=', $from)
+            ->where('ele', '<=', $to);
     }
 
     /**
@@ -38,9 +33,6 @@ class WikiPediaFilter extends BooleanFilter
      */
     public function options(NovaRequest $request)
     {
-        return [
-            'Yes' => 'has_wikipedia',
-            'No' => 'no_wikipedia',
-        ];
+        return [];
     }
 }

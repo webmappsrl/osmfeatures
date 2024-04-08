@@ -27,6 +27,8 @@ class HikingWay extends Resource
      */
     public static $title = 'id';
 
+    public static $group = 'Hiking Ways';
+
     /**
      * The columns that should be searched.
      *

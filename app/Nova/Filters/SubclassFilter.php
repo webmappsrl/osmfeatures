@@ -2,13 +2,13 @@
 
 namespace App\Nova\Filters;
 
-use AwesomeNova\Filters\DependentFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Laravel\Nova\Filters\Filter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class ClassFilter extends Filter
+class SubclassFilter extends Filter
 {
     /**
      * The filter's component.
@@ -17,7 +17,7 @@ class ClassFilter extends Filter
      */
     public $component = 'select-filter';
 
-    public $name = 'Class';
+    public $name = 'Subclass';
 
     /**
      * Apply the filter to the given query.
@@ -27,9 +27,9 @@ class ClassFilter extends Filter
      * @param  mixed  $value
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function apply(NovaRequest $request, $query, $value)
+    public function apply(Request $request, $query, $value)
     {
-        return $query->where('class', $value);
+        return $query->where('subclass', $value);
     }
 
     /**
@@ -38,14 +38,12 @@ class ClassFilter extends Filter
      * @param  NovaRequest  $request
      * @return array
      */
-    public function options(Request $request, array $filters = [])
+    public function options(NovaRequest $request)
     {
-        //query the database in the places table to get all the classes value not repeating it and return it as an array
-        $query = 'SELECT DISTINCT class FROM places WHERE class IS NOT NULL';
-        $results = DB::select($query);
+        $options = DB::select('SELECT DISTINCT subclass FROM places');
 
-        return collect($results)->mapWithKeys(function ($item) {
-            return [$item->class => $item->class];
+        return collect($options)->mapWithKeys(function ($option) {
+            return [$option->subclass => $option->subclass];
         })->toArray();
     }
 }

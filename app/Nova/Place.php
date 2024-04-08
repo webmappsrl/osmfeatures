@@ -2,14 +2,18 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\ElevationFilter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
-use PHPUnit\Util\Filter;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class Place extends Resource
 {
@@ -30,7 +34,7 @@ class Place extends Resource
     public static function newModel()
     {
         $model = parent::newModel();
-        $model->setKeyName('osm_id');
+        $model->setKeyName('id');
 
         return $model;
     }
@@ -70,46 +74,44 @@ class Place extends Resource
                     return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
                 }
             )->asHtml()
-                ->sortable(),
-            DateTime::make('Updated At')
-                ->sortable(),
-            Text::make('Name'),
-            Text::make('Class')->sortable(),
-            Text::make('Subclass')->sortable(),
-            // Text::make('Tags')->displayUsing(
-            //     function ($value) {
-            //         $json = json_decode($value, true);
-            //         //wordwrap the json to make it more readable and add a color to the keys
-            //         $json = preg_replace(
-            //             '/(".*?"):(.*?)(,|$)/',
-            //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-            //             wordwrap(json_encode($json), 75, '<br>', true)
-            //         );
-
-            //         return $json;
-            //     }
-            // )->asHtml(),
-            // Text::make('Tags', function () {
-            //     return '<a style="color:blue;" href="' . route('tags-details', ['resource' => 'place', 'resourceId' => $this->osm_id]) . '" target="_blank">Tags</a>';
-            // })->asHtml(),
+                ->sortable()
+                ->onlyOnIndex(),
+            Text::make('OSM Type')
+                ->onlyOnDetail(),
+            DateTime::make('Updated_at')
+                ->displayUsing(
+                    function ($value) {
+                        return Carbon::parse($value)->toIso8601String();
+                    }
+                )->sortable(),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags),
-            Text::make('WikiData', function () {
-                return '<a style="color:blue;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank">'.$this->getWikidata().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiMedia', function () {
-                return '<a style="color:blue;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank">'.$this->getWikimediaCommons().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
-            Text::make('WikiPedia', function () {
-                return '<a style="color:blue;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank">'.$this->getWikipedia().'</a>';
-            })->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->asHtml(),
+                ->content($this->tags)
+                ->onlyOnIndex(),
+            Code::make('Tags')->json()->hideFromIndex(),
+            Text::make('Wiki', function () {
+                return $this->getWikiLinks();
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            Text::make('Name')->displayUsing(
+                function ($value) {
+                    //max length should be 50 characters then break the line
+                    return wordwrap($value, 50, '<br>', true);
+                }
+            )->asHtml(),
+            Text::make('Class')
+                ->sortable(),
+            Text::make('Subclass')
+                ->sortable(),
+            Text::make('Elevation')->sortable()->displayUsing(
+                function ($value) {
+                    if ($value) {
+                        return $value.' m';
+                    } else {
+                        return ' ';
+                    }
+                }
+            ),
+
         ];
     }
 
@@ -137,7 +139,16 @@ class Place extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\ClassFilter(),
+            new Filters\SubclassFilter(),
+            ElevationFilter::make()
+                ->dividerLabel('<>')
+                ->inputType('number')
+                ->placeholder('From', 'To')
+                ->fromAttributes(['min' => 0])
+                ->toAttributes(['max' => 10000]),
             new Filters\OsmTypeFilter(),
+            new Daterangepicker('updated_at', DateHelper::ALL, 'places.name', 'desc'),
+
         ];
     }
 

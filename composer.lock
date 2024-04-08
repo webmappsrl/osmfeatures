@@ -4,8 +4,70 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9712e37a65c6ba192ce0489ed3ce8115",
+    "content-hash": "b3bdf82407efb76e2ba205b1f100a4b7",
     "packages": [
+        {
+            "name": "abordage/nova-html-card",
+            "version": "0.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/abordage/nova-html-card.git",
+                "reference": "0a10d7f681999b610abbbc6fdfa173f8da8f9d4b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/abordage/nova-html-card/zipball/0a10d7f681999b610abbbc6fdfa173f8da8f9d4b",
+                "reference": "0a10d7f681999b610abbbc6fdfa173f8da8f9d4b",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": ">=7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "nunomaduro/collision": "^5.0 || ^6.0 || ^7.0 || ^8.0",
+                "nunomaduro/larastan": "^1.0 || ^2.0",
+                "orchestra/testbench": "^6.0 || ^7.0 || ^8.0 || ^9.0",
+                "phpunit/phpunit": "^9.6 || ^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Abordage\\HtmlCard\\CardServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Abordage\\HtmlCard\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pavel Bychko",
+                    "email": "box@abordage.dev",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A Laravel Nova card that displays any html content, e.g. lists, notifications, small custom reports",
+            "homepage": "https://github.com/abordage/nova-html-card",
+            "keywords": [
+                "laravel nova",
+                "nova card",
+                "nova html card"
+            ],
+            "support": {
+                "issues": "https://github.com/abordage/nova-html-card/issues",
+                "source": "https://github.com/abordage/nova-html-card/tree/0.3.1"
+            },
+            "time": "2024-03-23T18:22:42+00:00"
+        },
         {
             "name": "aws/aws-crt-php",
             "version": "v1.2.4",
@@ -491,6 +553,60 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.2"
             },
             "time": "2022-10-27T11:44:00+00:00"
+        },
+        {
+            "name": "digital-creative/nova-range-input-filter",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dcasia/nova-range-input-filter.git",
+                "reference": "80c799fdd9ee727936bb32a526c31bd1a257cf95"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dcasia/nova-range-input-filter/zipball/80c799fdd9ee727936bb32a526c31bd1a257cf95",
+                "reference": "80c799fdd9ee727936bb32a526c31bd1a257cf95",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "DigitalCreative\\RangeInputFilter\\RangeInputFilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DigitalCreative\\RangeInputFilter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rafael Milewski"
+                }
+            ],
+            "description": "A Laravel Nova range input filter.",
+            "keywords": [
+                "filter",
+                "input",
+                "laravel",
+                "nova",
+                "range"
+            ],
+            "support": {
+                "issues": "https://github.com/dcasia/nova-range-input-filter/issues",
+                "source": "https://github.com/dcasia/nova-range-input-filter/tree/v1.1.0"
+            },
+            "time": "2023-10-02T13:34:16+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -4650,6 +4766,60 @@
                 }
             ],
             "time": "2023-09-01T06:07:32+00:00"
+        },
+        {
+            "name": "rpj/daterangepicker",
+            "version": "0.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rodrigopaco1986/simple-daterange-picker.git",
+                "reference": "e5a2de9345ee18ffaddb34018a6587b97ca34591"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rodrigopaco1986/simple-daterange-picker/zipball/e5a2de9345ee18ffaddb34018a6587b97ca34591",
+                "reference": "e5a2de9345ee18ffaddb34018a6587b97ca34591",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/nova": "^4.0",
+                "php": ">=8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Rpj\\Daterangepicker\\FilterServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Rpj\\Daterangepicker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Roger Rodrigo Paco Jaldin"
+                }
+            ],
+            "description": "A simple Date Range filter for Laravel Nova 4.",
+            "keywords": [
+                "date",
+                "daterange",
+                "filter",
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/rodrigopaco1986/simple-daterange-picker/issues",
+                "source": "https://github.com/rodrigopaco1986/simple-daterange-picker/tree/0.0.7"
+            },
+            "time": "2024-02-21T19:55:14+00:00"
         },
         {
             "name": "spatie/db-dumper",

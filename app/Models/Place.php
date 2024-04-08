@@ -14,5 +14,5 @@ class Place extends Model
 
     protected $fillable = ['osm_id', 'name', 'class', 'subclass', 'geom', 'updated_at'];
 
-    protected $primaryKey = 'osm_id';
+    protected $primaryKey = 'id';
 }

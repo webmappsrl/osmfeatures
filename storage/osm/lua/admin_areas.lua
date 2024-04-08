@@ -2,6 +2,7 @@ local admin_areas = osm2pgsql.define_table({
     name = 'admin_areas',
     ids = { type = 'any', type_column = 'osm_type', id_column = 'osm_id' },
     columns = {
+        { column = 'id', sql_type = 'serial', create_only = true},
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
