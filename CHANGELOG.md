@@ -2,10 +2,9 @@
 
 ## [1.12.1](https://github.com/webmappsrl/osmfeatures/compare/v1.12.0...v1.12.1) (2024-04-08)
 
-
 ### Bug Fixes
 
-* fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
+-   fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
 
 ## [1.12.0](https://github.com/webmappsrl/osmfeatures/compare/v1.11.0...v1.12.0) (2024-04-08)
 
