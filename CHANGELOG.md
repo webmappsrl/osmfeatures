@@ -1,37 +1,61 @@
 # Changelog
 
-## [1.13.1](https://github.com/webmappsrl/osmfeatures/compare/v1.13.0...v1.13.1) (2024-04-09)
-
-
-### Bug Fixes
-
-* imported classes ([d243c85](https://github.com/webmappsrl/osmfeatures/commit/d243c8512926daffccc8686781d9e6d0114a8a9e))
-
-## [1.13.0](https://github.com/webmappsrl/osmfeatures/compare/v1.12.1...v1.13.0) (2024-04-09)
-
+## [1.12.0](https://github.com/webmappsrl/osmfeatures/compare/v1.11.0...v1.12.0) (2024-04-08)
 
 ### Features
 
-* added bbox parameter to list apis ([20044b6](https://github.com/webmappsrl/osmfeatures/commit/20044b6c20d6ead89ffa0a89279c863d9c718617))
-* updated swagger ([2c65c0b](https://github.com/webmappsrl/osmfeatures/commit/2c65c0be8e4db38fcafb1153d911ebb01eb30226))
-* written tests for list apis ([7fe3c11](https://github.com/webmappsrl/osmfeatures/commit/7fe3c111c9d7e8a0b89aa14fa113cef51aaf1b15))
-
+-   added features dashboard ([43f510b](https://github.com/webmappsrl/osmfeatures/commit/43f510b5ffaac732e7545565f9b0e5fd172ac86c))
+-   added pagination to lists api ([26c8740](https://github.com/webmappsrl/osmfeatures/commit/26c8740752af62475b436a21081f6c4c16ebaa5a))
+-   admin areas list optional updated_at parameter ([d1cdeef](https://github.com/webmappsrl/osmfeatures/commit/d1cdeefb9bbb68c7a73d962835999ac751e7acf2))
+-   admin areas nova list enhancement ([8627710](https://github.com/webmappsrl/osmfeatures/commit/8627710e1b5f326a5dffc054ba8f2b0725566431))
+-   admin areas nova list specific enhancement ([2ee60c7](https://github.com/webmappsrl/osmfeatures/commit/2ee60c75f1f446ea1f5e95fcf193baac37022d05))
+-   api documentation enhancement ([951be4e](https://github.com/webmappsrl/osmfeatures/commit/951be4e70975bb8867a28af8a9e67e5aa88440f3))
+-   api general documentation enhancement ([2bfdd88](https://github.com/webmappsrl/osmfeatures/commit/2bfdd88f3543d8a4b77af1b26c2a635ba2a02e6e))
+-   changed osm id to internal id for api resources ([958c3cd](https://github.com/webmappsrl/osmfeatures/commit/958c3cdbfa70a0e1106dd2233bc1094f2e803aa1))
+-   hiking routes nova list enhancement ([88d6a3c](https://github.com/webmappsrl/osmfeatures/commit/88d6a3c982b14031ebcee4a63374b3528963a9da))
+-   hiking routes nova list specific enhancement ([de1643b](https://github.com/webmappsrl/osmfeatures/commit/de1643bc2747dd7c9a9add121f4b6fb96df90c0c))
+-   implemented api tests first version ([86218a8](https://github.com/webmappsrl/osmfeatures/commit/86218a88da0256c9156f4edb136a7c6d0cf752dc))
+-   implemented elevation range filter in places nova ([d397e2b](https://github.com/webmappsrl/osmfeatures/commit/d397e2bb84f7c1468d60e078eeec3b2791341d18))
+-   list optional updated at parameter implemented ([b925374](https://github.com/webmappsrl/osmfeatures/commit/b9253748d01f6675141455297d456b17628ce0f6))
+-   menu enhancement ([1386589](https://github.com/webmappsrl/osmfeatures/commit/1386589d074f70b677217940162fe47d93e98aea))
+-   ordered list api results starting from the most recent record ([5dedb4c](https://github.com/webmappsrl/osmfeatures/commit/5dedb4c9df7a86a14f9ba75eafb94baf07d822e8))
+-   poles nova list enhancement ([f5713d8](https://github.com/webmappsrl/osmfeatures/commit/f5713d8eba12aee1bda1bd994d23e5ca2e0d314b))
+-   poles nova list specific enhancement ([58b7f4e](https://github.com/webmappsrl/osmfeatures/commit/58b7f4e77e880e18e28ba88ef17582980ebc48d6))
+-   readme enhancement ([f3b49ff](https://github.com/webmappsrl/osmfeatures/commit/f3b49ff7e43ecf8a579a5a6b6a096edd57e7b6c6))
 
 ### Bug Fixes
 
-* fix test ([4ba7a4d](https://github.com/webmappsrl/osmfeatures/commit/4ba7a4dbd62d16bedfd53326b2037d6614518c31))
-* fixed errors ([716e8f9](https://github.com/webmappsrl/osmfeatures/commit/716e8f970dd7715ec6cb69cf39de213b9a0d82c9))
-* fixed swagger ([5f80636](https://github.com/webmappsrl/osmfeatures/commit/5f8063602e31cc4a29d2da4ee5c32ac517b01d9e))
-* fixed tags field ([ab4834d](https://github.com/webmappsrl/osmfeatures/commit/ab4834da5cc21d1f58a050c5e11609759b91f22c))
-* fixed tests ([7bab415](https://github.com/webmappsrl/osmfeatures/commit/7bab415c2654a52020492f746324049cd8d70bc8))
-* tests ([5d57a59](https://github.com/webmappsrl/osmfeatures/commit/5d57a59c9c54eb19e4abbb5ceaf8a01ca5af5eb2))
+-   fixed last update card ([0c09a3e](https://github.com/webmappsrl/osmfeatures/commit/0c09a3e8cbc74e2ddcac7ce8051ef9bd8c7e8a60))
+-   fixed osm_id in api documentation examples ([fe83a4f](https://github.com/webmappsrl/osmfeatures/commit/fe83a4f6af05c7a4575581a34dc919e7d24b203e))
+-   fixed test workflow ([2d9db45](https://github.com/webmappsrl/osmfeatures/commit/2d9db45136257fe81372b102d48891649d3951c9))
+-   fixed workflow ([7008f93](https://github.com/webmappsrl/osmfeatures/commit/7008f93890627a36cff88dbe6ae7f9513b0b25d6))
+-   removed pois from api documentation ([14ed91a](https://github.com/webmappsrl/osmfeatures/commit/14ed91a1919b588d201b8f7994a5c7f5484bd8b6))
+-   test workflow ([adeeea7](https://github.com/webmappsrl/osmfeatures/commit/adeeea7303433c860a237179164df3f312fff213))
+-   updated deploy dev script ([4306a63](https://github.com/webmappsrl/osmfeatures/commit/4306a63f9d1173bbef6d878229574cd0ab21b1ae))
+-   workflow fix ([6638bba](https://github.com/webmappsrl/osmfeatures/commit/6638bbabdc598f81dd15be0229df36894d60c34d))
+
+## [1.11.0](https://github.com/webmappsrl/osmfeatures/compare/v1.10.2...v1.11.0) (2024-03-26)
+
+### Features
+
+-   added bbox parameter to list apis ([20044b6](https://github.com/webmappsrl/osmfeatures/commit/20044b6c20d6ead89ffa0a89279c863d9c718617))
+-   updated swagger ([2c65c0b](https://github.com/webmappsrl/osmfeatures/commit/2c65c0be8e4db38fcafb1153d911ebb01eb30226))
+-   written tests for list apis ([7fe3c11](https://github.com/webmappsrl/osmfeatures/commit/7fe3c111c9d7e8a0b89aa14fa113cef51aaf1b15))
+
+### Bug Fixes
+
+-   fix test ([4ba7a4d](https://github.com/webmappsrl/osmfeatures/commit/4ba7a4dbd62d16bedfd53326b2037d6614518c31))
+-   fixed errors ([716e8f9](https://github.com/webmappsrl/osmfeatures/commit/716e8f970dd7715ec6cb69cf39de213b9a0d82c9))
+-   fixed swagger ([5f80636](https://github.com/webmappsrl/osmfeatures/commit/5f8063602e31cc4a29d2da4ee5c32ac517b01d9e))
+-   fixed tags field ([ab4834d](https://github.com/webmappsrl/osmfeatures/commit/ab4834da5cc21d1f58a050c5e11609759b91f22c))
+-   fixed tests ([7bab415](https://github.com/webmappsrl/osmfeatures/commit/7bab415c2654a52020492f746324049cd8d70bc8))
+-   tests ([5d57a59](https://github.com/webmappsrl/osmfeatures/commit/5d57a59c9c54eb19e4abbb5ceaf8a01ca5af5eb2))
 
 ## [1.12.1](https://github.com/webmappsrl/osmfeatures/compare/v1.12.0...v1.12.1) (2024-04-08)
 
-
 ### Bug Fixes
 
-* fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
+-   fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
 
 ## [1.12.0](https://github.com/webmappsrl/osmfeatures/compare/v1.11.0...v1.12.0) (2024-04-08)
 
