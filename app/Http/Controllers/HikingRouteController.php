@@ -52,11 +52,17 @@ class HikingRouteController extends Controller
     {
         $updated_at = $request->query('updated_at');
         $perPage = 100;
+        $bbox = $request->query('bbox');
 
         $query = HikingRoute::query();
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
+        }
+
+        if ($bbox) {
+            $bbox = explode(',', $bbox);
+            $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', $bbox);
         }
 
         $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);

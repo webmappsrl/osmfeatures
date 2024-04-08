@@ -50,11 +50,17 @@ class PlaceController extends Controller
     {
         $updated_at = $request->query('updated_at');
         $perPage = 100;
+        $bbox = $request->query('bbox');
 
         $query = Place::query();
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
+        }
+
+        if ($bbox) {
+            $bbox = explode(',', $bbox);
+            $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', $bbox);
         }
 
         $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
@@ -91,7 +97,7 @@ class PlaceController extends Controller
     {
         $place = Place::where('id', $id)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;

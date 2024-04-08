@@ -58,11 +58,16 @@ class PoleController extends Controller
     {
         $updated_after = $request->query('updated_at');
         $perPage = 100;
-
+        $bbox = $request->query('bbox');
         $query = Pole::query();
 
         if ($updated_after) {
             $query->where('updated_at', '>', $updated_after);
+        }
+
+        if ($bbox) {
+            $bbox = explode(',', $bbox);
+            $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', $bbox);
         }
 
         $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
@@ -99,7 +104,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('id', $id)->first();
 
-        if (! $pole) {
+        if (!$pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;

@@ -37,6 +37,16 @@ class AdminAreaController extends Controller
      *             example="1"
      *         )
      *     ),
+     * @OA\Parameter(
+     *         name="bbox",
+     *         in="query",
+     *         description="Bounding box to filter areas within, specified as 'lonmin,latmin,lonmax,latmax'.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="12.496366,41.902783,12.507366,41.912783"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -53,9 +63,15 @@ class AdminAreaController extends Controller
         $perPage = 100;
 
         $updated_at = $request->query('updated_at');
+        $bbox = $request->query('bbox');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
+        }
+
+        if ($bbox) {
+            $bbox = explode(',', $bbox);
+            $query->whereRaw("ST_Intersects(geom, ST_MakeEnvelope($bbox[0], $bbox[1], $bbox[2], $bbox[3], 4326))");
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
@@ -92,7 +108,7 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::where('id', $id)->first();
 
-        if (! $adminArea) {
+        if (!$adminArea) {
             return response()->json(['message' => 'Admin Area non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
