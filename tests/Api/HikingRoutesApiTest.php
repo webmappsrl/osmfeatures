@@ -59,59 +59,64 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        Schema::create('temp_hiking_routes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name')->nullable();
-            $table->bigInteger('osm_id')->nullable();
-            $table->string('osm_type')->nullable();
-            $table->text('updated_at_osm')->nullable();
-            $table->text('updated_at')->nullable();
-            $table->text('cai_scale')->nullable();
-            $table->integer('osm2cai_status')->nullable();
-            $table->text('osmc_symbol')->nullable();
-            $table->text('network')->nullable();
-            $table->text('survey_date')->nullable();
-            $table->text('roundtrip')->nullable();
-            $table->text('symbol')->nullable();
-            $table->text('symbol_it')->nullable();
-            $table->text('ascent')->nullable();
-            $table->text('descent')->nullable();
-            $table->text('distance')->nullable();
-            $table->text('duration_forward')->nullable();
-            $table->text('duration_backward')->nullable();
-            $table->text('from')->nullable();
-            $table->text('to')->nullable();
-            $table->text('rwn_name')->nullable();
-            $table->text('ref_REI')->nullable();
-            $table->text('maintenance')->nullable();
-            $table->text('maintenance_it')->nullable();
-            $table->text('operator')->nullable();
-            $table->text('state')->nullable();
-            $table->text('ref')->nullable();
-            $table->text('source')->nullable();
-            $table->text('source_ref')->nullable();
-            $table->text('note')->nullable();
-            $table->text('note_it')->nullable();
-            $table->text('old_ref')->nullable();
-            $table->text('note_project_page')->nullable();
-            $table->text('website')->nullable();
-            $table->text('wikimedia_commons')->nullable();
-            $table->text('description')->nullable();
-            $table->text('description_it')->nullable();
-            $table->jsonb('tags')->nullable();
-            $table->multiLineString('geom')->nullable();
-            $table->jsonb('members')->nullable();
-        });
-
-        //create 200 hiking routes
-        for ($i = 0; $i < 200; $i++) {
-            DB::table('temp_hiking_routes')->insert([
-                'name' => 'Hiking Route '.$i,
-                'osm_id' => $i,
-                'osm_type' => 'R',
-                'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
-                'updated_at' => '2021-03-10T02:00:00Z',
-            ]);
+        if (!Schema::hasTable('hiking_routes')) {
+            Schema::create(
+                'hiking_routes',
+                function (Blueprint $table) {
+                    $table->increments('id');
+                    $table->string('name')->nullable();
+                    $table->bigInteger('osm_id')->nullable();
+                    $table->string('osm_type')->nullable();
+                    $table->text('updated_at_osm')->nullable();
+                    $table->text('updated_at')->nullable();
+                    $table->text('cai_scale')->nullable();
+                    $table->integer('osm2cai_status')->nullable();
+                    $table->text('osmc_symbol')->nullable();
+                    $table->text('network')->nullable();
+                    $table->text('survey_date')->nullable();
+                    $table->text('roundtrip')->nullable();
+                    $table->text('symbol')->nullable();
+                    $table->text('symbol_it')->nullable();
+                    $table->text('ascent')->nullable();
+                    $table->text('descent')->nullable();
+                    $table->text('distance')->nullable();
+                    $table->text('duration_forward')->nullable();
+                    $table->text('duration_backward')->nullable();
+                    $table->text('from')->nullable();
+                    $table->text('to')->nullable();
+                    $table->text('rwn_name')->nullable();
+                    $table->text('ref_REI')->nullable();
+                    $table->text('maintenance')->nullable();
+                    $table->text('maintenance_it')->nullable();
+                    $table->text('operator')->nullable();
+                    $table->text('state')->nullable();
+                    $table->text('ref')->nullable();
+                    $table->text('source')->nullable();
+                    $table->text('source_ref')->nullable();
+                    $table->text('note')->nullable();
+                    $table->text('note_it')->nullable();
+                    $table->text('old_ref')->nullable();
+                    $table->text('note_project_page')->nullable();
+                    $table->text('website')->nullable();
+                    $table->text('wikimedia_commons')->nullable();
+                    $table->text('description')->nullable();
+                    $table->text('description_it')->nullable();
+                    $table->jsonb('tags')->nullable();
+                    $table->multiLineString('geom')->nullable();
+                    $table->jsonb('members')->nullable();
+                    $table->timestamps();
+                }
+            );
+            //create 200 hiking routes
+            for ($i = 0; $i < 200; $i++) {
+                DB::table('hiking_routes')->insert([
+                    'name' => 'Hiking Route ' . $i,
+                    'osm_id' => $i,
+                    'osm_type' => 'R',
+                    'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
+                    'updated_at' => '2021-03-10T02:00:00Z',
+                ]);
+            }
         }
     }
 

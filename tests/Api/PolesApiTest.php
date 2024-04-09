@@ -32,34 +32,36 @@ class PolesApiTest extends TestCase
         // 10	destination	text	YES	NULL	NULL		NULL
         // 11	support	text	YES	NULL	NULL		NULL
 
-        Schema::create('temp_poles', function (Blueprint $table) {
-            $table->string('osm_type');
-            $table->bigInteger('osm_id');
-            $table->increments('id');
-            $table->timestamp('updated_at');
-            $table->string('name');
-            $table->jsonb('tags')->nullable();
-            $table->point('geom');
-            $table->string('ref')->nullable();
-            $table->string('ele')->nullable();
-            $table->string('destination')->nullable();
-            $table->string('support')->nullable();
-        });
+        if (!Schema::hasTable('poles')) {
+            Schema::create('poles', function (Blueprint $table) {
+                $table->string('osm_type');
+                $table->bigInteger('osm_id');
+                $table->increments('id');
+                $table->timestamp('updated_at');
+                $table->string('name');
+                $table->jsonb('tags')->nullable();
+                $table->point('geom');
+                $table->string('ref')->nullable();
+                $table->string('ele')->nullable();
+                $table->string('destination')->nullable();
+                $table->string('support')->nullable();
+            });
 
-        //create 200 poles
-        for ($i = 0; $i < 200; $i++) {
-            DB::table('temp_poles')->insert([
-                'osm_type' => 'N',
-                'osm_id' => $i,
-                'updated_at' => now(),
-                'name' => 'Pole '.$i,
-                'tags' => json_encode(['tag' => 'value']),
-                'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
-                'ref' => 'ref',
-                'ele' => 'ele',
-                'destination' => 'destination',
-                'support' => 'support',
-            ]);
+            //create 200 poles
+            for ($i = 0; $i < 200; $i++) {
+                DB::table('poles')->insert([
+                    'osm_type' => 'N',
+                    'osm_id' => $i,
+                    'updated_at' => now(),
+                    'name' => 'Pole ' . $i,
+                    'tags' => json_encode(['tag' => 'value']),
+                    'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
+                    'ref' => 'ref',
+                    'ele' => 'ele',
+                    'destination' => 'destination',
+                    'support' => 'support',
+                ]);
+            }
         }
     }
 

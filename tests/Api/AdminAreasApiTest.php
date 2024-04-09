@@ -20,24 +20,29 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        Schema::create('temp_admin_areas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->bigInteger('osm_id');
-            $table->string('osm_type');
-            $table->multiPolygon('geom');
-            $table->text('admin_level');
-        });
-
-        //create 200 admin areas
-        for ($i = 0; $i < 200; $i++) {
-            DB::table('temp_admin_areas')->insert([
-                'name' => 'Admin Area '.$i,
-                'osm_id' => $i,
-                'osm_type' => 'R',
-                'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
-                'admin_level' => '2'.$i,
-            ]);
+        if (!Schema::hasTable('admin_areas')) {
+            Schema::create(
+                'admin_areas',
+                function (Blueprint $table) {
+                    $table->increments('id');
+                    $table->string('name');
+                    $table->bigInteger('osm_id');
+                    $table->string('osm_type');
+                    $table->multiPolygon('geom');
+                    $table->text('admin_level');
+                    $table->timestamps();
+                }
+            );
+            //create 200 admin areas
+            for ($i = 0; $i < 200; $i++) {
+                DB::table('admin_areas')->insert([
+                    'name' => 'Admin Area ' . $i,
+                    'osm_id' => $i,
+                    'osm_type' => 'R',
+                    'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
+                    'admin_level' => '2' . $i,
+                ]);
+            }
         }
     }
 

@@ -28,31 +28,36 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        Schema::create('temp_places', function (Blueprint $table) {
-            $table->string('osm_type');
-            $table->bigInteger('osm_id');
-            $table->increments('id');
-            $table->timestamp('updated_at');
-            $table->string('name');
-            $table->string('class');
-            $table->string('subclass')->nullable();
-            $table->point('geom');
-            $table->jsonb('tags')->nullable();
-            $table->integer('elevation')->nullable();
-        });
+        if (!Schema::hasTable('places')) {
+            Schema::create(
+                'places',
+                function (Blueprint $table) {
+                    $table->string('osm_type');
+                    $table->bigInteger('osm_id');
+                    $table->increments('id');
+                    $table->timestamp('updated_at');
+                    $table->string('name');
+                    $table->string('class');
+                    $table->string('subclass')->nullable();
+                    $table->point('geom');
+                    $table->jsonb('tags')->nullable();
+                    $table->integer('elevation')->nullable();
+                }
+            );
 
-        //create 200 places
-        for ($i = 0; $i < 200; $i++) {
-            DB::table('temp_places')->insert([
-                'osm_type' => 'N',
-                'osm_id' => $i,
-                'updated_at' => now(),
-                'name' => 'Place '.$i,
-                'class' => 'class',
-                'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
-                'tags' => json_encode(['tag' => 'value']),
-                'elevation' => 100,
-            ]);
+            //create 200 places
+            for ($i = 0; $i < 200; $i++) {
+                DB::table('places')->insert([
+                    'osm_type' => 'N',
+                    'osm_id' => $i,
+                    'updated_at' => now(),
+                    'name' => 'Place ' . $i,
+                    'class' => 'class',
+                    'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
+                    'tags' => json_encode(['tag' => 'value']),
+                    'elevation' => 100,
+                ]);
+            }
         }
     }
 
