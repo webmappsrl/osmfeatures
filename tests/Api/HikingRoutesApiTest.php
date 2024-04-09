@@ -59,7 +59,7 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('hiking_routes')) {
+        if (!Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -67,7 +67,6 @@ class HikingRoutesApiTest extends TestCase
                     $table->string('name')->nullable();
                     $table->bigInteger('osm_id')->nullable();
                     $table->string('osm_type')->nullable();
-                    $table->dateTime('updated_at_osm')->nullable();
                     $table->dateTime('updated_at')->nullable();
                     $table->text('cai_scale')->nullable();
                     $table->integer('osm2cai_status')->nullable();
@@ -110,7 +109,7 @@ class HikingRoutesApiTest extends TestCase
             //create 200 hiking routes
             for ($i = 0; $i < 200; $i++) {
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route '.$i,
+                    'name' => 'Hiking Route ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
