@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.13.0](https://github.com/webmappsrl/osmfeatures/compare/v1.12.1...v1.13.0) (2024-04-09)
+
+
+### Features
+
+* added bbox parameter to list apis ([20044b6](https://github.com/webmappsrl/osmfeatures/commit/20044b6c20d6ead89ffa0a89279c863d9c718617))
+* updated swagger ([2c65c0b](https://github.com/webmappsrl/osmfeatures/commit/2c65c0be8e4db38fcafb1153d911ebb01eb30226))
+* written tests for list apis ([7fe3c11](https://github.com/webmappsrl/osmfeatures/commit/7fe3c111c9d7e8a0b89aa14fa113cef51aaf1b15))
+
+
+### Bug Fixes
+
+* fix test ([4ba7a4d](https://github.com/webmappsrl/osmfeatures/commit/4ba7a4dbd62d16bedfd53326b2037d6614518c31))
+* fixed errors ([716e8f9](https://github.com/webmappsrl/osmfeatures/commit/716e8f970dd7715ec6cb69cf39de213b9a0d82c9))
+* fixed swagger ([5f80636](https://github.com/webmappsrl/osmfeatures/commit/5f8063602e31cc4a29d2da4ee5c32ac517b01d9e))
+* fixed tags field ([ab4834d](https://github.com/webmappsrl/osmfeatures/commit/ab4834da5cc21d1f58a050c5e11609759b91f22c))
+* fixed tests ([7bab415](https://github.com/webmappsrl/osmfeatures/commit/7bab415c2654a52020492f746324049cd8d70bc8))
+* tests ([5d57a59](https://github.com/webmappsrl/osmfeatures/commit/5d57a59c9c54eb19e4abbb5ceaf8a01ca5af5eb2))
+
 ## [1.12.1](https://github.com/webmappsrl/osmfeatures/compare/v1.12.0...v1.12.1) (2024-04-08)
 
 
