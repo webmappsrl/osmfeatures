@@ -52,7 +52,7 @@ class PlaceController extends Controller
         $perPage = 100;
         $bbox = $request->query('bbox');
 
-        $query = Place::query();
+        $query = DB::table('places');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
@@ -102,7 +102,7 @@ class PlaceController extends Controller
     {
         $place = Place::where('id', $id)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;

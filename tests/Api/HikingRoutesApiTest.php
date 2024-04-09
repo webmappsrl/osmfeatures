@@ -67,8 +67,8 @@ class HikingRoutesApiTest extends TestCase
                     $table->string('name')->nullable();
                     $table->bigInteger('osm_id')->nullable();
                     $table->string('osm_type')->nullable();
-                    $table->text('updated_at_osm')->nullable();
-                    $table->text('updated_at')->nullable();
+                    $table->dateTime('updated_at_osm')->nullable();
+                    $table->dateTime('updated_at')->nullable();
                     $table->text('cai_scale')->nullable();
                     $table->integer('osm2cai_status')->nullable();
                     $table->text('osmc_symbol')->nullable();
@@ -114,7 +114,7 @@ class HikingRoutesApiTest extends TestCase
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
-                    'updated_at' => '2021-03-10T02:00:00Z',
+                    'updated_at' => now(),
                 ]);
             }
         }

@@ -54,7 +54,7 @@ class HikingRouteController extends Controller
         $perPage = 100;
         $bbox = $request->query('bbox');
 
-        $query = HikingRoute::query();
+        $query = DB::table('hiking_routes');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);

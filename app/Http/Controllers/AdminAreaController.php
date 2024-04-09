@@ -59,7 +59,7 @@ class AdminAreaController extends Controller
      */
     public function list(Request $request)
     {
-        $query = AdminArea::query();
+        $query = DB::table('admin_areas');
         $perPage = 100;
 
         $updated_at = $request->query('updated_at');
@@ -113,7 +113,7 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::where('id', $id)->first();
 
-        if (! $adminArea) {
+        if (!$adminArea) {
             return response()->json(['message' => 'Admin Area non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
