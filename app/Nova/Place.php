@@ -86,7 +86,12 @@ class Place extends Resource
                 )->sortable(),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags)
+                ->content(
+                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
+                        return "{$key}: {$value}";
+                    })->implode('<br>')
+                )
+                ->allowTooltipHTML()
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
@@ -105,7 +110,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value.' m';
+                        return $value . ' m';
                     } else {
                         return ' ';
                     }
