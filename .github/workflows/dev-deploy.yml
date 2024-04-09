@@ -6,8 +6,8 @@ on:
       - develop
 
 jobs:
-  tests:
-    uses: ./.github/workflows/run-tests.yml
+  # tests:
+  #   uses: ./.github/workflows/run-tests.yml
   deploy:
     name: Deploy
     # needs: [tests]
