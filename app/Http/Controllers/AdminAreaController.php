@@ -71,7 +71,12 @@ class AdminAreaController extends Controller
 
         if ($bbox) {
             $bbox = explode(',', $bbox);
-            $query->whereRaw("ST_Intersects(geom, ST_MakeEnvelope($bbox[0], $bbox[1], $bbox[2], $bbox[3], 4326))");
+            // Check if the bbox is valid
+            if (count($bbox) !== 4) {
+                return response()->json(['message' => 'Bounding box non valido'], 400);
+            }
+            $bbox = array_map('floatval', $bbox);
+            $query->whereRaw("ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))", [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
