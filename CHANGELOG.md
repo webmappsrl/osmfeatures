@@ -28,202 +28,236 @@
 
 ## [1.12.1](https://github.com/webmappsrl/osmfeatures/compare/v1.12.0...v1.12.1) (2024-04-08)
 
-
 ### Bug Fixes
 
-* fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
+-   fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
 
 ## [1.12.0](https://github.com/webmappsrl/osmfeatures/compare/v1.11.0...v1.12.0) (2024-04-08)
 
-
 ### Features
 
-* added features dashboard ([43f510b](https://github.com/webmappsrl/osmfeatures/commit/43f510b5ffaac732e7545565f9b0e5fd172ac86c))
-* added pagination to lists api ([26c8740](https://github.com/webmappsrl/osmfeatures/commit/26c8740752af62475b436a21081f6c4c16ebaa5a))
-* admin areas list optional updated_at parameter ([d1cdeef](https://github.com/webmappsrl/osmfeatures/commit/d1cdeefb9bbb68c7a73d962835999ac751e7acf2))
-* admin areas nova list enhancement ([8627710](https://github.com/webmappsrl/osmfeatures/commit/8627710e1b5f326a5dffc054ba8f2b0725566431))
-* admin areas nova list specific enhancement ([2ee60c7](https://github.com/webmappsrl/osmfeatures/commit/2ee60c75f1f446ea1f5e95fcf193baac37022d05))
-* api documentation enhancement ([951be4e](https://github.com/webmappsrl/osmfeatures/commit/951be4e70975bb8867a28af8a9e67e5aa88440f3))
-* api general documentation enhancement ([2bfdd88](https://github.com/webmappsrl/osmfeatures/commit/2bfdd88f3543d8a4b77af1b26c2a635ba2a02e6e))
-* changed osm id to internal id for api resources ([958c3cd](https://github.com/webmappsrl/osmfeatures/commit/958c3cdbfa70a0e1106dd2233bc1094f2e803aa1))
-* hiking routes nova list enhancement ([88d6a3c](https://github.com/webmappsrl/osmfeatures/commit/88d6a3c982b14031ebcee4a63374b3528963a9da))
-* hiking routes nova list specific enhancement ([de1643b](https://github.com/webmappsrl/osmfeatures/commit/de1643bc2747dd7c9a9add121f4b6fb96df90c0c))
-* implemented api tests first version ([86218a8](https://github.com/webmappsrl/osmfeatures/commit/86218a88da0256c9156f4edb136a7c6d0cf752dc))
-* implemented elevation range filter in places nova ([d397e2b](https://github.com/webmappsrl/osmfeatures/commit/d397e2bb84f7c1468d60e078eeec3b2791341d18))
-* list optional updated at parameter implemented ([b925374](https://github.com/webmappsrl/osmfeatures/commit/b9253748d01f6675141455297d456b17628ce0f6))
-* menu enhancement ([1386589](https://github.com/webmappsrl/osmfeatures/commit/1386589d074f70b677217940162fe47d93e98aea))
-* ordered list api results starting from the most recent record ([5dedb4c](https://github.com/webmappsrl/osmfeatures/commit/5dedb4c9df7a86a14f9ba75eafb94baf07d822e8))
-* poles nova list enhancement ([f5713d8](https://github.com/webmappsrl/osmfeatures/commit/f5713d8eba12aee1bda1bd994d23e5ca2e0d314b))
-* poles nova list specific enhancement ([58b7f4e](https://github.com/webmappsrl/osmfeatures/commit/58b7f4e77e880e18e28ba88ef17582980ebc48d6))
-* readme enhancement ([f3b49ff](https://github.com/webmappsrl/osmfeatures/commit/f3b49ff7e43ecf8a579a5a6b6a096edd57e7b6c6))
-
+-   added features dashboard ([43f510b](https://github.com/webmappsrl/osmfeatures/commit/43f510b5ffaac732e7545565f9b0e5fd172ac86c))
+-   added pagination to lists api ([26c8740](https://github.com/webmappsrl/osmfeatures/commit/26c8740752af62475b436a21081f6c4c16ebaa5a))
+-   admin areas list optional updated_at parameter ([d1cdeef](https://github.com/webmappsrl/osmfeatures/commit/d1cdeefb9bbb68c7a73d962835999ac751e7acf2))
+-   admin areas nova list enhancement ([8627710](https://github.com/webmappsrl/osmfeatures/commit/8627710e1b5f326a5dffc054ba8f2b0725566431))
+-   admin areas nova list specific enhancement ([2ee60c7](https://github.com/webmappsrl/osmfeatures/commit/2ee60c75f1f446ea1f5e95fcf193baac37022d05))
+-   api documentation enhancement ([951be4e](https://github.com/webmappsrl/osmfeatures/commit/951be4e70975bb8867a28af8a9e67e5aa88440f3))
+-   api general documentation enhancement ([2bfdd88](https://github.com/webmappsrl/osmfeatures/commit/2bfdd88f3543d8a4b77af1b26c2a635ba2a02e6e))
+-   changed osm id to internal id for api resources ([958c3cd](https://github.com/webmappsrl/osmfeatures/commit/958c3cdbfa70a0e1106dd2233bc1094f2e803aa1))
+-   hiking routes nova list enhancement ([88d6a3c](https://github.com/webmappsrl/osmfeatures/commit/88d6a3c982b14031ebcee4a63374b3528963a9da))
+-   hiking routes nova list specific enhancement ([de1643b](https://github.com/webmappsrl/osmfeatures/commit/de1643bc2747dd7c9a9add121f4b6fb96df90c0c))
+-   implemented api tests first version ([86218a8](https://github.com/webmappsrl/osmfeatures/commit/86218a88da0256c9156f4edb136a7c6d0cf752dc))
+-   implemented elevation range filter in places nova ([d397e2b](https://github.com/webmappsrl/osmfeatures/commit/d397e2bb84f7c1468d60e078eeec3b2791341d18))
+-   list optional updated at parameter implemented ([b925374](https://github.com/webmappsrl/osmfeatures/commit/b9253748d01f6675141455297d456b17628ce0f6))
+-   menu enhancement ([1386589](https://github.com/webmappsrl/osmfeatures/commit/1386589d074f70b677217940162fe47d93e98aea))
+-   ordered list api results starting from the most recent record ([5dedb4c](https://github.com/webmappsrl/osmfeatures/commit/5dedb4c9df7a86a14f9ba75eafb94baf07d822e8))
+-   poles nova list enhancement ([f5713d8](https://github.com/webmappsrl/osmfeatures/commit/f5713d8eba12aee1bda1bd994d23e5ca2e0d314b))
+-   poles nova list specific enhancement ([58b7f4e](https://github.com/webmappsrl/osmfeatures/commit/58b7f4e77e880e18e28ba88ef17582980ebc48d6))
+-   readme enhancement ([f3b49ff](https://github.com/webmappsrl/osmfeatures/commit/f3b49ff7e43ecf8a579a5a6b6a096edd57e7b6c6))
 
 ### Bug Fixes
 
-* fixed last update card ([0c09a3e](https://github.com/webmappsrl/osmfeatures/commit/0c09a3e8cbc74e2ddcac7ce8051ef9bd8c7e8a60))
-* fixed osm_id in api documentation examples ([fe83a4f](https://github.com/webmappsrl/osmfeatures/commit/fe83a4f6af05c7a4575581a34dc919e7d24b203e))
-* fixed test workflow ([2d9db45](https://github.com/webmappsrl/osmfeatures/commit/2d9db45136257fe81372b102d48891649d3951c9))
-* fixed workflow ([7008f93](https://github.com/webmappsrl/osmfeatures/commit/7008f93890627a36cff88dbe6ae7f9513b0b25d6))
-* removed pois from api documentation ([14ed91a](https://github.com/webmappsrl/osmfeatures/commit/14ed91a1919b588d201b8f7994a5c7f5484bd8b6))
-* test workflow ([adeeea7](https://github.com/webmappsrl/osmfeatures/commit/adeeea7303433c860a237179164df3f312fff213))
-* updated deploy dev script ([4306a63](https://github.com/webmappsrl/osmfeatures/commit/4306a63f9d1173bbef6d878229574cd0ab21b1ae))
-* workflow fix ([6638bba](https://github.com/webmappsrl/osmfeatures/commit/6638bbabdc598f81dd15be0229df36894d60c34d))
+-   fixed last update card ([0c09a3e](https://github.com/webmappsrl/osmfeatures/commit/0c09a3e8cbc74e2ddcac7ce8051ef9bd8c7e8a60))
+-   fixed osm_id in api documentation examples ([fe83a4f](https://github.com/webmappsrl/osmfeatures/commit/fe83a4f6af05c7a4575581a34dc919e7d24b203e))
+-   fixed test workflow ([2d9db45](https://github.com/webmappsrl/osmfeatures/commit/2d9db45136257fe81372b102d48891649d3951c9))
+-   fixed workflow ([7008f93](https://github.com/webmappsrl/osmfeatures/commit/7008f93890627a36cff88dbe6ae7f9513b0b25d6))
+-   removed pois from api documentation ([14ed91a](https://github.com/webmappsrl/osmfeatures/commit/14ed91a1919b588d201b8f7994a5c7f5484bd8b6))
+-   test workflow ([adeeea7](https://github.com/webmappsrl/osmfeatures/commit/adeeea7303433c860a237179164df3f312fff213))
+-   updated deploy dev script ([4306a63](https://github.com/webmappsrl/osmfeatures/commit/4306a63f9d1173bbef6d878229574cd0ab21b1ae))
+-   workflow fix ([6638bba](https://github.com/webmappsrl/osmfeatures/commit/6638bbabdc598f81dd15be0229df36894d60c34d))
 
 ## [1.11.0](https://github.com/webmappsrl/osmfeatures/compare/v1.10.2...v1.11.0) (2024-03-26)
 
-
 ### Features
 
-* implemented api for hiking routes and places ([a57f505](https://github.com/webmappsrl/osmfeatures/commit/a57f5052babeb4d2e30f54255b92638c5d323d3d))
-* implemented correct timestamp compute for hiking routes ([e1803bc](https://github.com/webmappsrl/osmfeatures/commit/e1803bc8abb5ff488f2b5ecab378560158611f37))
-* implemented osm2pgsql update pbf command 1st version ([30cc940](https://github.com/webmappsrl/osmfeatures/commit/30cc94017e4bc6e2e360c62e08aa863b77af78f1))
-* implemented update command for italy pbf ([01cd9ce](https://github.com/webmappsrl/osmfeatures/commit/01cd9cec2a434bb295cebe42c25434cb7363cd97))
-* updated readme ([7f4895d](https://github.com/webmappsrl/osmfeatures/commit/7f4895de0e26b5715b5d4f3c32681dc40c8209b7))
-
+-   added bbox parameter to list apis ([20044b6](https://github.com/webmappsrl/osmfeatures/commit/20044b6c20d6ead89ffa0a89279c863d9c718617))
+-   updated swagger ([2c65c0b](https://github.com/webmappsrl/osmfeatures/commit/2c65c0be8e4db38fcafb1153d911ebb01eb30226))
+-   written tests for list apis ([7fe3c11](https://github.com/webmappsrl/osmfeatures/commit/7fe3c111c9d7e8a0b89aa14fa113cef51aaf1b15))
 
 ### Bug Fixes
 
-* fixed hiking_routes lua file to import relation members ([d1f652b](https://github.com/webmappsrl/osmfeatures/commit/d1f652b9f8defc92b2a4adca7b0f93313dc6877b))
+-   fix test ([4ba7a4d](https://github.com/webmappsrl/osmfeatures/commit/4ba7a4dbd62d16bedfd53326b2037d6614518c31))
+-   fixed errors ([716e8f9](https://github.com/webmappsrl/osmfeatures/commit/716e8f970dd7715ec6cb69cf39de213b9a0d82c9))
+-   fixed swagger ([5f80636](https://github.com/webmappsrl/osmfeatures/commit/5f8063602e31cc4a29d2da4ee5c32ac517b01d9e))
+-   fixed tags field ([ab4834d](https://github.com/webmappsrl/osmfeatures/commit/ab4834da5cc21d1f58a050c5e11609759b91f22c))
+-   fixed tests ([7bab415](https://github.com/webmappsrl/osmfeatures/commit/7bab415c2654a52020492f746324049cd8d70bc8))
+-   tests ([5d57a59](https://github.com/webmappsrl/osmfeatures/commit/5d57a59c9c54eb19e4abbb5ceaf8a01ca5af5eb2))
+
+## [1.12.1](https://github.com/webmappsrl/osmfeatures/compare/v1.12.0...v1.12.1) (2024-04-08)
+
+### Bug Fixes
+
+-   fixed errors ([9a8647f](https://github.com/webmappsrl/osmfeatures/commit/9a8647f269a95188875a6af1f9796e1b6dd4e5c4))
+
+## [1.12.0](https://github.com/webmappsrl/osmfeatures/compare/v1.11.0...v1.12.0) (2024-04-08)
+
+### Features
+
+-   added features dashboard ([43f510b](https://github.com/webmappsrl/osmfeatures/commit/43f510b5ffaac732e7545565f9b0e5fd172ac86c))
+-   added pagination to lists api ([26c8740](https://github.com/webmappsrl/osmfeatures/commit/26c8740752af62475b436a21081f6c4c16ebaa5a))
+-   admin areas list optional updated_at parameter ([d1cdeef](https://github.com/webmappsrl/osmfeatures/commit/d1cdeefb9bbb68c7a73d962835999ac751e7acf2))
+-   admin areas nova list enhancement ([8627710](https://github.com/webmappsrl/osmfeatures/commit/8627710e1b5f326a5dffc054ba8f2b0725566431))
+-   admin areas nova list specific enhancement ([2ee60c7](https://github.com/webmappsrl/osmfeatures/commit/2ee60c75f1f446ea1f5e95fcf193baac37022d05))
+-   api documentation enhancement ([951be4e](https://github.com/webmappsrl/osmfeatures/commit/951be4e70975bb8867a28af8a9e67e5aa88440f3))
+-   api general documentation enhancement ([2bfdd88](https://github.com/webmappsrl/osmfeatures/commit/2bfdd88f3543d8a4b77af1b26c2a635ba2a02e6e))
+-   changed osm id to internal id for api resources ([958c3cd](https://github.com/webmappsrl/osmfeatures/commit/958c3cdbfa70a0e1106dd2233bc1094f2e803aa1))
+-   hiking routes nova list enhancement ([88d6a3c](https://github.com/webmappsrl/osmfeatures/commit/88d6a3c982b14031ebcee4a63374b3528963a9da))
+-   hiking routes nova list specific enhancement ([de1643b](https://github.com/webmappsrl/osmfeatures/commit/de1643bc2747dd7c9a9add121f4b6fb96df90c0c))
+-   implemented api tests first version ([86218a8](https://github.com/webmappsrl/osmfeatures/commit/86218a88da0256c9156f4edb136a7c6d0cf752dc))
+-   implemented elevation range filter in places nova ([d397e2b](https://github.com/webmappsrl/osmfeatures/commit/d397e2bb84f7c1468d60e078eeec3b2791341d18))
+-   list optional updated at parameter implemented ([b925374](https://github.com/webmappsrl/osmfeatures/commit/b9253748d01f6675141455297d456b17628ce0f6))
+-   menu enhancement ([1386589](https://github.com/webmappsrl/osmfeatures/commit/1386589d074f70b677217940162fe47d93e98aea))
+-   ordered list api results starting from the most recent record ([5dedb4c](https://github.com/webmappsrl/osmfeatures/commit/5dedb4c9df7a86a14f9ba75eafb94baf07d822e8))
+-   poles nova list enhancement ([f5713d8](https://github.com/webmappsrl/osmfeatures/commit/f5713d8eba12aee1bda1bd994d23e5ca2e0d314b))
+-   poles nova list specific enhancement ([58b7f4e](https://github.com/webmappsrl/osmfeatures/commit/58b7f4e77e880e18e28ba88ef17582980ebc48d6))
+-   readme enhancement ([f3b49ff](https://github.com/webmappsrl/osmfeatures/commit/f3b49ff7e43ecf8a579a5a6b6a096edd57e7b6c6))
+
+### Bug Fixes
+
+-   fixed last update card ([0c09a3e](https://github.com/webmappsrl/osmfeatures/commit/0c09a3e8cbc74e2ddcac7ce8051ef9bd8c7e8a60))
+-   fixed osm_id in api documentation examples ([fe83a4f](https://github.com/webmappsrl/osmfeatures/commit/fe83a4f6af05c7a4575581a34dc919e7d24b203e))
+-   fixed test workflow ([2d9db45](https://github.com/webmappsrl/osmfeatures/commit/2d9db45136257fe81372b102d48891649d3951c9))
+-   fixed workflow ([7008f93](https://github.com/webmappsrl/osmfeatures/commit/7008f93890627a36cff88dbe6ae7f9513b0b25d6))
+-   removed pois from api documentation ([14ed91a](https://github.com/webmappsrl/osmfeatures/commit/14ed91a1919b588d201b8f7994a5c7f5484bd8b6))
+-   test workflow ([adeeea7](https://github.com/webmappsrl/osmfeatures/commit/adeeea7303433c860a237179164df3f312fff213))
+-   updated deploy dev script ([4306a63](https://github.com/webmappsrl/osmfeatures/commit/4306a63f9d1173bbef6d878229574cd0ab21b1ae))
+-   workflow fix ([6638bba](https://github.com/webmappsrl/osmfeatures/commit/6638bbabdc598f81dd15be0229df36894d60c34d))
+
+## [1.11.0](https://github.com/webmappsrl/osmfeatures/compare/v1.10.2...v1.11.0) (2024-03-26)
+
+### Features
+
+-   implemented api for hiking routes and places ([a57f505](https://github.com/webmappsrl/osmfeatures/commit/a57f5052babeb4d2e30f54255b92638c5d323d3d))
+-   implemented correct timestamp compute for hiking routes ([e1803bc](https://github.com/webmappsrl/osmfeatures/commit/e1803bc8abb5ff488f2b5ecab378560158611f37))
+-   implemented osm2pgsql update pbf command 1st version ([30cc940](https://github.com/webmappsrl/osmfeatures/commit/30cc94017e4bc6e2e360c62e08aa863b77af78f1))
+-   implemented update command for italy pbf ([01cd9ce](https://github.com/webmappsrl/osmfeatures/commit/01cd9cec2a434bb295cebe42c25434cb7363cd97))
+-   updated readme ([7f4895d](https://github.com/webmappsrl/osmfeatures/commit/7f4895de0e26b5715b5d4f3c32681dc40c8209b7))
+
+### Bug Fixes
+
+-   fixed hiking_routes lua file to import relation members ([d1f652b](https://github.com/webmappsrl/osmfeatures/commit/d1f652b9f8defc92b2a4adca7b0f93313dc6877b))
 
 ## [1.10.2](https://github.com/webmappsrl/osmfeatures/compare/v1.10.1...v1.10.2) (2024-03-25)
 
-
 ### Bug Fixes
 
-* fixed osm id link for node way and relations ([c0909f6](https://github.com/webmappsrl/osmfeatures/commit/c0909f6ed275147d968a0c1c888c070e3488fee8))
+-   fixed osm id link for node way and relations ([c0909f6](https://github.com/webmappsrl/osmfeatures/commit/c0909f6ed275147d968a0c1c888c070e3488fee8))
 
 ## [1.10.1](https://github.com/webmappsrl/osmfeatures/compare/v1.10.0...v1.10.1) (2024-03-23)
 
-
 ### Bug Fixes
 
-* error on hiking ways ([88e0e5b](https://github.com/webmappsrl/osmfeatures/commit/88e0e5b4bdc98751df32f9759a9077027d68c95f))
+-   error on hiking ways ([88e0e5b](https://github.com/webmappsrl/osmfeatures/commit/88e0e5b4bdc98751df32f9759a9077027d68c95f))
 
 ## [1.10.0](https://github.com/webmappsrl/osmfeatures/compare/v1.9.0...v1.10.0) (2024-03-23)
 
-
 ### Features
 
-* added filter for classes in places nova ([d6c4bf8](https://github.com/webmappsrl/osmfeatures/commit/d6c4bf833849db0ce428d816afa574cddeaf507c))
-* added hiking routes model and nova resource ([acfdc0c](https://github.com/webmappsrl/osmfeatures/commit/acfdc0c9ca745d64ee987182d28a273f69a69cba))
-* added osm type filters for nova resources ([101ebe0](https://github.com/webmappsrl/osmfeatures/commit/101ebe07f7a04bbea3353da3e89acc157f2ca3cd))
-* added places model and nova resource ([e103028](https://github.com/webmappsrl/osmfeatures/commit/e103028913811a9f62d38ee17d5c025002746684))
-* added tooltip to tags in nova resources ([3574d90](https://github.com/webmappsrl/osmfeatures/commit/3574d90917f2ea4af069f1e84b88f5b6f88d786d))
-* created hiking routes lua file ([44538dd](https://github.com/webmappsrl/osmfeatures/commit/44538ddafd47be98169bcf232988c849b973dd84))
-* created places lua file ([cc5cb95](https://github.com/webmappsrl/osmfeatures/commit/cc5cb95b62d046e2fa942a3f2df78bf014ea7365))
-
+-   added filter for classes in places nova ([d6c4bf8](https://github.com/webmappsrl/osmfeatures/commit/d6c4bf833849db0ce428d816afa574cddeaf507c))
+-   added hiking routes model and nova resource ([acfdc0c](https://github.com/webmappsrl/osmfeatures/commit/acfdc0c9ca745d64ee987182d28a273f69a69cba))
+-   added osm type filters for nova resources ([101ebe0](https://github.com/webmappsrl/osmfeatures/commit/101ebe07f7a04bbea3353da3e89acc157f2ca3cd))
+-   added places model and nova resource ([e103028](https://github.com/webmappsrl/osmfeatures/commit/e103028913811a9f62d38ee17d5c025002746684))
+-   added tooltip to tags in nova resources ([3574d90](https://github.com/webmappsrl/osmfeatures/commit/3574d90917f2ea4af069f1e84b88f5b6f88d786d))
+-   created hiking routes lua file ([44538dd](https://github.com/webmappsrl/osmfeatures/commit/44538ddafd47be98169bcf232988c849b973dd84))
+-   created places lua file ([cc5cb95](https://github.com/webmappsrl/osmfeatures/commit/cc5cb95b62d046e2fa942a3f2df78bf014ea7365))
 
 ### Bug Fixes
 
-* fixed osm type in poi, pole, admin area nova resources ([494a03d](https://github.com/webmappsrl/osmfeatures/commit/494a03dba23940a71070fd1cff055210559bb3e6))
-* fixed places lua file to import relations ([c612b89](https://github.com/webmappsrl/osmfeatures/commit/c612b896806fdec35519ab3f31451e5947f53f80))
-* fixed updated_at and tags ([f3c9922](https://github.com/webmappsrl/osmfeatures/commit/f3c9922cc7e09b657b257174b6f0c77a1fbd584d))
+-   fixed osm type in poi, pole, admin area nova resources ([494a03d](https://github.com/webmappsrl/osmfeatures/commit/494a03dba23940a71070fd1cff055210559bb3e6))
+-   fixed places lua file to import relations ([c612b89](https://github.com/webmappsrl/osmfeatures/commit/c612b896806fdec35519ab3f31451e5947f53f80))
+-   fixed updated_at and tags ([f3c9922](https://github.com/webmappsrl/osmfeatures/commit/f3c9922cc7e09b657b257174b6f0c77a1fbd584d))
 
 ## [1.9.0](https://github.com/webmappsrl/osmfeatures/compare/v1.8.0...v1.9.0) (2024-03-05)
 
-
 ### Features
 
-* improved sync command and added updated_at in nova index ([f857fbb](https://github.com/webmappsrl/osmfeatures/commit/f857fbb759a98d55928232d6823c80953d399189))
-
+-   improved sync command and added updated_at in nova index ([f857fbb](https://github.com/webmappsrl/osmfeatures/commit/f857fbb759a98d55928232d6823c80953d399189))
 
 ### Bug Fixes
 
-* fixed typo in sync command ([365a319](https://github.com/webmappsrl/osmfeatures/commit/365a319a1f5e0fd879c52f0236173b52e67465d3))
-* fixed typo in sync command ([5d200fa](https://github.com/webmappsrl/osmfeatures/commit/5d200fad5628243ce5a1f0468eae411a95a04802))
+-   fixed typo in sync command ([365a319](https://github.com/webmappsrl/osmfeatures/commit/365a319a1f5e0fd879c52f0236173b52e67465d3))
+-   fixed typo in sync command ([5d200fa](https://github.com/webmappsrl/osmfeatures/commit/5d200fad5628243ce5a1f0468eae411a95a04802))
 
 ## [1.8.0](https://github.com/webmappsrl/osmfeatures/compare/v1.7.0...v1.8.0) (2024-03-05)
 
-
 ### Features
 
-* added filters for wikis in nova resources admin areas poles and pois ([c7a76f0](https://github.com/webmappsrl/osmfeatures/commit/c7a76f0b6d7e48ebf7d071c17d30df40517e3c9b))
-* added wiki field in nova for admin areas poles and poi resources ([4085397](https://github.com/webmappsrl/osmfeatures/commit/40853970706e41fcf0885105560eaeef875224ba))
-* added wikimedia field for pois poles and admin areas nova ([66b6fc6](https://github.com/webmappsrl/osmfeatures/commit/66b6fc6d9d3e84ceda4a28930b1fa374f2075da9))
-* created trait for processing osm tags data ([9e33d86](https://github.com/webmappsrl/osmfeatures/commit/9e33d8604cd12991beaac042c579062b54db1880))
-* implemented wikidata filter ([bf3a80f](https://github.com/webmappsrl/osmfeatures/commit/bf3a80f9b000d8cda097f369de3b0e347c85c178))
-* updated readme and uploaded screenshot ([515855a](https://github.com/webmappsrl/osmfeatures/commit/515855aab58e6aaaa61fee5323d5222ac4f506a7))
-
+-   added filters for wikis in nova resources admin areas poles and pois ([c7a76f0](https://github.com/webmappsrl/osmfeatures/commit/c7a76f0b6d7e48ebf7d071c17d30df40517e3c9b))
+-   added wiki field in nova for admin areas poles and poi resources ([4085397](https://github.com/webmappsrl/osmfeatures/commit/40853970706e41fcf0885105560eaeef875224ba))
+-   added wikimedia field for pois poles and admin areas nova ([66b6fc6](https://github.com/webmappsrl/osmfeatures/commit/66b6fc6d9d3e84ceda4a28930b1fa374f2075da9))
+-   created trait for processing osm tags data ([9e33d86](https://github.com/webmappsrl/osmfeatures/commit/9e33d8604cd12991beaac042c579062b54db1880))
+-   implemented wikidata filter ([bf3a80f](https://github.com/webmappsrl/osmfeatures/commit/bf3a80f9b000d8cda097f369de3b0e347c85c178))
+-   updated readme and uploaded screenshot ([515855a](https://github.com/webmappsrl/osmfeatures/commit/515855aab58e6aaaa61fee5323d5222ac4f506a7))
 
 ### Bug Fixes
 
-* deactivated migrate:fresh in deploy dev ([45b6b65](https://github.com/webmappsrl/osmfeatures/commit/45b6b653275c71fdadb7715b848bb02ab01533d5))
-* fixed admin user seeder ([bb76bd8](https://github.com/webmappsrl/osmfeatures/commit/bb76bd8d2abdbe240422e9980fce58db7173aada))
-* fixed date to iso format in APIs ([26458e0](https://github.com/webmappsrl/osmfeatures/commit/26458e08afd6d03045af8c1c874aba81081c50c7))
-* fixed db host for osm2pgsql command (to test in develop and github actions) ([f790814](https://github.com/webmappsrl/osmfeatures/commit/f7908147973cf68396359970a08348452d2b37aa))
-* fixed updated_at in pbf import ([03478ba](https://github.com/webmappsrl/osmfeatures/commit/03478bab939a7cfb10b86a7509c91cecea1e1f54))
-* temporarily deactivated automatic sync on dev deploy (db host issue) ([1b13dfd](https://github.com/webmappsrl/osmfeatures/commit/1b13dfd05cd59344bfdcf63772afc1f1729134f9))
+-   deactivated migrate:fresh in deploy dev ([45b6b65](https://github.com/webmappsrl/osmfeatures/commit/45b6b653275c71fdadb7715b848bb02ab01533d5))
+-   fixed admin user seeder ([bb76bd8](https://github.com/webmappsrl/osmfeatures/commit/bb76bd8d2abdbe240422e9980fce58db7173aada))
+-   fixed date to iso format in APIs ([26458e0](https://github.com/webmappsrl/osmfeatures/commit/26458e08afd6d03045af8c1c874aba81081c50c7))
+-   fixed db host for osm2pgsql command (to test in develop and github actions) ([f790814](https://github.com/webmappsrl/osmfeatures/commit/f7908147973cf68396359970a08348452d2b37aa))
+-   fixed updated_at in pbf import ([03478ba](https://github.com/webmappsrl/osmfeatures/commit/03478bab939a7cfb10b86a7509c91cecea1e1f54))
+-   temporarily deactivated automatic sync on dev deploy (db host issue) ([1b13dfd](https://github.com/webmappsrl/osmfeatures/commit/1b13dfd05cd59344bfdcf63772afc1f1729134f9))
 
 ## [1.7.0](https://github.com/webmappsrl/osmfeatures/compare/v1.6.0...v1.7.0) (2024-01-31)
 
-
 ### Features
 
-* added osm2pgsql import for all the lua files in deploy dev script ([b771cd9](https://github.com/webmappsrl/osmfeatures/commit/b771cd90ed6cabefff5bb5dd7bf3abf79a439368))
-* updated documentation ([c47fcc7](https://github.com/webmappsrl/osmfeatures/commit/c47fcc70670ebed19996e9e61942466b3d441397))
-
+-   added osm2pgsql import for all the lua files in deploy dev script ([b771cd9](https://github.com/webmappsrl/osmfeatures/commit/b771cd90ed6cabefff5bb5dd7bf3abf79a439368))
+-   updated documentation ([c47fcc7](https://github.com/webmappsrl/osmfeatures/commit/c47fcc70670ebed19996e9e61942466b3d441397))
 
 ### Bug Fixes
 
-* added skip download to workflow ([77fc843](https://github.com/webmappsrl/osmfeatures/commit/77fc8433ac47913c2d0ad586aa650f7e01f0b93d))
-* dev-deploy ([1c33f99](https://github.com/webmappsrl/osmfeatures/commit/1c33f99f1f8ce758531b43457d40183ffea748c7))
-* skip download on deploy dev sync ([1e0ea9d](https://github.com/webmappsrl/osmfeatures/commit/1e0ea9d2e95742a1e5d1e52b8aedee29fa4c89ed))
+-   added skip download to workflow ([77fc843](https://github.com/webmappsrl/osmfeatures/commit/77fc8433ac47913c2d0ad586aa650f7e01f0b93d))
+-   dev-deploy ([1c33f99](https://github.com/webmappsrl/osmfeatures/commit/1c33f99f1f8ce758531b43457d40183ffea748c7))
+-   skip download on deploy dev sync ([1e0ea9d](https://github.com/webmappsrl/osmfeatures/commit/1e0ea9d2e95742a1e5d1e52b8aedee29fa4c89ed))
 
 ## [1.6.0](https://github.com/webmappsrl/osmfeatures/compare/v1.5.1...v1.6.0) (2024-01-30)
 
-
 ### Features
 
-* activated automatic sync in deploy dev workflow ([a6d8225](https://github.com/webmappsrl/osmfeatures/commit/a6d82252b33a11cc9d14ef2675cd278a2be5dd39))
+-   activated automatic sync in deploy dev workflow ([a6d8225](https://github.com/webmappsrl/osmfeatures/commit/a6d82252b33a11cc9d14ef2675cd278a2be5dd39))
 
 ## [1.5.1](https://github.com/webmappsrl/osmfeatures/compare/v1.5.0...v1.5.1) (2024-01-30)
 
-
 ### Bug Fixes
 
-* changed default name for automatic download on deploy dev ([ab37c53](https://github.com/webmappsrl/osmfeatures/commit/ab37c539dae8eeb8a0b36f689c1dea0a3825596e))
+-   changed default name for automatic download on deploy dev ([ab37c53](https://github.com/webmappsrl/osmfeatures/commit/ab37c539dae8eeb8a0b36f689c1dea0a3825596e))
 
 ## [1.5.0](https://github.com/webmappsrl/osmfeatures/compare/v1.4.0...v1.5.0) (2024-01-29)
 
-
 ### Features
 
-* added admin permission for prd ([0bd76ab](https://github.com/webmappsrl/osmfeatures/commit/0bd76abc5573e27a3543c8599326a0a5f1c8a536))
-
+-   added admin permission for prd ([0bd76ab](https://github.com/webmappsrl/osmfeatures/commit/0bd76abc5573e27a3543c8599326a0a5f1c8a536))
 
 ### Bug Fixes
 
-* fixed url for geofabrik download default ([a272078](https://github.com/webmappsrl/osmfeatures/commit/a2720783f1b4dc42880b9f8072fce514ca55a96a))
+-   fixed url for geofabrik download default ([a272078](https://github.com/webmappsrl/osmfeatures/commit/a2720783f1b4dc42880b9f8072fce514ca55a96a))
 
 ## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
 
-
 ### Bug Fixes
 
-* change command to use env password and input database host ([5f1bbca](https://github.com/webmappsrl/osmfeatures/commit/5f1bbca6100371ae89d639283398f505eb88a881))
-* fixed typo in sync command ([692cd5c](https://github.com/webmappsrl/osmfeatures/commit/692cd5c251ba34c1eb43f1867c20523dd816ef1c))
+-   change command to use env password and input database host ([5f1bbca](https://github.com/webmappsrl/osmfeatures/commit/5f1bbca6100371ae89d639283398f505eb88a881))
+-   fixed typo in sync command ([692cd5c](https://github.com/webmappsrl/osmfeatures/commit/692cd5c251ba34c1eb43f1867c20523dd816ef1c))
 
 ## [1.3.1](https://github.com/webmappsrl/osmfeatures/compare/v1.3.0...v1.3.1) (2024-01-24)
-=======
-## [1.4.0](https://github.com/webmappsrl/osmfeatures/compare/v1.3.2...v1.4.0) (2024-01-29)
 
+=======
+
+## [1.4.0](https://github.com/webmappsrl/osmfeatures/compare/v1.3.2...v1.4.0) (2024-01-29)
 
 ### Features
 
-* added tags field to pois sync ([102059a](https://github.com/webmappsrl/osmfeatures/commit/102059a94bbcef358b56cf12c504cc6779cef737))
-* deploy dev optimized to launch osm2pgsql sync for montepisano ([321a828](https://github.com/webmappsrl/osmfeatures/commit/321a8284c6d059ff92f87eb345a1b143ed027d1b))
-* enhanced API documentation ([8614d40](https://github.com/webmappsrl/osmfeatures/commit/8614d408c6c3f78360a68aa8b1b85febc452e912))
-* enhanced sync command with laravel prompts and created import for poles, model, nova and APIs ([43786f6](https://github.com/webmappsrl/osmfeatures/commit/43786f62b4c6bcbd2e0106998743a96e97895de6))
-* sync admin areas, nova resource, model, apis ([901046f](https://github.com/webmappsrl/osmfeatures/commit/901046f8c3f68cc446e0918a3cdef48d625ffb6c))
-* updated pois.lua to import only certain subclasses ([ee7db9c](https://github.com/webmappsrl/osmfeatures/commit/ee7db9c3b50681506d968ae3698ecd180ab59cfc))
-
-
+-   added tags field to pois sync ([102059a](https://github.com/webmappsrl/osmfeatures/commit/102059a94bbcef358b56cf12c504cc6779cef737))
+-   deploy dev optimized to launch osm2pgsql sync for montepisano ([321a828](https://github.com/webmappsrl/osmfeatures/commit/321a8284c6d059ff92f87eb345a1b143ed027d1b))
+-   enhanced API documentation ([8614d40](https://github.com/webmappsrl/osmfeatures/commit/8614d408c6c3f78360a68aa8b1b85febc452e912))
+-   enhanced sync command with laravel prompts and created import for poles, model, nova and APIs ([43786f6](https://github.com/webmappsrl/osmfeatures/commit/43786f62b4c6bcbd2e0106998743a96e97895de6))
+-   sync admin areas, nova resource, model, apis ([901046f](https://github.com/webmappsrl/osmfeatures/commit/901046f8c3f68cc446e0918a3cdef48d625ffb6c))
+-   updated pois.lua to import only certain subclasses ([ee7db9c](https://github.com/webmappsrl/osmfeatures/commit/ee7db9c3b50681506d968ae3698ecd180ab59cfc))
 
 ### Bug Fixes
 
-
-
-* clean_code ([d295bc5](https://github.com/webmappsrl/osmfeatures/commit/d295bc59f52bd1f441f1fb8b36cdc63598278ea9))
+-   clean_code ([d295bc5](https://github.com/webmappsrl/osmfeatures/commit/d295bc59f52bd1f441f1fb8b36cdc63598278ea9))
 
 ## [1.3.2](https://github.com/webmappsrl/osmfeatures/compare/v1.3.1...v1.3.2) (2024-01-27)
 
