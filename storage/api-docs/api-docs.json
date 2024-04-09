@@ -84,7 +84,84 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/GeoJsonFeature"
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of the GeoJSON object"
+                                        },
+                                        "properties": {
+                                            "properties": {
+                                                "osm_type": {
+                                                    "type": "string",
+                                                    "description": "Type of the OSM object (N, W, R)"
+                                                },
+                                                "osm_id": {
+                                                    "type": "integer",
+                                                    "description": "ID of the OSM object"
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Osmfeatures ID of the place"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the place was last updated in OSM, in ISO 8601 format."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Name of the place"
+                                                },
+                                                "class": {
+                                                    "type": "string",
+                                                    "description": "Class of the place"
+                                                },
+                                                "subclass": {
+                                                    "type": "string",
+                                                    "description": "Subclass of the place"
+                                                },
+                                                "elevation": {
+                                                    "type": "number",
+                                                    "description": "Elevation of the place in meters"
+                                                },
+                                                "osm_url": {
+                                                    "type": "string",
+                                                    "description": "URL to the OSM API for the object"
+                                                },
+                                                "osm_tags": {
+                                                    "type": "json",
+                                                    "description": "OSM tags of the object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "geojson",
+                                            "description": "Geometry of the place in GeoJSON format"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "type": "Feature",
+                                        "properties": {
+                                            "osm_type": "N",
+                                            "osm_id": 123456,
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z",
+                                            "name": "Place",
+                                            "class": "amenity",
+                                            "subclass": "restaurant",
+                                            "elevation": 1000,
+                                            "osm_url": "https://www.openstreetmap.org/node/123456",
+                                            "osm_tags": {
+                                                "amenity": "restaurant"
+                                            }
+                                        },
+                                        "geometry": {
+                                            "type": "Point",
+                                            "coordinates": [100.0, 0.0]
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -625,7 +702,89 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/PoleGeojsonFeature"
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of the GeoJSON object"
+                                        },
+                                        "properties": {
+                                            "properties": {
+                                                "osm_type": {
+                                                    "type": "string",
+                                                    "description": "Type of the OSM object (N, W, R)"
+                                                },
+                                                "osm_id": {
+                                                    "type": "integer",
+                                                    "description": "ID of the OSM object"
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Osmfeatures ID of the pole"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the pole was last updated in OSM, in ISO 8601 format."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Name of the pole"
+                                                },
+                                                "ref": {
+                                                    "type": "string",
+                                                    "description": "Reference number of the pole"
+                                                },
+                                                "ele": {
+                                                    "type": "number",
+                                                    "description": "Elevation of the pole in meters"
+                                                },
+                                                "destination": {
+                                                    "type": "string",
+                                                    "description": "Destination of the pole"
+                                                },
+                                                "support": {
+                                                    "type": "string",
+                                                    "description": "Support of the pole"
+                                                },
+                                                "osm_url": {
+                                                    "type": "string",
+                                                    "description": "URL to the OSM API for the object"
+                                                },
+                                                "osm_tags": {
+                                                    "type": "json",
+                                                    "description": "OSM tags of the object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "geojson",
+                                            "description": "Geometry of the pole in GeoJSON format"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "type": "Feature",
+                                        "properties": {
+                                            "osm_type": "N",
+                                            "osm_id": 123456,
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z",
+                                            "name": "Pole",
+                                            "ref": "123",
+                                            "ele": 1000,
+                                            "destination": "Destination",
+                                            "support": "Support",
+                                            "osm_url": "https://www.openstreetmap.org/node/123456",
+                                            "osm_tags": {
+                                                "amenity": "restaurant"
+                                            }
+                                        },
+                                        "geometry": {
+                                            "type": "Point",
+                                            "coordinates": [100.0, 0.0]
+                                        }
+                                    }
                                 }
                             }
                         }
