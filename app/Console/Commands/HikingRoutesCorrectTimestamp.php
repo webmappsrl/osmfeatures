@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class HikingRoutesCorrectTimestamp extends Command
 {
@@ -28,6 +29,7 @@ class HikingRoutesCorrectTimestamp extends Command
     public function handle()
     {
         $hikingRoutes = DB::select('SELECT id, members, updated_at FROM hiking_routes WHERE members IS NOT NULL');
+        $updateTime = now();
 
         foreach ($hikingRoutes as $hikingRoute) {
             $this->info('Processing hiking route '.$hikingRoute->id);
@@ -62,6 +64,8 @@ class HikingRoutesCorrectTimestamp extends Command
             $this->info('Hiking routes already up to date.');
         }
 
-        $this->info('All hiking routes have been processed.');
+        $updateTime = now()->diffInSeconds() / 60;
+        $this->info('All hiking routes have been processed in '.$updateTime.' minutes.');
+        Log::info('All hiking routes have been processed in '.$updateTime.' minutes.');
     }
 }

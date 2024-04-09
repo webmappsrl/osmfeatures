@@ -37,6 +37,16 @@ class AdminAreaController extends Controller
      *             example="1"
      *         )
      *     ),
+     * @OA\Parameter(
+     *         name="bbox",
+     *         in="query",
+     *         description="Bounding box to filter areas within, specified as 'lonmin,latmin,lonmax,latmax'.",
+     *         required=false,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="12.496366,41.902783,12.507366,41.912783"
+     *         )
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -49,13 +59,24 @@ class AdminAreaController extends Controller
      */
     public function list(Request $request)
     {
-        $query = AdminArea::query();
+        $query = DB::table('admin_areas');
         $perPage = 100;
 
         $updated_at = $request->query('updated_at');
+        $bbox = $request->query('bbox');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
+        }
+
+        if ($bbox) {
+            $bbox = explode(',', $bbox);
+            // Check if the bbox is valid
+            if (count($bbox) !== 4) {
+                return response()->json(['message' => 'Bounding box non valido'], 400);
+            }
+            $bbox = array_map('floatval', $bbox);
+            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);

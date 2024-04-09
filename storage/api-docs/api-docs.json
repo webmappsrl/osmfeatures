@@ -33,65 +33,17 @@
                         "schema": {
                             "type": "integer"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PoiItem"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/features/places/{id}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get Place by ID",
-                "description": "Returns a single Place in GeoJSON format",
-                "operationId": "getPlaceById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Place ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/GeoJsonFeature"
-                                }
-                            }
-                        }
                     },
-                    "404": {
-                        "description": "Place not found"
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box to filter Places by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
-                }
-            }
-        },
-        "/api/v1/features/places/list": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "List all Places",
-                "description": "Returns a list of Places with their IDs and updated timestamps",
-                "operationId": "listPlaces",
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -166,6 +118,15 @@
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box to filter Admin Areas by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -244,6 +205,15 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box to filter Hiking Routes by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -320,6 +290,15 @@
                         "required": false,
                         "schema": {
                             "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "bbox",
+                        "in": "query",
+                        "description": "Bounding box to filter Poles by",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -526,7 +505,6 @@
             "HikingRouteItem": {
                 "properties": {
                     "id": {
-
                         "type": "integer",
                         "example": 39150
                     },

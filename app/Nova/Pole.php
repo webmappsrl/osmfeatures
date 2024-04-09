@@ -9,12 +9,10 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\DateHelper;
 use Rpj\Daterangepicker\Daterangepicker;
-use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Pole extends Resource
 {
@@ -87,7 +85,12 @@ class Pole extends Resource
                 )->sortable(),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
-                ->content($this->tags)
+                ->content(
+                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
+                        return "{$key}: {$value}";
+                    })->implode('<br>')
+                )
+                ->allowTooltipHTML()
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
