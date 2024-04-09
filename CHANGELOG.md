@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.13.2](https://github.com/webmappsrl/osmfeatures/compare/v1.13.1...v1.13.2) (2024-04-09)
+
+
+### Bug Fixes
+
+* fixed errors ([22890d0](https://github.com/webmappsrl/osmfeatures/commit/22890d027203d4dc82767ead2933d813f4b80344))
+* fixed errors ([35e12c6](https://github.com/webmappsrl/osmfeatures/commit/35e12c6e3c06865ccb2ffbcb2273d1073143aaaf))
+* imported classes ([b5ad6a0](https://github.com/webmappsrl/osmfeatures/commit/b5ad6a08c13d6a9f975c75c6b82b94a890d2f686))
+
 ## [1.13.1](https://github.com/webmappsrl/osmfeatures/compare/v1.13.0...v1.13.1) (2024-04-09)
 
 
