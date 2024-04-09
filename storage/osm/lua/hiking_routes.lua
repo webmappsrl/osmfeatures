@@ -47,17 +47,18 @@ local hiking_routes = osm2pgsql.define_table({
 
 
 function process_hiking_route(object, geom)
-    local osm2cai_status = 0
+   local osm2cai_status = 0
 
-    -- osm2cai_status will be 0 if cai:scale and source=survey:CAI are not present, will be 1 if cai:scale is present and source=survey:CAI is not present, will be 2 if source=survey:CAI is present and cai:scale is not present, will be 3 if both are present
-    if object.tags['cai:scale'] and object.tags.source == 'survey:CAI' then
+    local cai_scale_present = object.tags['cai_scale'] ~= nil
+    local survey_cai_present = object.tags.source and string.match(object.tags.source, "survey:CAI") ~= nil
+
+    if cai_scale_present and survey_cai_present then
         osm2cai_status = 3
-    elseif object.tags['cai_scale'] then
+    elseif cai_scale_present then
         osm2cai_status = 1
-    elseif object.tags.source == 'survey:CAI' then
+    elseif survey_cai_present then
         osm2cai_status = 2
     end
-
     local a = {
         name = object.tags.name,
         updated_at_osm = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
