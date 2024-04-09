@@ -92,7 +92,6 @@ class HikingRouteController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/HikingRouteGeojsonFeature")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -109,19 +108,26 @@ class HikingRouteController extends Controller
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$hikingRoute->geom])[0]->geojson;
 
-        $geojson = [
-            'type' => 'Feature',
-            'properties' => [
-                'name' => $hikingRoute->name ?? '',
-                'osm_id' => $hikingRoute->osm_id,
-                'osm_type' => $hikingRoute->osm_type,
-                'description' => $hikingRoute->description ?? '',
-                'tags' => $hikingRoute->tags ?? '{}',
+        match ($hikingRoute->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
 
-            ],
+        $properties = $hikingRoute->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id/full.json";
+        $properties['osm_tags'] = json_decode($hikingRoute->tags, true);
+        $properties['members'] = json_decode($hikingRoute->members, true);
+
+        $geojsonFeature = [
+            'type' => 'Feature',
+            'properties' => $properties,
             'geometry' => json_decode($geom, true),
         ];
 
-        return response()->json($geojson);
+
+        return response()->json($geojsonFeature);
     }
 }
