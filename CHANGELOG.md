@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/webmappsrl/osmfeatures/compare/v1.13.0...v1.13.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* imported classes ([d243c85](https://github.com/webmappsrl/osmfeatures/commit/d243c8512926daffccc8686781d9e6d0114a8a9e))
+
 ## [1.13.0](https://github.com/webmappsrl/osmfeatures/compare/v1.12.1...v1.13.0) (2024-04-09)
 
 
