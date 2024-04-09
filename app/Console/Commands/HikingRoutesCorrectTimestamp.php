@@ -32,20 +32,20 @@ class HikingRoutesCorrectTimestamp extends Command
         $updateTime = now();
 
         foreach ($hikingRoutes as $hikingRoute) {
-            $this->info('Processing hiking route ' . $hikingRoute->id);
+            $this->info('Processing hiking route '.$hikingRoute->id);
             $members = json_decode($hikingRoute->members, true);
 
             $latestTimestamp = null;
             foreach ($members as $member) {
                 if ($member['type'] === 'w') {
-                    $osmApiUrl = 'https://api.openstreetmap.org/api/0.6/way/' . $member['ref'] . '.json';
+                    $osmApiUrl = 'https://api.openstreetmap.org/api/0.6/way/'.$member['ref'].'.json';
                     try {
                         $osmData = json_decode(file_get_contents($osmApiUrl), true);
                         $timestamp = $osmData['elements'][0]['timestamp'];
                         //format the timestamp to iso8601
                         $timestamp = Carbon::parse($timestamp)->toIso8601String();
                     } catch (\Exception $e) {
-                        $this->error('Error while fetching data from OSM API: ' . $e->getMessage());
+                        $this->error('Error while fetching data from OSM API: '.$e->getMessage());
                         continue;
                     }
 
@@ -59,13 +59,13 @@ class HikingRoutesCorrectTimestamp extends Command
                 DB::table('hiking_routes')
                     ->where('id', $hikingRoute->id)
                     ->update(['updated_at' => $latestTimestamp]);
-                $this->info('Updated hiking route ' . $hikingRoute->id . ' with timestamp ' . $latestTimestamp);
+                $this->info('Updated hiking route '.$hikingRoute->id.' with timestamp '.$latestTimestamp);
             }
             $this->info('Hiking routes already up to date.');
         }
 
         $updateTime = now()->diffInSeconds() / 60;
-        $this->info('All hiking routes have been processed in ' . $updateTime . ' minutes.');
-        Log::info('All hiking routes have been processed in ' . $updateTime . ' minutes.');
+        $this->info('All hiking routes have been processed in '.$updateTime.' minutes.');
+        Log::info('All hiking routes have been processed in '.$updateTime.' minutes.');
     }
 }
