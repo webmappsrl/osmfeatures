@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.4](https://github.com/webmappsrl/osmfeatures/compare/v1.13.3...v1.13.4) (2024-04-09)
+
+
+### Bug Fixes
+
+* fixed osm2cai_status computed value ([4df54c7](https://github.com/webmappsrl/osmfeatures/commit/4df54c7639c2d4b85696ed2a28c89ea81df0a74d))
+
 ## [1.13.3](https://github.com/webmappsrl/osmfeatures/compare/v1.13.2...v1.13.3) (2024-04-09)
 
 
