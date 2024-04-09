@@ -115,7 +115,7 @@ class PoiController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/GeoJsonFeature")
+     *         @OA\JsonContent(ref="#/components/schemas/PoiGeoJsonFeature")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -125,9 +125,9 @@ class PoiController extends Controller
      */
     public function show($id)
     {
-        $poi = Poi::where('osm_id', $id)->first();
+        $poi = Poi::where('id', $id)->first();
 
-        if (! $poi) {
+        if (!$poi) {
             return response()->json(['message' => 'POI non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$poi->geom])[0]->geojson;

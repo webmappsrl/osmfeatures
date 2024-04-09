@@ -370,7 +370,7 @@
                 },
                 "type": "object"
             },
-            "GeoJsonFeature": {
+            "PoiGeoJsonFeature": {
                 "properties": {
                     "type": {
                         "type": "string",
@@ -442,62 +442,45 @@
                     },
                     "properties": {
                         "properties": {
-                            "name": {
+                            "osm_type": {
                                 "type": "string",
-                                "example": "Lampedusa e Linosa"
+                                "example": "Type of the OSM object (N, W, R)"
+                            },
+                            "osm_id": {
+                                "type": "integer",
+                                "example": "ID of the OSM object"
+                            },
+                            "id": {
+                                "type": "integer",
+                                "example": "Osmfeatures ID of the area"
                             },
                             "updated_at": {
                                 "type": "string",
                                 "format": "date-time",
-                                "example": "2021-03-10T02:00:00Z"
+                                "example": "When the area was last updated, in ISO 8601 format"
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Name of the area"
                             },
                             "admin_level": {
                                 "type": "string",
-                                "example": "8"
+                                "example": "the hierarchical level of administrative divisions, such as countries, states, or municipalities, with lower numbers indicating higher levels of administration."
                             },
-                            "osm_id": {
-                                "type": "integer",
-                                "example": 39150
-                            },
-                            "osm_type": {
+                            "osm_url": {
                                 "type": "string",
-                                "example": "R"
+                                "example": "URL to the OSM API for the object"
                             },
-                            "tags": {
+                            "osm_tags": {
                                 "type": "json",
-                                "example": "{\"name\": \"Lampedusa e Linosa\", \"type\": \"boundary\", \"name:ar\": \"لنبذوشة ونموشة\", \"name:es\": \"Lampedusa y Linosa\", \"name:it\": \"Lampedusa e Linosa\", \"name:la\": \"Lopadusa\", \"name:ru\": \"Лампедуза и Линоза\", \"boundary\": \"administrative\", \"wikidata\": \"Q224813\", \"ref:ISTAT\": \"084020\", \"wikipedia\": \"it:Lampedusa e Linosa\", \"admin_level\": \"8\", \"postal_code\": \"92031\", \"ref:catasto\": \"E431\"}"
+                                "example": "OSM tags of the object"
                             }
                         },
                         "type": "object"
                     },
                     "geometry": {
-                        "properties": {
-                            "type": {
-                                "type": "string",
-                                "example": "Polygon"
-                            },
-                            "coordinates": {
-                                "type": "array",
-                                "items": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "number"
-                                        }
-                                    }
-                                },
-                                "example": [
-                                    [
-                                        [11.8805, 43.4635],
-                                        [11.8805, 43.4635],
-                                        [11.8805, 43.4635],
-                                        [11.8805, 43.4635]
-                                    ]
-                                ]
-                            }
-                        },
-                        "type": "object"
+                        "type": "geojson",
+                        "example": "Geometry of the area in GeoJSON format"
                     }
                 },
                 "type": "object"
