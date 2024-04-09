@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.3](https://github.com/webmappsrl/osmfeatures/compare/v1.13.2...v1.13.3) (2024-04-09)
+
+
+### Bug Fixes
+
+* pole nova imported classes ([a177a5b](https://github.com/webmappsrl/osmfeatures/commit/a177a5bc9a33480f5e6d61f9b593fd24dab098b8))
+
 ## [1.13.2](https://github.com/webmappsrl/osmfeatures/compare/v1.13.1...v1.13.2) (2024-04-09)
 
 
