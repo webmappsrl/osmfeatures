@@ -67,6 +67,7 @@ class HikingRoutesApiTest extends TestCase
                     $table->string('name')->nullable();
                     $table->bigInteger('osm_id')->nullable();
                     $table->string('osm_type')->nullable();
+                    $table->dateTime('updated_at_osm')->nullable();
                     $table->dateTime('updated_at')->nullable();
                     $table->text('cai_scale')->nullable();
                     $table->integer('osm2cai_status')->nullable();
@@ -103,7 +104,6 @@ class HikingRoutesApiTest extends TestCase
                     $table->jsonb('tags')->nullable();
                     $table->multiLineString('geom')->nullable();
                     $table->jsonb('members')->nullable();
-                    $table->timestamps();
                 }
             );
             //create 200 hiking routes
