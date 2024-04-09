@@ -2,12 +2,12 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class PlacesApiTest extends TestCase
 {
@@ -47,7 +47,7 @@ class PlacesApiTest extends TestCase
                 'osm_type' => 'N',
                 'osm_id' => $i,
                 'updated_at' => now(),
-                'name' => 'Place ' . $i,
+                'name' => 'Place '.$i,
                 'class' => 'class',
                 'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
                 'tags' => json_encode(['tag' => 'value']),
@@ -79,7 +79,6 @@ class PlacesApiTest extends TestCase
         //ensure the response return some result and not an empty json
         $this->assertNotEmpty($response->json());
     }
-
 
     /**
      * Test if the json has the correct structure
@@ -135,9 +134,6 @@ class PlacesApiTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
     }
-
-
-
 
     public function tearDown(): void
     {

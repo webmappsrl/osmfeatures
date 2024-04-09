@@ -32,11 +32,11 @@ class AdminAreasApiTest extends TestCase
         //create 200 admin areas
         for ($i = 0; $i < 200; $i++) {
             DB::table('temp_admin_areas')->insert([
-                'name' => 'Admin Area ' . $i,
+                'name' => 'Admin Area '.$i,
                 'osm_id' => $i,
                 'osm_type' => 'R',
                 'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
-                'admin_level' => '2' . $i,
+                'admin_level' => '2'.$i,
             ]);
         }
     }
@@ -64,7 +64,6 @@ class AdminAreasApiTest extends TestCase
         //ensure the response return some result and not an empty json
         $this->assertNotEmpty($response->json());
     }
-
 
     /**
      * Test if the json has the correct structure
@@ -120,9 +119,6 @@ class AdminAreasApiTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
     }
-
-
-
 
     public function tearDown(): void
     {

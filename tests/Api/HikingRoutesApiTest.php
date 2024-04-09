@@ -2,12 +2,12 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class HikingRoutesApiTest extends TestCase
 {
@@ -106,7 +106,7 @@ class HikingRoutesApiTest extends TestCase
         //create 200 hiking routes
         for ($i = 0; $i < 200; $i++) {
             DB::table('temp_hiking_routes')->insert([
-                'name' => 'Hiking Route ' . $i,
+                'name' => 'Hiking Route '.$i,
                 'osm_id' => $i,
                 'osm_type' => 'R',
                 'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
@@ -138,7 +138,6 @@ class HikingRoutesApiTest extends TestCase
         //ensure the response return some result and not an empty json
         $this->assertNotEmpty($response->json());
     }
-
 
     /**
      * Test if the json has the correct structure
@@ -194,9 +193,6 @@ class HikingRoutesApiTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
     }
-
-
-
 
     public function tearDown(): void
     {

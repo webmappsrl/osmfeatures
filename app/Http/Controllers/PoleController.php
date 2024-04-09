@@ -72,7 +72,7 @@ class PoleController extends Controller
                 return response()->json(['message' => 'Bounding box non valido'], 400);
             }
             $bbox = array_map('floatval', $bbox);
-            $query->whereRaw("ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))", [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
         }
 
         $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
