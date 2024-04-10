@@ -42,6 +42,7 @@ class Place extends Resource
     public static function indexQuery(NovaRequest $request, $query)
     {
         \Log::info($query->toSql());
+
         return $query;
     }
 
@@ -116,7 +117,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value . ' m';
+                        return $value.' m';
                     } else {
                         return ' ';
                     }

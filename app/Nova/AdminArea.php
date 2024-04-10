@@ -23,7 +23,6 @@ class AdminArea extends Resource
      */
     public static $model = \App\Models\AdminArea::class;
 
-
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
@@ -43,6 +42,7 @@ class AdminArea extends Resource
     public static function indexQuery(NovaRequest $request, $query)
     {
         \Log::info($query->toSql());
+
         return $query;
     }
 
@@ -94,7 +94,7 @@ class AdminArea extends Resource
                 }
             )->asHtml(),
             Text::make('Level', 'admin_level')
-                ->sortable()
+                ->sortable(),
         ];
     }
 

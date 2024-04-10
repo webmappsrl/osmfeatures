@@ -52,6 +52,7 @@ class Pole extends Resource
     public static function indexQuery(NovaRequest $request, $query)
     {
         \Log::info($query->toSql());
+
         return $query;
     }
 
