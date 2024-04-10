@@ -127,7 +127,6 @@ class HikingRouteController extends Controller
             'geometry' => json_decode($geom, true),
         ];
 
-
         return response()->json($geojsonFeature);
     }
 }
