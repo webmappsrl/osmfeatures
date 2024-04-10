@@ -75,7 +75,7 @@ class AdminArea extends Resource
                     }
                 )->sortable(),
             Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/eye-svgrepo-com.svg'))
+                ->iconFromPath(public_path('images/pricetags-outline.svg'))
                 ->content(
                     collect(json_decode($this->tags, true))->map(function ($value, $key) {
                         return "{$key}: {$value}";
