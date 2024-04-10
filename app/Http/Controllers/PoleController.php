@@ -121,7 +121,7 @@ class PoleController extends Controller
         $properties = $pole->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$pole->osm_id";
+        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
         $properties['osm_tags'] = json_decode($pole->tags, true);
 
         $geojsonFeature = [

@@ -115,7 +115,7 @@ class PlaceController extends Controller
         $properties = $place->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
+        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
         $properties['osm_tags'] = json_decode($place->tags, true);
 
         $geojsonFeature = [
