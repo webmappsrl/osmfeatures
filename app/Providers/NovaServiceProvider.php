@@ -82,7 +82,6 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards()
     {
         return [
-            new \App\Nova\Dashboards\Main,
             new Features,
         ];
     }
@@ -104,7 +103,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     public function register()
     {
-        //
+        Nova::$initialPath = '/dashboards/features';
     }
 
     //create a footer

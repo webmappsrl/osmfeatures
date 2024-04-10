@@ -10,7 +10,8 @@ local poles = osm2pgsql.define_table({
         { column = 'ref' },
         { column = 'ele' },
         { column = 'destination' },
-        { column = 'support' }
+        { column = 'support' },
+        { column = 'elevation', type = 'int' },
     }
 })
 
@@ -31,7 +32,8 @@ function process_pole(object)
         ref = object.tags.ref,
         ele = object.tags.ele,
         destination = object.tags.destination,
-        support = object.tags.support
+        support = object.tags.support,
+        elevation = object.tags.ele or nil,
     }
 
     poles:insert(a)
