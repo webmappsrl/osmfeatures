@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.0](https://github.com/webmappsrl/osmfeatures/compare/v1.13.4...v1.14.0) (2024-04-10)
+
+
+### Features
+
+* admin areas nova list enhancement ([02f1d98](https://github.com/webmappsrl/osmfeatures/commit/02f1d98858d8272c26c99f991279a1ff757acf94))
+* changed default dashboard to features ([b3ee681](https://github.com/webmappsrl/osmfeatures/commit/b3ee681451c5596b316d66af67e29abef77ff1a5))
+
 ## [1.13.4](https://github.com/webmappsrl/osmfeatures/compare/v1.13.3...v1.13.4) (2024-04-09)
 
 
