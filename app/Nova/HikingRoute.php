@@ -86,7 +86,7 @@ class HikingRoute extends Resource
                     function ($value) {
                         return Carbon::parse($value)->toIso8601String();
                     }
-                ),
+                )->hideFromIndex(),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/pricetags-outline.svg'))
                 ->content(
