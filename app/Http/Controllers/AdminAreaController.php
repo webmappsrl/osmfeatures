@@ -117,15 +117,22 @@ class AdminAreaController extends Controller
             return response()->json(['message' => 'Admin Area non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
+
+        match ($adminArea->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        $properties = $adminArea->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
+        $properties['osm_tags'] = json_decode($adminArea->tags, true);
+
         $geojsonFeature = [
             'type' => 'Feature',
-            'properties' => [
-                'name' => $adminArea->name,
-                'osm_id' => $adminArea->osm_id,
-                'osm_type' => $adminArea->osm_type,
-                'admin_level' => $adminArea->admin_level,
-                'tags' => $adminArea->tags,
-            ],
+            'properties' => $properties,
             'geometry' => json_decode($geom, true),
         ];
 

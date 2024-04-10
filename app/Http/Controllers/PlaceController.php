@@ -90,7 +90,6 @@ class PlaceController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/GeoJsonFeature")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -106,17 +105,23 @@ class PlaceController extends Controller
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
+
+        match ($place->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        $properties = $place->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
+        $properties['osm_tags'] = json_decode($place->tags, true);
+
         $geojsonFeature = [
             'type' => 'Feature',
-            'properties' => [
-                'name' => $place->name,
-                'class' => $place->class,
-                'subclass' => $place->subclass,
-                'osm_id' => $place->osm_id,
-                'osm_type' => $place->osm_type,
-                'tags' => $place->tags,
-            ],
-            'geometry' => json_decode($geom, true),
+            'properties' => $properties,
+            'geometry' => json_decode($geom),
         ];
 
         return response()->json($geojsonFeature);

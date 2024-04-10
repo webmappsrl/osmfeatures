@@ -97,7 +97,6 @@ class PoleController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
-     *         @OA\JsonContent(ref="#/components/schemas/PolesGeoJsonFeature")
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -113,12 +112,22 @@ class PoleController extends Controller
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
+        match ($pole->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
         $properties = $pole->toArray();
         unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
+        $properties['osm_tags'] = json_decode($pole->tags, true);
+
         $geojsonFeature = [
             'type' => 'Feature',
             'properties' => $properties,
-            'geometry' => json_decode($geom, true),
+            'geometry' => json_decode($geom),
         ];
 
         return response()->json($geojsonFeature);
