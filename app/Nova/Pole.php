@@ -49,6 +49,12 @@ class Pole extends Resource
         'osm_id', 'name', 'ref', 'destination',
     ];
 
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        \Log::info($query->toSql());
+        return $query;
+    }
+
     /**
      * Get the fields displayed by the resource.
      *
@@ -97,7 +103,7 @@ class Pole extends Resource
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
             Text::make('Name'),
             Text::make('Ref'),
             Text::make('Destination', function () {
@@ -136,7 +142,7 @@ class Pole extends Resource
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => DB::table('poles')->min('ele')])
                 ->toAttributes(['max' => DB::table('poles')->max('ele')]),
-            new Daterangepicker('updated_at', DateHelper::ALL, 'poles.name', 'desc'),
+            new Daterangepicker('updated_at', DateHelper::ALL),
 
         ];
     }

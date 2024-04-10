@@ -12,7 +12,7 @@ class AdminArea extends Pivot
 
     protected $table = 'admin_areas';
 
-    protected $primaryKey = 'id'; //set the primary key to osm_id because we do not have an id column
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'osm_id',
@@ -22,5 +22,9 @@ class AdminArea extends Pivot
         'tags',
         'admin_level',
         'geom',
+    ];
+
+    protected $casts = [
+        'admin_level ' => 'integer',
     ];
 }

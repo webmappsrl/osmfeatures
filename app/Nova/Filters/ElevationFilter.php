@@ -20,8 +20,7 @@ class ElevationFilter extends RangeInputFilter
         $from = data_get($value, 'from');
         $to = data_get($value, 'to');
 
-        return $query->whereRaw("CAST(tags->>'ele' AS NUMERIC) >= ?", [$from])
-            ->whereRaw("CAST(tags->>'ele' AS NUMERIC) <= ?", [$to]);
+        return $query->whereBetween('elevation', [$from, $to]);
     }
 
     /**

@@ -39,6 +39,12 @@ class Place extends Resource
         return $model;
     }
 
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        \Log::info($query->toSql());
+        return $query;
+    }
+
     /**
      * The columns that should be searched.
      *
@@ -96,7 +102,7 @@ class Place extends Resource
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
             Text::make('Name')->displayUsing(
                 function ($value) {
                     //max length should be 50 characters then break the line
@@ -110,7 +116,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value.' m';
+                        return $value . ' m';
                     } else {
                         return ' ';
                     }
@@ -152,7 +158,7 @@ class Place extends Resource
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
             new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL, 'places.name', 'desc'),
+            new Daterangepicker('updated_at', DateHelper::ALL),
 
         ];
     }

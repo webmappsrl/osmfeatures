@@ -43,20 +43,22 @@ trait OsmTagsProcessor
      */
     public function getWikiLinks(): string
     {
-        $links = [];
+        $links = ['<div style="display:flex; justify-content: center;">'];
 
         if ($this->getWikidata()) {
-            $links[] = '<a style="padding:5px;" href="https://www.wikidata.org/wiki/'.$this->getWikidata().'" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikidata-logo.png" /></a>';
+            $links[] = '<a style="padding:5px;" href="https://www.wikidata.org/wiki/' . $this->getWikidata() . '" target="_blank"><img style=" border:1px solid gray; border-radius: 20% 20%; height: 45px; width: auto; padding:5px;" src="/images/Wikidata-logo.png" /></a>';
         }
 
         if ($this->getWikimediaCommons()) {
-            $links[] = '<a style="padding:5px;" href="https://commons.wikimedia.org/wiki/'.$this->getWikimediaCommons().'" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikimedia-logo.png" /></a>';
+            $links[] = '<a style="padding:5px;" href="https://commons.wikimedia.org/wiki/' . $this->getWikimediaCommons() . '" target="_blank"><img style=" border:1px solid gray; border-radius: 20% 20%; height: 45px; width: auto; padding:5px;" src="/images/Wikimedia-logo.png" /></a>';
         }
 
         if ($this->getWikipedia()) {
-            $links[] = '<a style="padding:5px;" href="https://en.wikipedia.org/wiki/'.$this->getWikipedia().'" target="_blank"><img style=" border:1px solid gray; height: 35px; width: auto; padding:5px;" src="/images/Wikipedia-logo.jpeg" /></a>';
+            $links[] = '<a style="padding:5px;" href="https://en.wikipedia.org/wiki/' . $this->getWikipedia() . '" target="_blank"><img style=" border:1px solid gray; border-radius: 20% 20%; height: 45px; width: auto; padding:5px;" src="/images/Wikipedia-logo.jpeg" /></a>';
         }
 
-        return implode(' ', $links);
+        $links[] = '</div>';
+
+        return implode('', $links);
     }
 }

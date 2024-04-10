@@ -7,7 +7,7 @@ local admin_areas = osm2pgsql.define_table({
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
         { column = 'geom', type = 'multipolygon' },
-        { column = 'admin_level' }
+        { column = 'admin_level', type = 'int' }
     }
 })
 
@@ -20,7 +20,7 @@ function process_admin_area(object)
         return
     end
 
-    local admin_level = object.tags.admin_level or 'unknown'
+    local admin_level = object.tags.admin_level or nil
 
     local a = {
         updated_at = format_timestamp(object.timestamp) or nil,

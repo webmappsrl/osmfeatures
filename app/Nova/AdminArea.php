@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
@@ -22,13 +23,6 @@ class AdminArea extends Resource
      */
     public static $model = \App\Models\AdminArea::class;
 
-    public static function newModel()
-    {
-        $model = parent::newModel();
-        $model->setKeyName('id');
-
-        return $model;
-    }
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -45,6 +39,12 @@ class AdminArea extends Resource
     public static $search = [
         'osm_id', 'name',
     ];
+
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        \Log::info($query->toSql());
+        return $query;
+    }
 
     /**
      * Get the fields displayed by the resource.
@@ -86,30 +86,15 @@ class AdminArea extends Resource
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
             Text::make('Name')->displayUsing(
                 function ($value) {
                     //max length should be 50 characters then break the line
                     return wordwrap($value, 50, '<br>', true);
                 }
             )->asHtml(),
-            Text::make('Level', 'admin_level'),
-
-            // Text::make('Tags')->displayUsing(
-            //     function ($value) {
-            //         $json = json_decode($value, true);
-            //         $json = preg_replace(
-            //             '/(".*?"):(.*?)(,|$)/',
-            //             '<span style="color:darkgreen;">$1</span>: $2$3<br>',
-            //             wordwrap(json_encode($json), 75, '<br>', true)
-            //         );
-
-            //         return $json;
-            //     }
-            // )->asHtml(),
-            // Text::make('Tags', function () {
-            //     return '<a style="color:blue;" href="'.route('tags-details', ['resource' => 'adminArea', 'resourceId' => $this->osm_id]).'" target="_blank">Tags</a>';
-            // })->asHtml(),
+            Text::make('Level', 'admin_level')
+                ->sortable()
         ];
     }
 
@@ -137,7 +122,7 @@ class AdminArea extends Resource
             new Filters\WikiMediaFilter(),
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL, 'admin_areas.name', 'desc'),
+            new Daterangepicker('updated_at', DateHelper::ALL),
             new Filters\AdminLevelFilter(),
         ];
     }
