@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/webmappsrl/osmfeatures/compare/v1.15.0...v1.15.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* fixed wiki icons ([633a003](https://github.com/webmappsrl/osmfeatures/commit/633a003e3329a744b03d13d5210afb4bbc19b6db))
+
 ## [1.15.0](https://github.com/webmappsrl/osmfeatures/compare/v1.14.1...v1.15.0) (2024-04-12)
 
 
