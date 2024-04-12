@@ -50,9 +50,19 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PoiItem"
+                                    "id": {
+                                        "type": "integer",
+                                        "description": "Osmfeatures ID of the place"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When the place was last updated in OSM, in ISO 8601 format."
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "id": 123456,
+                                        "updated_at": "2021-01-01T00:00:00Z"
                                     }
                                 }
                             }
@@ -213,9 +223,21 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/AdminAreaItem"
+                                    "schema": {
+                                        "id": {
+                                            "type": "integer",
+                                            "description": "Osmfeatures ID of the area"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "When the admin area was last updated in OSM, in ISO 8601 format."
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z"
+                                        }
                                     }
                                 }
                             }
@@ -375,9 +397,21 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/HikingRouteItem"
+                                    "schema": {
+                                        "id": {
+                                            "type": "integer",
+                                            "description": "Osmfeatures ID of the hiking route"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "When the hiking route was last updated in OSM, in ISO 8601 format."
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z"
+                                        }
                                     }
                                 }
                             }
@@ -668,9 +702,21 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/PoleItem"
+                                    "schema": {
+                                        "id": {
+                                            "type": "integer",
+                                            "description": "Osmfeatures ID of the pole"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "description": "When the pole was last updated in OSM, in ISO 8601 format."
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z"
+                                        }
                                     }
                                 }
                             }
