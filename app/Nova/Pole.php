@@ -2,19 +2,19 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\PolesElevationFilter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\DateTime;
+use Illuminate\Support\Facades\DB;
 use Rpj\Daterangepicker\DateHelper;
+use Illuminate\Support\Facades\Date;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use App\Nova\Filters\PolesElevationFilter;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Pole extends Resource
 {
@@ -110,6 +110,19 @@ class Pole extends Resource
             Text::make('Destination', function () {
                 return wordwrap($this->destination, 50, '<br>', true);
             })->asHtml(),
+            Text::make('Score', 'score')
+                ->displayUsing(function ($value) {
+                    //return a star rating
+                    $stars = '';
+
+                    if ($value == 0 || $value == null) {
+                        return 'No rating';
+                    }
+                    for ($i = 0; $i < $value; $i++) {
+                        $stars .= '⭐';
+                    }
+                    return $stars;
+                })->sortable()
         ];
     }
 

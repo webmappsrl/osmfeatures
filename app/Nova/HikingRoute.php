@@ -122,6 +122,19 @@ class HikingRoute extends Resource
                 ->asHtml(),
             Text::make('Osm2cai Status')
                 ->sortable(),
+            Text::make('Score', 'score')
+                ->displayUsing(function ($value) {
+                    //return a star rating
+                    $stars = '';
+
+                    if ($value == 0 || $value == null) {
+                        return 'No rating';
+                    }
+                    for ($i = 0; $i < $value; $i++) {
+                        $stars .= '⭐';
+                    }
+                    return $stars;
+                })->sortable()
         ];
     }
 
