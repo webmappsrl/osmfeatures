@@ -95,6 +95,20 @@ class AdminArea extends Resource
             )->asHtml(),
             Text::make('Level', 'admin_level')
                 ->sortable(),
+            Number::make('Score', 'score')
+                ->displayUsing(function ($value) {
+                    //return a star rating
+                    $stars = '';
+
+                    if ($value == 0 || $value == null) {
+                        return 'No rating';
+                    }
+                    for ($i = 0; $i < $value; $i++) {
+                        $stars .= '⭐';
+                    }
+
+                    return $stars;
+                })->sortable()->filterable(),
         ];
     }
 

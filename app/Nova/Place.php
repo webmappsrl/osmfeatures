@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -123,6 +124,20 @@ class Place extends Resource
                     }
                 }
             ),
+            Number::make('Score', 'score')
+                ->displayUsing(function ($value) {
+                    //return a star rating
+                    $stars = '';
+
+                    if ($value == 0 || $value == null) {
+                        return 'No rating';
+                    }
+                    for ($i = 0; $i < $value; $i++) {
+                        $stars .= '⭐';
+                    }
+
+                    return $stars;
+                })->sortable()->filterable(),
 
         ];
     }

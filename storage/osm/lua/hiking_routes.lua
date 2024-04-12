@@ -9,6 +9,7 @@ local hiking_routes = osm2pgsql.define_table({
         { column = 'name', type = 'text' },
         { column = 'cai_scale', type = 'text' },
         { column = 'osm2cai_status', type = 'integer'},
+        { column = 'score', type = 'integer'},
         { column = 'osmc_symbol', type = 'text' },
         { column = 'network', type= 'text' },
         { column = 'survey_date', type= 'text' },
@@ -48,10 +49,12 @@ local hiking_routes = osm2pgsql.define_table({
 
 function process_hiking_route(object, geom)
    local osm2cai_status = 0
+   local score = 0
 
     local cai_scale_present = object.tags['cai_scale'] ~= nil
     local survey_cai_present = object.tags.source and string.match(object.tags.source, "survey:CAI") ~= nil
 
+    -- calculate osm2cai status value -- 
     if cai_scale_present and survey_cai_present then
         osm2cai_status = 3
     elseif cai_scale_present then
@@ -59,11 +62,33 @@ function process_hiking_route(object, geom)
     elseif survey_cai_present then
         osm2cai_status = 2
     end
+
+    -- calculate score value --
+    if object.tags.name then
+        score = score + 1
+    end
+    if object.tags.wikidata then
+        score = score + 1
+    end
+    if object.tags.wikipedia then
+        score = score + 1
+    end
+    if object.tags.wikimedia_commons then
+        score = score + 1
+    end
+    if object.tags.ref then
+        score = score + 1
+    end
+
+    -- add osm2cai status to score
+    score = score + osm2cai_status
+
     local a = {
         name = object.tags.name,
         updated_at_osm = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
         cai_scale = object.tags['cai_scale'],
         osm2cai_status = osm2cai_status,
+        score = score,
         osmc_symbol = object.tags['osmc:symbol'],
         network = object.tags.network,
         survey_date = object.tags['survey:date'],

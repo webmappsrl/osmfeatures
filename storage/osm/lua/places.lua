@@ -10,21 +10,16 @@ local places = osm2pgsql.define_table({
         { column = 'geom', type = 'point', not_null = true },
         { column = 'tags', type = 'jsonb' },
         { column = 'elevation', type = 'int' },
+        { column = 'score', type = 'int'}
 }})
 
--- mapping of OSM tags to our feature internal representation
+
 
 function process_place(object, geom)
-    local a = {
-        updated_at = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
-        name = object.tags.name,
-        geom = geom,
-        tags = object.tags,
-        elevation = object.tags.ele or nil,
-        class = '',
-        subclass = '',
-    }
-    local mappings= {
+
+    local score = 0
+    -- mapping of OSM tags to our feature internal representation
+       local mappings= {
             { key = 'landuse', values = { cemetery = 'cemetery'}, class = 'landuse' },
             { key = 'water', values = { lake = 'lake', pond = 'pond', lagoon = 'lagoon', basin = 'basin', reservoir = 'reservoir'}, class = 'water' },
             { key = 'waterway', values = { waterfall = 'waterfall'}, class = 'waterway' },
@@ -36,6 +31,35 @@ function process_place(object, geom)
             { key = 'tourism', values = { alpine_hut = 'alpine_hut', wilderness_hut = 'wilderness_hut', aquarium = 'aquarium', camp_site = 'camp_site', caravan_site = 'caravan_site', picnic_site = 'picnic_site', hostel = 'hostel', museum = 'museum', zoo = 'zoo', theme_park = 'theme_park' }, class = 'tourism' },
             { key = 'historic', values = { wayside_shrine = 'wayside_shrine', wayside_cross = 'wayside_cross', monastery = 'monastery', archaeological_site = 'archaeological_site', castle = 'castle', farm = 'farm', fort = 'fort', manor = 'manor'}, class = 'historic' },
             { key = 'amenity', values = { place_of_worship = 'place_of_worship', cemetery = 'grave_yard', bus_station = 'bus_station', parking_point = 'parking', drinking_water = 'drinking_water', hospital = 'hospital', theatre = 'theatre', university = 'university' }, class = 'amenity' },
+    }
+
+        -- calculate score value --
+    if object.tags.name then
+        score = score + 1
+    end
+    if object.tags.wikidata then
+        score = score + 1
+    end
+    if object.tags.wikipedia then
+        score = score + 1
+    end
+    if object.tags.wikimedia_commons then
+        score = score + 1
+    end
+    if object.tags.elem then
+        score = score + 1
+    end
+
+
+    local a = {
+        updated_at = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
+        name = object.tags.name,
+        geom = geom,
+        tags = object.tags,
+        elevation = object.tags.ele or nil,
+        class = '',
+        subclass = '',
+        score = score,
     }
 
     for _, mapping in ipairs(mappings) do

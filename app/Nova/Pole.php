@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Outl1ne\NovaTooltipField\Tooltip;
@@ -110,6 +111,20 @@ class Pole extends Resource
             Text::make('Destination', function () {
                 return wordwrap($this->destination, 50, '<br>', true);
             })->asHtml(),
+            Number::make('Score', 'score')
+                ->displayUsing(function ($value) {
+                    //return a star rating
+                    $stars = '';
+
+                    if ($value == 0 || $value == null) {
+                        return 'No rating';
+                    }
+                    for ($i = 0; $i < $value; $i++) {
+                        $stars .= '⭐';
+                    }
+
+                    return $stars;
+                })->sortable()->filterable(),
         ];
     }
 
