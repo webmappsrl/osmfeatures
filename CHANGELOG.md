@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/webmappsrl/osmfeatures/compare/v1.14.1...v1.15.0) (2024-04-12)
+
+
+### Features
+
+* added examples to api documentation ([774e634](https://github.com/webmappsrl/osmfeatures/commit/774e63413609e26beb273566a8bda274d5490640))
+
 ## [1.14.1](https://github.com/webmappsrl/osmfeatures/compare/v1.14.0...v1.14.1) (2024-04-12)
 
 
