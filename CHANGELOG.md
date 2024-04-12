@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.16.0](https://github.com/webmappsrl/osmfeatures/compare/v1.15.1...v1.16.0) (2024-04-12)
+
+
+### Features
+
+* added range filter for score column ([4c7a9a4](https://github.com/webmappsrl/osmfeatures/commit/4c7a9a4007bf3bb49b3366aa39909f7568a3a9b2))
+* added score ([e5d4c98](https://github.com/webmappsrl/osmfeatures/commit/e5d4c98dbc19024ec9385dd06c3c3d73da6ad31d))
+
 ## [1.15.1](https://github.com/webmappsrl/osmfeatures/compare/v1.15.0...v1.15.1) (2024-04-12)
 
 
