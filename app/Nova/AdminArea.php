@@ -106,6 +106,7 @@ class AdminArea extends Resource
                     for ($i = 0; $i < $value; $i++) {
                         $stars .= '⭐';
                     }
+
                     return $stars;
                 })->sortable()->filterable(),
         ];

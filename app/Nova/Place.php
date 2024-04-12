@@ -2,19 +2,19 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\Text;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Textarea;
-use Rpj\Daterangepicker\DateHelper;
 use App\Nova\Filters\ElevationFilter;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Code;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class Place extends Resource
 {
@@ -118,7 +118,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value . ' m';
+                        return $value.' m';
                     } else {
                         return ' ';
                     }
@@ -135,6 +135,7 @@ class Place extends Resource
                     for ($i = 0; $i < $value; $i++) {
                         $stars .= '⭐';
                     }
+
                     return $stars;
                 })->sortable()->filterable(),
 

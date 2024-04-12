@@ -2,17 +2,17 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\Text;
 use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
-use Rpj\Daterangepicker\DateHelper;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Outl1ne\NovaTooltipField\Tooltip;
+use Rpj\Daterangepicker\DateHelper;
+use Rpj\Daterangepicker\Daterangepicker;
 
 class HikingRoute extends Resource
 {
@@ -134,6 +134,7 @@ class HikingRoute extends Resource
                     for ($i = 0; $i < $value; $i++) {
                         $stars .= '⭐';
                     }
+
                     return $stars;
                 })->sortable()->filterable(),
         ];
