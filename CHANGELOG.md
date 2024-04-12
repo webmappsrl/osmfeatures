@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/webmappsrl/osmfeatures/compare/v1.14.0...v1.14.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* fixed swagger api documentation ([10be0cd](https://github.com/webmappsrl/osmfeatures/commit/10be0cd21ae30e7d84b230128d85259959dac5dd))
+
 ## [1.14.0](https://github.com/webmappsrl/osmfeatures/compare/v1.13.4...v1.14.0) (2024-04-10)
 
 
