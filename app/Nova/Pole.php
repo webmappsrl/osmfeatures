@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Date;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
 use App\Nova\Filters\PolesElevationFilter;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Pole extends Resource
@@ -110,7 +111,7 @@ class Pole extends Resource
             Text::make('Destination', function () {
                 return wordwrap($this->destination, 50, '<br>', true);
             })->asHtml(),
-            Text::make('Score', 'score')
+            Number::make('Score', 'score')
                 ->displayUsing(function ($value) {
                     //return a star rating
                     $stars = '';
@@ -122,7 +123,7 @@ class Pole extends Resource
                         $stars .= '⭐';
                     }
                     return $stars;
-                })->sortable()
+                })->sortable()->filterable(),
         ];
     }
 

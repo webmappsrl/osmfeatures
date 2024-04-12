@@ -2,18 +2,19 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\ElevationFilter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Textarea;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\DateHelper;
+use App\Nova\Filters\ElevationFilter;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Place extends Resource
 {
@@ -123,7 +124,7 @@ class Place extends Resource
                     }
                 }
             ),
-            Text::make('Score', 'score')
+            Number::make('Score', 'score')
                 ->displayUsing(function ($value) {
                     //return a star rating
                     $stars = '';
@@ -135,7 +136,7 @@ class Place extends Resource
                         $stars .= '⭐';
                     }
                     return $stars;
-                })->sortable()
+                })->sortable()->filterable(),
 
         ];
     }

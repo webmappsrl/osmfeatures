@@ -95,7 +95,7 @@ class AdminArea extends Resource
             )->asHtml(),
             Text::make('Level', 'admin_level')
                 ->sortable(),
-            Text::make('Score', 'score')
+            Number::make('Score', 'score')
                 ->displayUsing(function ($value) {
                     //return a star rating
                     $stars = '';
@@ -107,7 +107,7 @@ class AdminArea extends Resource
                         $stars .= '⭐';
                     }
                     return $stars;
-                })->sortable()
+                })->sortable()->filterable(),
         ];
     }
 
