@@ -87,7 +87,7 @@ class HikingRoute extends Resource
                     function ($value) {
                         return Carbon::parse($value)->toIso8601String();
                     }
-                )->hideFromIndex(),
+                ),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/pricetags-outline.svg'))
                 ->content(
@@ -100,7 +100,7 @@ class HikingRoute extends Resource
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinks();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center')->fullWidth(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);
                 $ref = $tags['ref'] ?? 'N/A';
