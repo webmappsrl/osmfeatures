@@ -41,5 +41,13 @@ jobs:
         run: php artisan config:clear
       - name: Optimize
         run: php artisan optimize
+      - name: Prepare Log File
+        run: mkdir -p storage/logs && touch storage/logs/test.log
       - name: Laravel Tests
-        run: php artisan test
+        run: php artisan test --log-events-verbose-text storage/logs/test.log
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: storage/logs/test.log

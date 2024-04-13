@@ -16,6 +16,8 @@ class AdminAreasApiTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $usingTestData = false;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -28,21 +30,42 @@ class AdminAreasApiTest extends TestCase
                     $table->string('name');
                     $table->bigInteger('osm_id');
                     $table->string('osm_type');
-                    $table->multiPolygon('geom');
-                    $table->text('admin_level');
+                    //create a geometry type table for the geom column
+                    $table->geometry('geom');
+                    $table->integer('admin_level');
+                    $table->integer('score');
                     $table->timestamps();
                 }
             );
             //create 200 admin areas
             for ($i = 0; $i < 200; $i++) {
+                $lat = rand(3600, 4700) / 100;
+                $lon = rand(600, 1900) / 100;
+
+                $polygon = sprintf(
+                    '((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
+                    $lon - 0.01,
+                    $lat - 0.01,  // Lower Left
+                    $lon + 0.01,
+                    $lat - 0.01,  // Lower Right
+                    $lon + 0.01,
+                    $lat + 0.01,  // Upper Right
+                    $lon - 0.01,
+                    $lat + 0.01,  // Upper Left
+                    $lon - 0.01,
+                    $lat - 0.01   // Closing at start point to complete the loop
+                );
+
                 DB::table('admin_areas')->insert([
                     'name' => 'Admin Area '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
-                    'admin_level' => '2'.$i,
+                    'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
+                    'admin_level' => rand(1, 11),
+                    'score' => rand(1, 4),
                 ]);
             }
+            $this->usingTestData = true;
         }
     }
 
@@ -119,10 +142,36 @@ class AdminAreasApiTest extends TestCase
      */
     public function list_admin_area_api_returns_correct_number_of_results_with_bbox()
     {
-        $response = $this->get('/api/v1/features/admin-areas/list?&bbox=-180%2C-90%2C180%2C90');
+        //italy bounding box
+        $bbox = '6.6273,36.619987,18.520601,47.095761';
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with admin_level parameter returns the correct results
+     * @test
+     */
+    public function list_admin_area_api_returns_correct_response_with_admin_level()
+    {
+        $response = $this->get('/api/v1/features/admin-areas/list?admin_level=8');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_admin_area_api_returns_correct_response_with_score()
+    {
+        $response = $this->get('/api/v1/features/admin-areas/list?score=3');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

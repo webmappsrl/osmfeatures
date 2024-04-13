@@ -64,6 +64,9 @@ class AdminAreaController extends Controller
 
         $updated_at = $request->query('updated_at');
         $bbox = $request->query('bbox');
+        $adminLevel = $request->query('admin_level');
+        $score = $request->query('score');
+        $isTest = $request->query('testdata');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
@@ -71,12 +74,23 @@ class AdminAreaController extends Controller
 
         if ($bbox) {
             $bbox = explode(',', $bbox);
-            // Check if the bbox is valid
             if (count($bbox) !== 4) {
-                return response()->json(['message' => 'Bounding box non valido'], 400);
+                return response()->json(['message' => 'Bounding box not valid'], 400);
             }
             $bbox = array_map('floatval', $bbox);
-            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            if ($isTest) {
+                $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            } else {
+                $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            }
+        }
+
+        if ($adminLevel) {
+            $query->where('admin_level', $adminLevel);
+        }
+
+        if ($score) {
+            $query->where('score', '>=', $score);
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
@@ -127,7 +141,8 @@ class AdminAreaController extends Controller
         $properties = $adminArea->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
+        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
 
         $geojsonFeature = [

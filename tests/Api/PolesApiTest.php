@@ -16,6 +16,8 @@ class PolesApiTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $usingTestData = false;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -45,23 +47,30 @@ class PolesApiTest extends TestCase
                 $table->string('ele')->nullable();
                 $table->string('destination')->nullable();
                 $table->string('support')->nullable();
+                $table->integer('score')->nullable();
             });
 
             //create 200 poles
             for ($i = 0; $i < 200; $i++) {
+                // generate random point inside Italy bounding box
+                $lat = rand(3600, 4700) / 100;
+                $lon = rand(600, 1900) / 100;
+
                 DB::table('poles')->insert([
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
                     'name' => 'Pole '.$i,
                     'tags' => json_encode(['tag' => 'value']),
-                    'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
+                    'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'ref' => 'ref',
-                    'ele' => 'ele',
+                    'ele' => '1000',
                     'destination' => 'destination',
                     'support' => 'support',
+                    'score' => rand(1, 5),
                 ]);
             }
+            $this->usingTestData = true;
         }
     }
 
@@ -138,10 +147,24 @@ class PolesApiTest extends TestCase
      */
     public function list_poles_api_returns_correct_number_of_results_with_bbox()
     {
-        $response = $this->get('/api/v1/features/poles/list?&bbox=-180%2C-90%2C180%2C90');
+        //italy bounding box
+        $bbox = '6.6273,36.619987,18.520601,47.095761';
+        $response = $this->get('/api/v1/features/poles/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_poles_api_returns_correct_response_with_score()
+    {
+        $response = $this->get('/api/v1/features/poles/list?score=1');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

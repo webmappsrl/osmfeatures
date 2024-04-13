@@ -13,6 +13,8 @@ class HikingRoutesApiTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $usingTestData = false;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -71,6 +73,7 @@ class HikingRoutesApiTest extends TestCase
                     $table->dateTime('updated_at')->nullable();
                     $table->text('cai_scale')->nullable();
                     $table->integer('osm2cai_status')->nullable();
+                    $table->integer('score')->nullable();
                     $table->text('osmc_symbol')->nullable();
                     $table->text('network')->nullable();
                     $table->text('survey_date')->nullable();
@@ -108,14 +111,28 @@ class HikingRoutesApiTest extends TestCase
             );
             //create 200 hiking routes
             for ($i = 0; $i < 200; $i++) {
+                $startLat = rand(3600, 4700) / 100; // Generate random latitude within bounds
+                $startLon = rand(600, 1900) / 100; // Generate random longitude within bounds
+
+                // Define a simple path by incrementing longitude and latitude
+                $coords = [];
+                for ($j = 0; $j < 5; $j++) {
+                    $coords[] = sprintf('%.2f %.2f', $startLon + 0.01 * $j, $startLat + 0.01 * $j);
+                }
+                $lineString = implode(', ', $coords);
+
+                $geomText = "MULTILINESTRING(($lineString))";
+
                 DB::table('hiking_routes')->insert([
                     'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
+                    'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
                     'updated_at' => now(),
+                    'score' => rand(1, 7),
                 ]);
             }
+            $this->usingTestData = true;
         }
     }
 
@@ -192,10 +209,24 @@ class HikingRoutesApiTest extends TestCase
      */
     public function list_hiking_routes_api_returns_correct_number_of_results_with_bbox()
     {
-        $response = $this->get('/api/v1/features/hiking-routes/list?&bbox=-180%2C-90%2C180%2C90');
+        //italy bounding box
+        $bbox = '6.6273,36.619987,18.520601,47.095761';
+        $response = $this->get('/api/v1/features/hiking-routes/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_hiking_routes_api_returns_correct_number_of_results_with_score()
+    {
+        $response = $this->get('/api/v1/features/hiking-routes/list?score=1');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

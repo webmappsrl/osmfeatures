@@ -51,6 +51,8 @@ class PlaceController extends Controller
         $updated_at = $request->query('updated_at');
         $perPage = 100;
         $bbox = $request->query('bbox');
+        $score = $request->query('score');
+        $isTest = $request->query('testdata');
 
         $query = DB::table('places');
 
@@ -65,7 +67,15 @@ class PlaceController extends Controller
                 return response()->json(['message' => 'Bounding box non valido'], 400);
             }
             $bbox = array_map('floatval', $bbox);
-            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            if ($isTest) {
+                $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            } else {
+                $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            }
+        }
+
+        if ($score) {
+            $query->where('score', '>=', $score);
         }
 
         $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
@@ -115,7 +125,8 @@ class PlaceController extends Controller
         $properties = $place->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
+        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
+        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
         $properties['osm_tags'] = json_decode($place->tags, true);
 
         $geojsonFeature = [

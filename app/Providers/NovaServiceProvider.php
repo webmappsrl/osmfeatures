@@ -32,14 +32,16 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::dashboard(Features::class),
                 ])->icon('chart-bar')->collapsable(),
                 MenuSection::make('Features', [
-                    MenuItem::make('Hiking Routes', 'resources/hiking-routes'),
-                    MenuItem::make('Poles', 'resources/poles'),
                     MenuItem::make('Admin Areas', 'resources/admin-areas'),
                     MenuItem::make('Places', 'resources/places'),
+                    MenuItem::make('Hiking Routes', 'resources/hiking-routes'),
+                    MenuItem::make('Poles', 'resources/poles'),
                     MenuGroup::make('Admin', [])->collapsable(),
                 ])->icon('globe')->collapsable(),
                 MenuSection::make('Admin', [
                     MenuItem::make('Users', 'users'),
+                    //create a link menu item
+                    MenuItem::make('API', url('/api/documentation'))->external()->openInNewTab(),
                 ])->icon('users')->collapsable(),
             ];
         });
