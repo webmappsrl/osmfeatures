@@ -19,7 +19,8 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Admin Area updated after this date. Example parameter = 2021-01-01T00:00:00Z",
+                        "description": "Admin Area updated after this date.",
+                        "example": "2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -28,7 +29,8 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "example": 6,
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -37,7 +39,8 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Admin Areas by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
+                        "description": "Bounding box to filter Admin Areas by.",
+                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -128,6 +131,10 @@
                                                 },
                                                 "osm_url": {
                                                     "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
                                                     "description": "URL to the OSM API for the object"
                                                 },
                                                 "osm_tags": {
@@ -153,6 +160,7 @@
                                             "name": "Admin Area",
                                             "admin_level": "6",
                                             "osm_url": "https://www.openstreetmap.org/relation/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "type": "boundary",
                                                 "boundary": "administrative"
@@ -191,7 +199,8 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Places updated after this date. Example parameter = 2021-01-01T00:00:00Z",
+                        "description": "Places updated after this date.",
+                        "example": "2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -200,7 +209,8 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "example": 6,
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -209,7 +219,8 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Places by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
+                        "description": "Bounding box to filter Places by.",
+                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -308,6 +319,10 @@
                                                 },
                                                 "osm_url": {
                                                     "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
                                                     "description": "URL to the OSM API for the object"
                                                 },
                                                 "osm_tags": {
@@ -335,6 +350,7 @@
                                             "subclass": "restaurant",
                                             "elevation": 1000,
                                             "osm_url": "https://www.openstreetmap.org/node/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "amenity": "restaurant"
                                             }
@@ -364,7 +380,8 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Hiking Routes updated after this date. Example parameter = 2021-01-01T00:00:00Z",
+                        "description": "Hiking Routes updated after this date.",
+                        "example": "2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -373,7 +390,8 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
+                        "description": "Page number to retrieve. Each page contains 100 results",
+                        "example": 6,
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -382,7 +400,8 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Hiking Routes by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
+                        "description": "Bounding box to filter Hiking Routes by.",
+                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -609,6 +628,10 @@
 
                                                 "osm_url": {
                                                     "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
                                                     "description": "URL to the OSM API for the object"
                                                 },
                                                 "osm_tags": {
@@ -634,6 +657,7 @@
                                             "name": "Hiking Route",
                                             "admin_level": "6",
                                             "osm_url": "https://www.openstreetmap.org/relation/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "type": "route",
                                                 "route": "hiking"
@@ -667,7 +691,8 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Poles updated after this date. Example parameter = 2021-01-01T00:00:00Z",
+                        "description": "Poles updated after this date.",
+                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -676,7 +701,8 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
+                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "example": 6,
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -685,7 +711,8 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Poles by. Example parameter(Italy bounding box)= [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
+                        "description": "Bounding box to filter Poles by.",
+                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -788,6 +815,10 @@
                                                 },
                                                 "osm_url": {
                                                     "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
                                                     "description": "URL to the OSM API for the object"
                                                 },
                                                 "osm_tags": {
@@ -816,6 +847,7 @@
                                             "destination": "Destination",
                                             "support": "Support",
                                             "osm_url": "https://www.openstreetmap.org/node/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "amenity": "restaurant"
                                             }

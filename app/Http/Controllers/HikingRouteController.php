@@ -117,7 +117,8 @@ class HikingRouteController extends Controller
         $properties = $hikingRoute->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
+        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id";
+        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
         $properties['osm_tags'] = json_decode($hikingRoute->tags, true);
         $properties['members'] = json_decode($hikingRoute->members, true);
 
