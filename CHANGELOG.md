@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.17.0](https://github.com/webmappsrl/osmfeatures/compare/v1.16.0...v1.17.0) (2024-04-13)
+
+
+### Features
+
+* added api menu to nova sidebar ([c8e98b7](https://github.com/webmappsrl/osmfeatures/commit/c8e98b73d3410fa3dcbe3eb69972afab11a0c64d))
+* added example value for parameters in api documentation ([a30ade7](https://github.com/webmappsrl/osmfeatures/commit/a30ade745f225138aad4309e36696d9835172c01))
+* added optional admin_level parameter to admin area list api. Updated tests ([846da88](https://github.com/webmappsrl/osmfeatures/commit/846da8841df93c191d1a9884d48d6934b98715d2))
+* added score parameter to admin areas list api and updated api documentation and tests ([8e66bf9](https://github.com/webmappsrl/osmfeatures/commit/8e66bf961cdf8664d779feffa89491a9ee0d0453))
+* updated list apis to include optional score parameter. Updated api documentation and tests ([3b6bd2a](https://github.com/webmappsrl/osmfeatures/commit/3b6bd2ae6c5736bfd0c0a14bbd8beb624ae657b6))
+
+
+### Bug Fixes
+
+* test fix v1 ([d098349](https://github.com/webmappsrl/osmfeatures/commit/d098349bf24ee51fa5beaf7ea24c41f8c766e195))
+
 ## [1.16.0](https://github.com/webmappsrl/osmfeatures/compare/v1.15.1...v1.16.0) (2024-04-12)
 
 
