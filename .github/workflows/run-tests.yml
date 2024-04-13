@@ -42,4 +42,9 @@ jobs:
       - name: Optimize
         run: php artisan optimize
       - name: Laravel Tests
-        run: php artisan test
+        run: php artisan test --log-events-verbose-text storage/logs/test.log
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: storage/logs/test.log
