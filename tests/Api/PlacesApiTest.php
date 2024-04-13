@@ -28,7 +28,7 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (!Schema::hasTable('places')) {
+        if (! Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -51,7 +51,7 @@ class PlacesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place ' . $i,
+                    'name' => 'Place '.$i,
                     'class' => 'class',
                     'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
                     'tags' => json_encode(['tag' => 'value']),
