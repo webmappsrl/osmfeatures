@@ -19,7 +19,7 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Admin Area updated after this date",
+                        "description": "Admin Area updated after this date. Example parameter = 2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -28,7 +28,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -37,7 +37,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Admin Areas by",
+                        "description": "Bounding box to filter Admin Areas by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -191,7 +191,7 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Places updated after this date",
+                        "description": "Places updated after this date. Example parameter = 2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -200,7 +200,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -209,7 +209,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Places by",
+                        "description": "Bounding box to filter Places by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -364,7 +364,7 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Hiking Routes updated after this date",
+                        "description": "Hiking Routes updated after this date. Example parameter = 2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -373,7 +373,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -382,7 +382,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Hiking Routes by",
+                        "description": "Bounding box to filter Hiking Routes by. Example parameter(Italy bounding box) = [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -667,7 +667,7 @@
                     {
                         "name": "updated_at",
                         "in": "query",
-                        "description": "Poles updated after this date",
+                        "description": "Poles updated after this date. Example parameter = 2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -676,7 +676,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number to retrieve. Each page contains 100 results.",
+                        "description": "Page number to retrieve. Each page contains 100 results. Example parameter = 6",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -685,7 +685,7 @@
                     {
                         "name": "bbox",
                         "in": "query",
-                        "description": "Bounding box to filter Poles by",
+                        "description": "Bounding box to filter Poles by. Example parameter(Italy bounding box)= [6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
                         "required": false,
                         "schema": {
                             "type": "string"
