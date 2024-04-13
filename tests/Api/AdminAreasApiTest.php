@@ -20,7 +20,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (! Schema::hasTable('admin_areas')) {
+        if (!Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -40,23 +40,24 @@ class AdminAreasApiTest extends TestCase
                 $lon = rand(600, 1900) / 100;
 
                 $polygon = sprintf(
-                    'POLYGON((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
+                    '((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
                     $lon - 0.01,
-                    $lat - 0.01,  // Inferiore Sinistra
+                    $lat - 0.01,  // Lower Left
                     $lon + 0.01,
-                    $lat - 0.01,  // Inferiore Destra
+                    $lat - 0.01,  // Lower Right
                     $lon + 0.01,
-                    $lat + 0.01,  // Superiore Destra
+                    $lat + 0.01,  // Upper Right
                     $lon - 0.01,
-                    $lat + 0.01,  // Superiore Sinistra
+                    $lat + 0.01,  // Upper Left
                     $lon - 0.01,
-                    $lat - 0.01   // Chiusura al punto di partenza
+                    $lat - 0.01   // Closing at start point to complete the loop
                 );
+
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
+                    'name' => 'Admin Area ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON((($polygon)))')"),
+                    'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
                     'admin_level' => rand(1, 11),
                     'score' => rand(1, 4),
                 ]);

@@ -109,34 +109,23 @@ class HikingRoutesApiTest extends TestCase
             );
             //create 200 hiking routes
             for ($i = 0; $i < 200; $i++) {
-                // Generate a casual starting point in Italy
-                $startLat = rand(3600, 4700) / 100;
-                $startLon = rand(600, 1900) / 100;
+                $startLat = rand(3600, 4700) / 100; // Generate random latitude within bounds
+                $startLon = rand(600, 1900) / 100; // Generate random longitude within bounds
 
-                $midLat1 = $startLat + 0.05;
-                $midLon1 = $startLon + 0.05;
-                $midLat2 = $midLat1 + 0.05;
-                $midLon2 = $midLon1 + 0.05;
-                $endLat = $midLat2 + 0.05;
-                $endLon = $midLon2 + 0.05;
+                // Define a simple path by incrementing longitude and latitude
+                $coords = [];
+                for ($j = 0; $j < 5; $j++) {
+                    $coords[] = sprintf("%.2f %.2f", $startLon + 0.01 * $j, $startLat + 0.01 * $j);
+                }
+                $lineString = implode(", ", $coords);
 
-                $lineString = sprintf(
-                    '((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
-                    $startLon,
-                    $startLat,
-                    $midLon1,
-                    $midLat1,
-                    $midLon2,
-                    $midLat2,
-                    $endLon,
-                    $endLat
-                );
+                $geomText = "MULTILINESTRING(($lineString))";
 
                 DB::table('hiking_routes')->insert([
                     'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => DB::raw("ST_GeomFromText('MULTILINESTRING($lineString)')"),
+                    'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
                     'updated_at' => now(),
                     'score' => rand(1, 7),
                 ]);
