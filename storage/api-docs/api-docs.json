@@ -45,6 +45,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "admin_level",
+                        "in": "query",
+                        "description": "Administrative level of the area.",
+                        "example": "8",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {

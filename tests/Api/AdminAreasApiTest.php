@@ -20,7 +20,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (! Schema::hasTable('admin_areas')) {
+        if (!Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -36,11 +36,11 @@ class AdminAreasApiTest extends TestCase
             //create 200 admin areas
             for ($i = 0; $i < 200; $i++) {
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
+                    'name' => 'Admin Area ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
-                    'admin_level' => '2'.$i,
+                    'admin_level' => '2' . $i,
                 ]);
             }
         }
@@ -130,5 +130,17 @@ class AdminAreasApiTest extends TestCase
         Schema::dropIfExists('temp_admin_areas');
 
         parent::tearDown();
+    }
+
+    /**
+     * Test if the http call with admin_level parameter returns the correct results
+     * @test
+     */
+    public function list_admin_area_api_returns_correct_response()
+    {
+        $response = $this->get('/api/v1/features/admin-areas/list?admin_level=8');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 }
