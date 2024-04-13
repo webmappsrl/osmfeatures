@@ -28,7 +28,7 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (!Schema::hasTable('places')) {
+        if (! Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -56,7 +56,7 @@ class PlacesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place ' . $i,
+                    'name' => 'Place '.$i,
                     'class' => 'class',
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'tags' => json_encode(['tag' => 'value']),
@@ -141,7 +141,7 @@ class PlacesApiTest extends TestCase
     public function list_places_api_returns_correct_number_of_results_with_bbox()
     {
         $bbox = '-180,-90,180,90';
-        $response = $this->get('/api/v1/features/places/list?bbox=' . $bbox);
+        $response = $this->get('/api/v1/features/places/list?bbox='.$bbox);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');

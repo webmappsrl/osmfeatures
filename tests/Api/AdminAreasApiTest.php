@@ -139,7 +139,7 @@ class AdminAreasApiTest extends TestCase
     public function list_admin_area_api_returns_correct_number_of_results_with_bbox()
     {
         $bbox = '-180,-90,180,90';
-        $response = $this->get('/api/v1/features/admin-areas/list?bbox=' . $bbox);
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
