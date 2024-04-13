@@ -41,6 +41,8 @@ jobs:
         run: php artisan config:clear
       - name: Optimize
         run: php artisan optimize
+      - name: Prepare Log File
+        run: touch storage/logs/test.log
       - name: Laravel Tests
         run: php artisan test --log-events-verbose-text storage/logs/test.log
       - name: Upload Test Results
