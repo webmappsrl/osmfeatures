@@ -59,7 +59,7 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        if (!Schema::hasTable('hiking_routes')) {
+        if (! Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -133,7 +133,7 @@ class HikingRoutesApiTest extends TestCase
                 );
 
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route ' . $i,
+                    'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTILINESTRING($lineString)')"),
