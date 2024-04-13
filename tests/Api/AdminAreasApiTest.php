@@ -20,7 +20,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (!Schema::hasTable('admin_areas')) {
+        if (! Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -54,7 +54,7 @@ class AdminAreasApiTest extends TestCase
                 );
 
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area ' . $i,
+                    'name' => 'Admin Area '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),

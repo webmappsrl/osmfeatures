@@ -115,9 +115,9 @@ class HikingRoutesApiTest extends TestCase
                 // Define a simple path by incrementing longitude and latitude
                 $coords = [];
                 for ($j = 0; $j < 5; $j++) {
-                    $coords[] = sprintf("%.2f %.2f", $startLon + 0.01 * $j, $startLat + 0.01 * $j);
+                    $coords[] = sprintf('%.2f %.2f', $startLon + 0.01 * $j, $startLat + 0.01 * $j);
                 }
-                $lineString = implode(", ", $coords);
+                $lineString = implode(', ', $coords);
 
                 $geomText = "MULTILINESTRING(($lineString))";
 
