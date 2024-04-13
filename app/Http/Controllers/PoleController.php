@@ -61,6 +61,7 @@ class PoleController extends Controller
         $bbox = $request->query('bbox');
         $score = $request->query('score');
         $query = DB::table('poles');
+        $isTest = $request->query('testdata');
 
         if ($updated_after) {
             $query->where('updated_at', '>', $updated_after);
@@ -73,7 +74,11 @@ class PoleController extends Controller
                 return response()->json(['message' => 'Bounding box non valido'], 400);
             }
             $bbox = array_map('floatval', $bbox);
-            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            if ($isTest) {
+                $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            } else {
+                $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            }
         }
 
         if ($score) {
@@ -113,7 +118,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('id', $id)->first();
 
-        if (! $pole) {
+        if (!$pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;

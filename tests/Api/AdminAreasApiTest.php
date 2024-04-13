@@ -16,11 +16,13 @@ class AdminAreasApiTest extends TestCase
 {
     use DatabaseTransactions;
 
+    private $usingTestData = false;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        if (! Schema::hasTable('admin_areas')) {
+        if (!Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -28,7 +30,8 @@ class AdminAreasApiTest extends TestCase
                     $table->string('name');
                     $table->bigInteger('osm_id');
                     $table->string('osm_type');
-                    $table->multiPolygon('geom');
+                    //create a geometry type table for the geom column
+                    $table->geometry('geom');
                     $table->integer('admin_level');
                     $table->integer('score');
                     $table->timestamps();
@@ -54,7 +57,7 @@ class AdminAreasApiTest extends TestCase
                 );
 
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
+                    'name' => 'Admin Area ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
@@ -62,6 +65,7 @@ class AdminAreasApiTest extends TestCase
                     'score' => rand(1, 4),
                 ]);
             }
+            $this->usingTestData = true;
         }
     }
 
@@ -138,8 +142,9 @@ class AdminAreasApiTest extends TestCase
      */
     public function list_admin_area_api_returns_correct_number_of_results_with_bbox()
     {
-        $bbox = '-180,-90,180,90';
-        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox);
+        //italy bounding box
+        $bbox = '6.6273,36.619987,18.520601,47.095761';
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');

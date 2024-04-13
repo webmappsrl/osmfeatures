@@ -54,6 +54,7 @@ class HikingRouteController extends Controller
         $perPage = 100;
         $bbox = $request->query('bbox');
         $score = $request->query('score');
+        $isTest = $request->query('testdata');
 
         $query = DB::table('hiking_routes');
 
@@ -68,7 +69,11 @@ class HikingRouteController extends Controller
                 return response()->json(['message' => 'Bounding box non valido'], 400);
             }
             $bbox = array_map('floatval', $bbox);
-            $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            if ($isTest) {
+                $query->whereRaw('ST_Intersects(geom, ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            } else {
+                $query->whereRaw('ST_Intersects(ST_Transform(geom, 4326), ST_MakeEnvelope(?, ?, ?, ?, 4326))', [$bbox[0], $bbox[1], $bbox[2], $bbox[3]]);
+            }
         }
 
         if ($score) {
