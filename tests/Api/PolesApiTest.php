@@ -32,7 +32,7 @@ class PolesApiTest extends TestCase
         // 10	destination	text	YES	NULL	NULL		NULL
         // 11	support	text	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('poles')) {
+        if (!Schema::hasTable('poles')) {
             Schema::create('poles', function (Blueprint $table) {
                 $table->string('osm_type');
                 $table->bigInteger('osm_id');
@@ -53,7 +53,7 @@ class PolesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Pole '.$i,
+                    'name' => 'Pole ' . $i,
                     'tags' => json_encode(['tag' => 'value']),
                     'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
                     'ref' => 'ref',
@@ -142,6 +142,18 @@ class PolesApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_poles_api_returns_correct_response_with_score()
+    {
+        $response = $this->get('/api/v1/features/poles/list?score=1');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

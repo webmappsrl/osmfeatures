@@ -28,7 +28,7 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('places')) {
+        if (!Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -51,7 +51,7 @@ class PlacesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place '.$i,
+                    'name' => 'Place ' . $i,
                     'class' => 'class',
                     'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
                     'tags' => json_encode(['tag' => 'value']),
@@ -138,6 +138,18 @@ class PlacesApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_places_api_returns_correct_response_with_score()
+    {
+        $response = $this->get('/api/v1/features/places/list?score=2');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

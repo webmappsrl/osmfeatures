@@ -245,6 +245,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "score",
+                        "in": "query",
+                        "description": "Places that have score greater than or equal to the specified value. Max score is 5.",
+                        "example": "2",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -425,6 +435,16 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "score",
+                        "in": "query",
+                        "description": "Hiking Routes that have score greater than or equal to the specified value. Max score is 8.",
+                        "example": "2",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -736,6 +756,16 @@
                         "required": false,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "score",
+                        "in": "query",
+                        "description": "Poles that have score greater than or equal to the specified value. Max score is 5.",
+                        "example": "2",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],

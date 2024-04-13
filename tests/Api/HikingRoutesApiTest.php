@@ -59,7 +59,7 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('hiking_routes')) {
+        if (!Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -109,7 +109,7 @@ class HikingRoutesApiTest extends TestCase
             //create 200 hiking routes
             for ($i = 0; $i < 200; $i++) {
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route '.$i,
+                    'name' => 'Hiking Route ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
@@ -196,6 +196,18 @@ class HikingRoutesApiTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_hiking_routes_api_returns_correct_number_of_results_with_score()
+    {
+        $response = $this->get('/api/v1/features/hiking-routes/list?score=1');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
     }
 
     public function tearDown(): void

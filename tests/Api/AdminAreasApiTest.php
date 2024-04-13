@@ -125,13 +125,6 @@ class AdminAreasApiTest extends TestCase
         $response->assertJsonCount(100, 'data');
     }
 
-    public function tearDown(): void
-    {
-        Schema::dropIfExists('temp_admin_areas');
-
-        parent::tearDown();
-    }
-
     /**
      * Test if the http call with admin_level parameter returns the correct results
      * @test
@@ -154,5 +147,27 @@ class AdminAreasApiTest extends TestCase
 
         $response->assertStatus(200);
         $this->assertNotEquals(0, count($response->json()['data']));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function tearDown(): void
+    {
+        Schema::dropIfExists('temp_admin_areas');
+
+        parent::tearDown();
     }
 }
