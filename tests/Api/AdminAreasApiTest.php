@@ -36,11 +36,27 @@ class AdminAreasApiTest extends TestCase
             );
             //create 200 admin areas
             for ($i = 0; $i < 200; $i++) {
+                $lat = rand(3600, 4700) / 100;
+                $lon = rand(600, 1900) / 100;
+
+                $polygon = sprintf(
+                    'POLYGON((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
+                    $lon - 0.01,
+                    $lat - 0.01,  // Inferiore Sinistra
+                    $lon + 0.01,
+                    $lat - 0.01,  // Inferiore Destra
+                    $lon + 0.01,
+                    $lat + 0.01,  // Superiore Destra
+                    $lon - 0.01,
+                    $lat + 0.01,  // Superiore Sinistra
+                    $lon - 0.01,
+                    $lat - 0.01   // Chiusura al punto di partenza
+                );
                 DB::table('admin_areas')->insert([
                     'name' => 'Admin Area '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => DB::raw('ST_GeomFromText(\'MULTIPOLYGON(((-180 -90, 180 -90, 180 90, -180 90, -180 -90)))\')'),
+                    'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON((($polygon)))')"),
                     'admin_level' => rand(1, 11),
                     'score' => rand(1, 4),
                 ]);

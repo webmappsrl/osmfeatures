@@ -32,7 +32,7 @@ class PolesApiTest extends TestCase
         // 10	destination	text	YES	NULL	NULL		NULL
         // 11	support	text	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('poles')) {
+        if (!Schema::hasTable('poles')) {
             Schema::create('poles', function (Blueprint $table) {
                 $table->string('osm_type');
                 $table->bigInteger('osm_id');
@@ -50,15 +50,19 @@ class PolesApiTest extends TestCase
 
             //create 200 poles
             for ($i = 0; $i < 200; $i++) {
+                // generate random point inside Italy bounding box
+                $lat = rand(3600, 4700) / 100;
+                $lon = rand(600, 1900) / 100;
+
                 DB::table('poles')->insert([
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Pole '.$i,
+                    'name' => 'Pole ' . $i,
                     'tags' => json_encode(['tag' => 'value']),
-                    'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
+                    'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'ref' => 'ref',
-                    'ele' => 'ele',
+                    'ele' => '1000',
                     'destination' => 'destination',
                     'support' => 'support',
                     'score' => rand(1, 5),

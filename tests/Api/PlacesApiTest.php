@@ -28,7 +28,7 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('places')) {
+        if (!Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -48,15 +48,19 @@ class PlacesApiTest extends TestCase
 
             //create 200 places
             for ($i = 0; $i < 200; $i++) {
+                // generate random point inside Italy bounding box
+                $lat = rand(3600, 4700) / 100;
+                $lon = rand(600, 1900) / 100;
+
                 DB::table('places')->insert([
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place '.$i,
+                    'name' => 'Place ' . $i,
                     'class' => 'class',
-                    'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
+                    'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'tags' => json_encode(['tag' => 'value']),
-                    'elevation' => 100,
+                    'elevation' => rand(50, 300),
                     'score' => rand(1, 5),
                 ]);
             }
