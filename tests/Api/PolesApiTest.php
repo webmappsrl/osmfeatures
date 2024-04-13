@@ -45,6 +45,7 @@ class PolesApiTest extends TestCase
                 $table->string('ele')->nullable();
                 $table->string('destination')->nullable();
                 $table->string('support')->nullable();
+                $table->integer('score')->nullable();
             });
 
             //create 200 poles
@@ -60,6 +61,7 @@ class PolesApiTest extends TestCase
                     'ele' => 'ele',
                     'destination' => 'destination',
                     'support' => 'support',
+                    'score' => rand(1, 5),
                 ]);
             }
         }

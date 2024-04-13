@@ -71,6 +71,7 @@ class HikingRoutesApiTest extends TestCase
                     $table->dateTime('updated_at')->nullable();
                     $table->text('cai_scale')->nullable();
                     $table->integer('osm2cai_status')->nullable();
+                    $table->integer('score')->nullable();
                     $table->text('osmc_symbol')->nullable();
                     $table->text('network')->nullable();
                     $table->text('survey_date')->nullable();
@@ -112,8 +113,9 @@ class HikingRoutesApiTest extends TestCase
                     'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => 'SRID=4326;MULTILINESTRING((0 0, 1 1, 2 2))',
+                    'geom' => DB::raw('ST_GeomFromText(\'MULTILINESTRING((-180 -90, 180 -90, 180 90, -180 90))\')'),
                     'updated_at' => now(),
+                    'score' => rand(1, 7),
                 ]);
             }
         }

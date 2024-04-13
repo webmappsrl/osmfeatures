@@ -20,7 +20,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (! Schema::hasTable('admin_areas')) {
+        if (!Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -29,18 +29,20 @@ class AdminAreasApiTest extends TestCase
                     $table->bigInteger('osm_id');
                     $table->string('osm_type');
                     $table->multiPolygon('geom');
-                    $table->text('admin_level');
+                    $table->integer('admin_level');
+                    $table->integer('score');
                     $table->timestamps();
                 }
             );
             //create 200 admin areas
             for ($i = 0; $i < 200; $i++) {
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
+                    'name' => 'Admin Area ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
-                    'geom' => 'SRID=4326;MULTIPOLYGON(((-1 -1, 1 -1, 1 1, -1 1, -1 -1)))',
-                    'admin_level' => '2'.$i,
+                    'geom' => DB::raw('ST_GeomFromText(\'MULTIPOLYGON(((-180 -90, 180 -90, 180 90, -180 90, -180 -90)))\')'),
+                    'admin_level' => rand(1, 11),
+                    'score' => rand(1, 4),
                 ]);
             }
         }

@@ -42,6 +42,7 @@ class PlacesApiTest extends TestCase
                     $table->point('geom');
                     $table->jsonb('tags')->nullable();
                     $table->integer('elevation')->nullable();
+                    $table->integer('score')->nullable();
                 }
             );
 
@@ -56,6 +57,7 @@ class PlacesApiTest extends TestCase
                     'geom' => DB::raw('ST_GeomFromText(\'POINT(0 0)\')'),
                     'tags' => json_encode(['tag' => 'value']),
                     'elevation' => 100,
+                    'score' => rand(1, 5),
                 ]);
             }
         }
