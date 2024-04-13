@@ -136,9 +136,21 @@ class AdminAreasApiTest extends TestCase
      * Test if the http call with admin_level parameter returns the correct results
      * @test
      */
-    public function list_admin_area_api_returns_correct_response()
+    public function list_admin_area_api_returns_correct_response_with_admin_level()
     {
         $response = $this->get('/api/v1/features/admin-areas/list?admin_level=8');
+
+        $response->assertStatus(200);
+        $this->assertNotEquals(0, count($response->json()['data']));
+    }
+
+    /**
+     * Test if the http call with score parameter returns the correct results
+     * @test
+     */
+    public function list_admin_area_api_returns_correct_response_with_score()
+    {
+        $response = $this->get('/api/v1/features/admin-areas/list?score=3');
 
         $response->assertStatus(200);
         $this->assertNotEquals(0, count($response->json()['data']));

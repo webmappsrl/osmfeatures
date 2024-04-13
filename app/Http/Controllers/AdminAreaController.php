@@ -65,6 +65,7 @@ class AdminAreaController extends Controller
         $updated_at = $request->query('updated_at');
         $bbox = $request->query('bbox');
         $adminLevel = $request->query('admin_level');
+        $score = $request->query('score');
 
         if ($updated_at) {
             $query->where('updated_at', '>', $updated_at);
@@ -82,6 +83,10 @@ class AdminAreaController extends Controller
 
         if ($adminLevel) {
             $query->where('admin_level', $adminLevel);
+        }
+
+        if ($score) {
+            $query->where('score', '>=', $score);
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);

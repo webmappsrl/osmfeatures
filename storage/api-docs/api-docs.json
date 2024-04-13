@@ -55,6 +55,16 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "score",
+                        "in": "query",
+                        "description": "Admin areas that have score greater than or equal to the specified value. Max score is 4.",
+                        "example": "2",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
