@@ -61,7 +61,7 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        if (!Schema::hasTable('hiking_routes')) {
+        if (! Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -124,7 +124,7 @@ class HikingRoutesApiTest extends TestCase
                 $geomText = "MULTILINESTRING(($lineString))";
 
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route ' . $i,
+                    'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
@@ -211,7 +211,7 @@ class HikingRoutesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/hiking-routes/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
+        $response = $this->get('/api/v1/features/hiking-routes/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');

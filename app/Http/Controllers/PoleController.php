@@ -118,7 +118,7 @@ class PoleController extends Controller
     {
         $pole = Pole::where('id', $id)->first();
 
-        if (!$pole) {
+        if (! $pole) {
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
