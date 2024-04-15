@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.18.0](https://github.com/webmappsrl/osmfeatures/compare/v1.17.0...v1.18.0) (2024-04-15)
+
+
+### Features
+
+* added admin areas osm api endpoint. Added tests and updated api docs ([9b0bdb2](https://github.com/webmappsrl/osmfeatures/commit/9b0bdb2cb24bc3724cae16a5bcd7643ce9ddb30b))
+* added hiking-routes osm api endpoint. Added tests and updated api doc ([960c545](https://github.com/webmappsrl/osmfeatures/commit/960c545b348a52bd954ed7e8daf32bbef8b338c4))
+* added places osm api enpoint. Added tests and updated api docs ([058da89](https://github.com/webmappsrl/osmfeatures/commit/058da895ae3b898c731c0c5a55b9cbc58e19a1c7))
+* added pole wiki fields to single feature api. updated documentation and tests ([e1a0453](https://github.com/webmappsrl/osmfeatures/commit/e1a0453fc03c57def560d88268ffe7b66a7bf148))
+* added poles osm api endpoints. Added tests and updated api doc ([fe866da](https://github.com/webmappsrl/osmfeatures/commit/fe866da9613693d157e24b1b9241d847509934b4))
+* added wiki field to single feature hiking routes api. updated documentation and tests ([1d309ab](https://github.com/webmappsrl/osmfeatures/commit/1d309abb48b93027057775e40a3915055f04d223))
+* added wiki fields to admin areas single feature api. Updated documentation ([46c580b](https://github.com/webmappsrl/osmfeatures/commit/46c580b3fe49cd52d4462706408f16b8fa39a78b))
+* added wiki links for places single feature api. updated tests and documentation. Updated osmtagsprocessor trait ([5730c2b](https://github.com/webmappsrl/osmfeatures/commit/5730c2bc90b6b206f053f51bb94b3afbaf8f20eb))
+* single feature api test implemented ([7f1a9e8](https://github.com/webmappsrl/osmfeatures/commit/7f1a9e87eacf98fa53e5be68d769c93c8146af43))
+* updated api doc ([b7fee29](https://github.com/webmappsrl/osmfeatures/commit/b7fee29c4214ad871961240bccf1cbbe465b0f07))
+
+
+### Bug Fixes
+
+* deleted double elevation value in pole api ([427934b](https://github.com/webmappsrl/osmfeatures/commit/427934b0442b9a06c4d80fc0af62ef7c518c4223))
+* fixed updated_at format to iso8601 and fixed tests ([9e7d628](https://github.com/webmappsrl/osmfeatures/commit/9e7d628e736080bc1476020528aff6132498486c))
+
 ## [1.17.0](https://github.com/webmappsrl/osmfeatures/compare/v1.16.0...v1.17.0) (2024-04-13)
 
 
