@@ -189,15 +189,15 @@ class AdminAreaController extends Controller
      *     )
      * )
      */
-    public function osm(string $osmtype, int $osmid)
+    public function osm(string $osmType, int $osmid)
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
 
-        if (!in_array($osmtype, $acceptedOsmtypes)) {
+        if (!in_array($osmType, $acceptedOsmtypes)) {
             return response()->json(['message' => 'Bad Request'], 404);
         }
 
-        $adminArea = AdminArea::where('osm_type', strtoupper(substr($osmtype, 0, 1)))
+        $adminArea = AdminArea::where('osm_type', strtoupper(substr($osmType, 0, 1)))
             ->where('osm_id', $osmid)
             ->first();
 
@@ -207,11 +207,6 @@ class AdminAreaController extends Controller
 
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
 
-        match ($adminArea->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
 
         $properties = $adminArea->toArray();
         unset($properties['geom']);

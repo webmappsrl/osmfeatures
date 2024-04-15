@@ -227,7 +227,7 @@
         "/api/v1/features/admin-areas/{osmtype}/{osmid}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get Admin Area by OSM ID",
+                "summary": "Get Admin Area by OSM Type and OSM ID",
                 "description": "Returns a single Admin Area in GeoJSON format",
                 "operationId": "getAdminAreaByOsmId",
                 "parameters": [
@@ -455,6 +455,148 @@
                         "schema": {
                             "type": "integer"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of the GeoJSON object"
+                                        },
+                                        "properties": {
+                                            "properties": {
+                                                "osm_type": {
+                                                    "type": "string",
+                                                    "description": "Type of the OSM object (N, W, R)"
+                                                },
+                                                "osm_id": {
+                                                    "type": "integer",
+                                                    "description": "ID of the OSM object"
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Osmfeatures ID of the place"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the place was last updated in OSM, in ISO 8601 format."
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Name of the place"
+                                                },
+                                                "class": {
+                                                    "type": "string",
+                                                    "description": "Class of the place"
+                                                },
+                                                "subclass": {
+                                                    "type": "string",
+                                                    "description": "Subclass of the place"
+                                                },
+                                                "elevation": {
+                                                    "type": "number",
+                                                    "description": "Elevation of the place in meters"
+                                                },
+                                                "osm_url": {
+                                                    "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
+                                                    "description": "URL to the OSM API for the object"
+                                                },
+                                                "osm_tags": {
+                                                    "type": "json",
+                                                    "description": "OSM tags of the object"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the place"
+                                                },
+                                                "wikidata": {
+                                                    "type": "string",
+                                                    "description": "Wikidata link for the place"
+                                                },
+                                                "wikimedia_commons": {
+                                                    "type": "string",
+                                                    "description": "Wikimedia Commons link for the place"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "geojson",
+                                            "description": "Geometry of the place in GeoJSON format"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "type": "Feature",
+                                        "properties": {
+                                            "osm_type": "N",
+                                            "osm_id": 123456,
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z",
+                                            "name": "Place",
+                                            "class": "amenity",
+                                            "subclass": "restaurant",
+                                            "elevation": 1000,
+                                            "osm_url": "https://www.openstreetmap.org/node/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
+                                            "osm_tags": {
+                                                "amenity": "restaurant"
+                                            },
+                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
+                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
+                                        },
+                                        "geometry": {
+                                            "type": "Point",
+                                            "coordinates": [100.0, 0.0]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Place not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/features/places/{osmtype}/{osmid}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Place by OSM Type and OSM ID",
+                "description": "Returns a single Place in GeoJSON format",
+                "operationId": "getPlaceByOsmId",
+                "parameters": [
+                    {
+                        "name": "osmtype",
+                        "in": "path",
+                        "description": "OSM type of the object (node, way, relation)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "node"
+                    },
+                    {
+                        "name": "osmid",
+                        "in": "path",
+                        "description": "OSM ID of the object",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 4806244456
                     }
                 ],
                 "responses": {
