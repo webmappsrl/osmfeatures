@@ -131,6 +131,9 @@ class HikingRouteController extends Controller
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
         $properties['osm_tags'] = json_decode($hikingRoute->tags, true);
         $properties['members'] = json_decode($hikingRoute->members, true);
+        $properties['wikidata'] = $hikingRoute->getWikidataUrl();
+        $properties['wikipedia'] = $hikingRoute->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $hikingRoute->getWikimediaCommonsUrl();
 
         $geojsonFeature = [
             'type' => 'Feature',

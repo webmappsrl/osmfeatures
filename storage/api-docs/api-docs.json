@@ -679,10 +679,6 @@
                                                     "type": "string",
                                                     "description": "Website with more information about the trail."
                                                 },
-                                                "wikimedia_commons": {
-                                                    "type": "string",
-                                                    "description": "Wikimedia Commons link for the trail."
-                                                },
                                                 "description": {
                                                     "type": "string",
                                                     "description": "Description of the trail."
@@ -707,6 +703,18 @@
                                                 "osm_tags": {
                                                     "type": "json",
                                                     "description": "OSM tags of the object"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the hiking route"
+                                                },
+                                                "wikidata": {
+                                                    "type": "string",
+                                                    "description": "Wikidata link for the hiking route"
+                                                },
+                                                "wikimedia_commons": {
+                                                    "type": "string",
+                                                    "description": "Wikimedia Commons link for the trail."
                                                 }
                                             },
                                             "type": "object"
@@ -731,7 +739,10 @@
                                             "osm_tags": {
                                                 "type": "route",
                                                 "route": "hiking"
-                                            }
+                                            },
+                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
+                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
                                         },
                                         "geometry": {
                                             "type": "LineString",

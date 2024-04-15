@@ -291,7 +291,9 @@ class HikingRoutesApiTest extends TestCase
                     ->has('properties.description')
                     ->has('properties.description_it')
                     ->has('properties.osm_tags')
-                    ->has('properties.members');
+                    ->has('properties.members')
+                    ->has('properties.wikidata')
+                    ->has('properties.wikipedia');
             }
         );
     }
