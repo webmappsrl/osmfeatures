@@ -199,7 +199,10 @@ class AdminAreasApiTest extends TestCase
                     ->has('properties.score')
                     ->has('properties.osm_url')
                     ->has('properties.osm_api')
-                    ->has('properties.osm_tags');
+                    ->has('properties.osm_tags')
+                    ->has('properties.wikidata')
+                    ->has('properties.wikipedia')
+                    ->has('properties.wikimedia_commons');
             }
         );
     }
