@@ -30,7 +30,7 @@ class PlacesApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('places')) {
+        if (!Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -58,7 +58,7 @@ class PlacesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place '.$i,
+                    'name' => 'Place ' . $i,
                     'class' => 'class',
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'tags' => json_encode(['tag' => 'value']),
@@ -146,7 +146,7 @@ class PlacesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/places/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/places/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -164,9 +164,38 @@ class PlacesApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_place_api_returns_correct_structure()
+    {
+        $response = $this->get('/api/v1/features/places/1');
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('type')
+                    ->has('properties')
+                    ->has('geometry')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.class')
+                    ->has('properties.subclass')
+                    ->has('properties.elevation')
+                    ->has('properties.score')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api')
+                    ->has('properties.osm_tags');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_places');
+        Schema::dropIfExists('places');
 
         parent::tearDown();
     }

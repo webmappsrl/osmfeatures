@@ -22,7 +22,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (! Schema::hasTable('admin_areas')) {
+        if (!Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -34,6 +34,7 @@ class AdminAreasApiTest extends TestCase
                     $table->geometry('geom');
                     $table->integer('admin_level');
                     $table->integer('score');
+                    $table->jsonb('tags')->nullable();
                     $table->timestamps();
                 }
             );
@@ -57,12 +58,13 @@ class AdminAreasApiTest extends TestCase
                 );
 
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
+                    'name' => 'Admin Area ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
                     'admin_level' => rand(1, 11),
                     'score' => rand(1, 4),
+                    'tags' => json_encode(['tag' => 'value']),
                 ]);
             }
             $this->usingTestData = true;
@@ -144,7 +146,7 @@ class AdminAreasApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -174,9 +176,37 @@ class AdminAreasApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_admin_area_api_returns_correct_structure()
+    {
+        $adminArea = DB::table('admin_areas')->first();
+        $response = $this->get('/api/v1/features/admin-areas/' . $adminArea->id);
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('type')
+                    ->has('properties')
+                    ->has('geometry')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.admin_level')
+                    ->has('properties.score')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api')
+                    ->has('properties.osm_tags');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_admin_areas');
+        Schema::dropIfExists('admin_areas');
 
         parent::tearDown();
     }

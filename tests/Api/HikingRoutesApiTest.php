@@ -61,7 +61,7 @@ class HikingRoutesApiTest extends TestCase
         // 40	geom	geometry(MultiLineString,4326)	YES	NULL	NULL		NULL
         // 41	members	jsonb	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('hiking_routes')) {
+        if (!Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -124,12 +124,21 @@ class HikingRoutesApiTest extends TestCase
                 $geomText = "MULTILINESTRING(($lineString))";
 
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route '.$i,
+                    'name' => 'Hiking Route ' . $i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
                     'updated_at' => now(),
+                    'updated_at_osm' => now(),
+                    'cai_scale' => 'scale',
+                    'osm2cai_status' => 1,
                     'score' => rand(1, 7),
+                    'osmc_symbol' => 'symbol',
+                    'network' => 'lwn',
+                    'ref' => 'T8',
+                    'source' => 'source',
+                    'members' => json_encode(['member' => 'value']),
+                    'tags' => json_encode(['tag' => 'value']),
                 ]);
             }
             $this->usingTestData = true;
@@ -211,7 +220,7 @@ class HikingRoutesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/hiking-routes/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/hiking-routes/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -229,9 +238,67 @@ class HikingRoutesApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_hiking_route_api_returns_correct_structure()
+    {
+        $response = $this->get('/api/v1/features/hiking-routes/1');
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('properties')
+                    ->has('geometry')
+                    ->has('type')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at_osm')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.cai_scale')
+                    ->has('properties.osm2cai_status')
+                    ->has('properties.score')
+                    ->has('properties.osmc_symbol')
+                    ->has('properties.network')
+                    ->has('properties.survey_date')
+                    ->has('properties.roundtrip')
+                    ->has('properties.symbol')
+                    ->has('properties.symbol_it')
+                    ->has('properties.ascent')
+                    ->has('properties.descent')
+                    ->has('properties.distance')
+                    ->has('properties.duration_forward')
+                    ->has('properties.duration_backward')
+                    ->has('properties.from')
+                    ->has('properties.to')
+                    ->has('properties.rwn_name')
+                    ->has('properties.ref_REI')
+                    ->has('properties.maintenance')
+                    ->has('properties.maintenance_it')
+                    ->has('properties.operator')
+                    ->has('properties.state')
+                    ->has('properties.ref')
+                    ->has('properties.source')
+                    ->has('properties.source_ref')
+                    ->has('properties.note')
+                    ->has('properties.note_it')
+                    ->has('properties.old_ref')
+                    ->has('properties.note_project_page')
+                    ->has('properties.website')
+                    ->has('properties.wikimedia_commons')
+                    ->has('properties.description')
+                    ->has('properties.description_it')
+                    ->has('properties.osm_tags')
+                    ->has('properties.members');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_hiking_routes');
+        Schema::dropIfExists('hiking_routes');
 
         parent::tearDown();
     }

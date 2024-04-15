@@ -34,7 +34,7 @@ class PolesApiTest extends TestCase
         // 10	destination	text	YES	NULL	NULL		NULL
         // 11	support	text	YES	NULL	NULL		NULL
 
-        if (! Schema::hasTable('poles')) {
+        if (!Schema::hasTable('poles')) {
             Schema::create('poles', function (Blueprint $table) {
                 $table->string('osm_type');
                 $table->bigInteger('osm_id');
@@ -60,7 +60,7 @@ class PolesApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Pole '.$i,
+                    'name' => 'Pole ' . $i,
                     'tags' => json_encode(['tag' => 'value']),
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'ref' => 'ref',
@@ -149,7 +149,7 @@ class PolesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/poles/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/poles/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -166,10 +166,39 @@ class PolesApiTest extends TestCase
         $response->assertStatus(200);
         $this->assertNotEquals(0, count($response->json()['data']));
     }
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_pole_api_returns_correct_structure()
+    {
+        $response = $this->get('/api/v1/features/poles/1');
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('type')
+                    ->has('properties')
+                    ->has('geometry')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.ref')
+                    ->has('properties.ele')
+                    ->has('properties.destination')
+                    ->has('properties.support')
+                    ->has('properties.score')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api')
+                    ->has('properties.osm_tags');
+            }
+        );
+    }
 
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_poles');
+        Schema::dropIfExists('poles');
 
         parent::tearDown();
     }
