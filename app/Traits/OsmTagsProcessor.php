@@ -87,4 +87,34 @@ trait OsmTagsProcessor
 
         return implode('', $links);
     }
+
+    /**
+     * Get the osm url
+     * @return string
+     */
+    public function getOsmUrl(): string
+    {
+        match ($this->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        return "https://www.openstreetmap.org/$osmType/$this->osm_id";
+    }
+
+    /**
+     * Get the osm api url
+     * @return string
+     */
+    public function getOsmApiUrl(): string
+    {
+        match ($this->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        return "https://www.openstreetmap.org/api/0.6/$osmType/$this->osm_id.json";
+    }
 }

@@ -27,6 +27,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/features/admin-areas/osm/{osmtype}/{osmid}', [AdminAreaController::class, 'osm']);
     Route::get('/features/poles/list', [PoleController::class, 'list']);
     Route::get('/features/poles/{id}', [PoleController::class, 'show']);
+    Route::get('/features/poles/osm/{osmtype}/{osmid}', [PoleController::class, 'osm']);
     Route::get('/features/hiking-routes/list', [HikingRouteController::class, 'list']);
     Route::get('/features/hiking-routes/{id}', [HikingRouteController::class, 'show']);
     Route::get('/features/hiking-routes/osm/{osmtype}/{osmid}', [HikingRouteController::class, 'osm']);
