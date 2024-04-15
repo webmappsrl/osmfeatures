@@ -123,6 +123,7 @@ class AdminAreasApiTest extends TestCase
                             ->has('updated_at')
                             ->where('updated_at', function ($value) {
                                 $date = Carbon::parse($value);
+
                                 return $date->format('Y-m-d\TH:i:sP') === $value;
                             });
                     });

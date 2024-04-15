@@ -2,13 +2,13 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PlacesApiTest extends TestCase
 {
@@ -124,6 +124,7 @@ class PlacesApiTest extends TestCase
                             ->has('updated_at')
                             ->where('updated_at', function ($value) {
                                 $date = Carbon::parse($value);
+
                                 return $date->format('Y-m-d\TH:i:sP') === $value;
                             });
                     });

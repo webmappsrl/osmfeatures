@@ -83,6 +83,7 @@ class PlaceController extends Controller
 
         $places->getCollection()->transform(function ($place) {
             $place->updated_at = Carbon::parse($place->updated_at)->toIso8601String();
+
             return $place;
         });
 

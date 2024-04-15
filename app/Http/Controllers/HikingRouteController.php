@@ -85,6 +85,7 @@ class HikingRouteController extends Controller
 
         $hikingRoutes->getCollection()->transform(function ($hr) {
             $hr->updated_at = Carbon::parse($hr->updated_at)->toIso8601String();
+
             return $hr;
         });
 

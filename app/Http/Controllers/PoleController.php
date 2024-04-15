@@ -90,6 +90,7 @@ class PoleController extends Controller
 
         $poles->getCollection()->transform(function ($pole) {
             $pole->updated_at = Carbon::parse($pole->updated_at)->toIso8601String();
+
             return $pole;
         });
 

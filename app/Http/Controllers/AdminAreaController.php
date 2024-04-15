@@ -98,6 +98,7 @@ class AdminAreaController extends Controller
 
         $adminAreas->getCollection()->transform(function ($adminArea) {
             $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
+
             return $adminArea;
         });
 
