@@ -1045,6 +1045,274 @@
                 }
             }
         },
+        "/api/v1/features/hiking-routes/{osmtype}/{osmid}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get Hiking Routes by OSM Type and OSM ID",
+                "description": "Returns a single Hiking Route in GeoJSON format",
+                "operationId": "getHikingRouteByOsmId",
+                "parameters": [
+                    {
+                        "name": "OSM Type",
+                        "in": "path",
+                        "description": "Hiking Route OSM Type",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "relation"
+                    },
+                    {
+                        "name": "OSM ID",
+                        "in": "path",
+                        "description": "Hiking Route OSM ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "example": 11789715
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return the Geojson Feature of the Hiking Route",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "description": "Type of the GeoJSON object"
+                                        },
+                                        "properties": {
+                                            "properties": {
+                                                "osm_type": {
+                                                    "type": "string",
+                                                    "description": "Type of the OSM object (N, W, R)"
+                                                },
+                                                "osm_id": {
+                                                    "type": "integer",
+                                                    "description": "ID of the OSM object"
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "description": "Osmfeatures ID of the route"
+                                                },
+                                                "updated_at_osm": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the route was last updated in OSM, in ISO 8601 format"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "When the route was last updated in osmfeatures, in ISO 8601 format. This data is computed by calculating the most recent updated_at of the members hiking route"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "Name of the route"
+                                                },
+
+                                                "cai_scale": {
+                                                    "type": "string",
+                                                    "description": "Difficulty level 'E' indicating easy trails suitable for most hikers."
+                                                },
+                                                "osm2cai_status": {
+                                                    "type": "integer",
+                                                    "description": "Score calculated based on cai survey and cai scale presence in osm tags. If both are present, the score is 3. If only Cai Survey is present, the score is 2. If only Cai Scale is present, the score is 1. If neither are present, the score is 0."
+                                                },
+                                                "osmc_symbol": {
+                                                    "type": "string",
+                                                    "description": "OSMC symbol showing trail marking colors and number."
+                                                },
+                                                "network": {
+                                                    "type": "string",
+                                                    "description": "Part of the local walking network."
+                                                },
+                                                "survey_date": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "description": "Date when the trail survey was conducted."
+                                                },
+                                                "roundtrip": {
+                                                    "type": "boolean",
+                                                    "description": "Indicates if the route is a roundtrip."
+                                                },
+                                                "symbol": {
+                                                    "type": "string",
+                                                    "description": "Symbol used to mark the trail."
+                                                },
+                                                "symbol_it": {
+                                                    "type": "string",
+                                                    "description": "Italian symbol marking the trail."
+                                                },
+                                                "ascent": {
+                                                    "type": "integer",
+                                                    "description": "Total ascent of the trail in meters."
+                                                },
+                                                "descent": {
+                                                    "type": "integer",
+                                                    "description": "Total descent of the trail in meters."
+                                                },
+                                                "distance": {
+                                                    "type": "number",
+                                                    "description": "Length of the trail in kilometers."
+                                                },
+                                                "duration_forward": {
+                                                    "type": "string",
+                                                    "description": "Estimated time to complete the trail forward."
+                                                },
+                                                "duration_backward": {
+                                                    "type": "string",
+                                                    "description": "Estimated time to complete the trail backward."
+                                                },
+                                                "from": {
+                                                    "type": "string",
+                                                    "description": "Starting point of the trail."
+                                                },
+                                                "to": {
+                                                    "type": "string",
+                                                    "description": "Ending point of the trail."
+                                                },
+                                                "rwn_name": {
+                                                    "type": "string",
+                                                    "description": "Name in the regional walking network."
+                                                },
+                                                "ref_REI": {
+                                                    "type": "string",
+                                                    "description": "Reference number in the Italian Excursionist Network."
+                                                },
+                                                "maintenance": {
+                                                    "type": "string",
+                                                    "description": "Information about trail maintenance."
+                                                },
+                                                "maintenance_it": {
+                                                    "type": "string",
+                                                    "description": "Maintenance information in Italian."
+                                                },
+                                                "operator": {
+                                                    "type": "string",
+                                                    "description": "Organization responsible for the trail."
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "description": "Current condition or status of the trail."
+                                                },
+                                                "ref": {
+                                                    "type": "string",
+                                                    "description": "Reference number of the trail."
+                                                },
+                                                "source": {
+                                                    "type": "string",
+                                                    "description": "Trail information obtained from CAI survey."
+                                                },
+                                                "source_ref": {
+                                                    "type": "string",
+                                                    "description": "Reference source for trail information."
+                                                },
+                                                "note": {
+                                                    "type": "string",
+                                                    "description": "Additional notes regarding the trail."
+                                                },
+                                                "note_it": {
+                                                    "type": "string",
+                                                    "description": "Notes in Italian regarding the trail."
+                                                },
+                                                "old_ref": {
+                                                    "type": "string",
+                                                    "description": "Previous reference number of the trail."
+                                                },
+                                                "note_project_page": {
+                                                    "type": "string",
+                                                    "description": "Project page notes related to the trail."
+                                                },
+                                                "website": {
+                                                    "type": "string",
+                                                    "description": "Website with more information about the trail."
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "description": "Description of the trail."
+                                                },
+                                                "description_it": {
+                                                    "type": "string",
+                                                    "description": "Description of the trail in Italian."
+                                                },
+                                                "members": {
+                                                    "type": "array",
+                                                    "description": "Data about trail members or segments."
+                                                },
+
+                                                "osm_url": {
+                                                    "type": "string",
+                                                    "description": "URL to the Openstreetmap corresponding feature."
+                                                },
+                                                "osm_api": {
+                                                    "type": "string",
+                                                    "description": "URL to the OSM API for the object"
+                                                },
+                                                "osm_tags": {
+                                                    "type": "json",
+                                                    "description": "OSM tags of the object"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the hiking route"
+                                                },
+                                                "wikidata": {
+                                                    "type": "string",
+                                                    "description": "Wikidata link for the hiking route"
+                                                },
+                                                "wikimedia_commons": {
+                                                    "type": "string",
+                                                    "description": "Wikimedia Commons link for the trail."
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "geojson",
+                                            "description": "Geometry of the area in GeoJSON format"
+                                        }
+                                    },
+                                    "type": "object",
+                                    "example": {
+                                        "type": "Feature",
+                                        "properties": {
+                                            "osm_type": "R",
+                                            "osm_id": 123456,
+                                            "id": 123456,
+                                            "updated_at": "2021-01-01T00:00:00Z",
+                                            "name": "Hiking Route",
+                                            "admin_level": "6",
+                                            "osm_url": "https://www.openstreetmap.org/relation/123456",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
+                                            "osm_tags": {
+                                                "type": "route",
+                                                "route": "hiking"
+                                            },
+                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
+                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
+                                        },
+                                        "geometry": {
+                                            "type": "LineString",
+                                            "coordinates": [
+                                                [100.0, 0.0],
+                                                [101.0, 1.0]
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Hiking Route not found"
+                    }
+                }
+            }
+        },
         "/api/v1/features/poles/list": {
             "get": {
                 "tags": ["API V1"],
