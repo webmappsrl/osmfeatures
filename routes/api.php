@@ -24,6 +24,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/features/pois/{id}', [PoiController::class, 'show']);
     Route::get('/features/admin-areas/list', [AdminAreaController::class, 'list']);
     Route::get('/features/admin-areas/{id}', [AdminAreaController::class, 'show']);
+    Route::get('/features/admin-areas/osm/{osmtype}/{osmid}', [AdminAreaController::class, 'osm']);
     Route::get('/features/poles/list', [PoleController::class, 'list']);
     Route::get('/features/poles/{id}', [PoleController::class, 'show']);
     Route::get('/features/hiking-routes/list', [HikingRouteController::class, 'list']);

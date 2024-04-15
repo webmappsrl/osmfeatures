@@ -3,7 +3,7 @@
 namespace Tests\Api;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -11,7 +11,7 @@ use Tests\TestCase;
 
 class HikingRoutesApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 

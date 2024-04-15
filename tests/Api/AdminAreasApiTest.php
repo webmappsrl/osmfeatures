@@ -4,7 +4,6 @@ namespace Tests\Api;
 
 use App\Models\AdminArea;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ use Tests\TestCase;
 
 class AdminAreasApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 
@@ -30,7 +29,6 @@ class AdminAreasApiTest extends TestCase
                     $table->string('name');
                     $table->bigInteger('osm_id');
                     $table->string('osm_type');
-                    //create a geometry type table for the geom column
                     $table->geometry('geom');
                     $table->integer('admin_level');
                     $table->integer('score');

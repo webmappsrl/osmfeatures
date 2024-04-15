@@ -4,7 +4,6 @@ namespace Tests\Feature\Api;
 
 use App\Models\Pole;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ use Tests\TestCase;
 
 class PolesApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 
