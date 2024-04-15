@@ -1053,7 +1053,7 @@
                 "operationId": "getHikingRouteByOsmId",
                 "parameters": [
                     {
-                        "name": "OSM Type",
+                        "name": "osmtype",
                         "in": "path",
                         "description": "Hiking Route OSM Type",
                         "required": true,
@@ -1063,7 +1063,7 @@
                         "example": "relation"
                     },
                     {
-                        "name": "OSM ID",
+                        "name": "osmid",
                         "in": "path",
                         "description": "Hiking Route OSM ID",
                         "required": true,
@@ -1532,7 +1532,7 @@
                 "operationId": "getPoleByOsmId",
                 "parameters": [
                     {
-                        "name": "OSM Type",
+                        "name": "osmtype",
                         "in": "path",
                         "description": "Pole OSM Type",
                         "required": true,
@@ -1542,7 +1542,7 @@
                         "example": "node"
                     },
                     {
-                        "name": "OSM ID",
+                        "name": "osmid",
                         "in": "path",
                         "description": "Pole OSM ID",
                         "required": true,
