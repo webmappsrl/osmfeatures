@@ -100,7 +100,7 @@ class HikingRoute extends Resource
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
-                return $this->getWikiLinks();
+                return $this->getWikiLinksAsHtml();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center')->fullWidth(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);
@@ -109,13 +109,13 @@ class HikingRoute extends Resource
                 $cai_scale = $tags['cai_scale'] ?? 'N/A';
                 $name = $this->name ?? 'N/A';
 
-                $name = strlen($name) > 30 ? substr($name, 0, 30).'<br>'.substr($name, 30) : $name;
+                $name = strlen($name) > 30 ? substr($name, 0, 30) . '<br>' . substr($name, 30) : $name;
 
                 $html = '<div>';
                 $html .= "<p><strong>ref:</strong> {$ref}</p>";
                 $html .= "<p><strong>source:</strong> {$source}</p>";
                 $html .= "<p><strong>cai_scale:</strong> {$cai_scale}</p>";
-                $html .= '<p><strong>name:</strong> '.$name.'</p>';
+                $html .= '<p><strong>name:</strong> ' . $name . '</p>';
                 $html .= '</div>';
 
                 return $html;

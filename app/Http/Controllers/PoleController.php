@@ -122,9 +122,6 @@ class PoleController extends Controller
             return response()->json(['message' => 'Pole not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
-        $wikidataUrl = $pole->getWikidata() !== null ? 'https://www.wikidata.org/wiki/' . $pole->getWikidata() : null;
-        $wikipediaUrl = $pole->getWikipedia() !== null ? 'https://it.wikipedia.org/wiki/' . $pole->getWikipedia() : null;
-        $wikimediaCommonsUrl = $pole->getWikimediaCommons() !== null ? 'https://commons.wikimedia.org/wiki/' . $pole->getWikimediaCommons() : null;
         match ($pole->osm_type) {
             'R' => $osmType = 'relation',
             'W' => $osmType = 'way',
@@ -138,9 +135,9 @@ class PoleController extends Controller
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$pole->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
         $properties['osm_tags'] = json_decode($pole->tags, true);
-        $properties['wikidata'] = $wikidataUrl;
-        $properties['wikipedia'] = $wikipediaUrl;
-        $properties['wikimedia_commons'] = $wikimediaCommonsUrl;
+        $properties['wikidata'] = $pole->getWikidataUrl();
+        $properties['wikipedia'] = $pole->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $pole->getWikimediaCommonsUrl();
 
         $geojsonFeature = [
             'type' => 'Feature',

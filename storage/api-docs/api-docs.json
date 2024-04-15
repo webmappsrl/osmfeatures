@@ -373,6 +373,18 @@
                                                 "osm_tags": {
                                                     "type": "json",
                                                     "description": "OSM tags of the object"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the place"
+                                                },
+                                                "wikidata": {
+                                                    "type": "string",
+                                                    "description": "Wikidata link for the place"
+                                                },
+                                                "wikimedia_commons": {
+                                                    "type": "string",
+                                                    "description": "Wikimedia Commons link for the place"
                                                 }
                                             },
                                             "type": "object"
@@ -398,7 +410,10 @@
                                             "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "amenity": "restaurant"
-                                            }
+                                            },
+                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
+                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
                                         },
                                         "geometry": {
                                             "type": "Point",
