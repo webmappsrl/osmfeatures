@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Place;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -79,6 +80,11 @@ class PlaceController extends Controller
         }
 
         $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
+        $places->getCollection()->transform(function ($place) {
+            $place->updated_at = Carbon::parse($place->updated_at)->toIso8601String();
+            return $place;
+        });
 
         return response()->json($places);
     }

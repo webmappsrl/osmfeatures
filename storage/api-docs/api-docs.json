@@ -867,7 +867,7 @@
                                                     "description": "Date when the trail survey was conducted."
                                                 },
                                                 "roundtrip": {
-                                                    "type": "boolean",
+                                                    "type": "string",
                                                     "description": "Indicates if the route is a roundtrip."
                                                 },
                                                 "symbol": {
@@ -1324,7 +1324,7 @@
                         "name": "updated_at",
                         "in": "query",
                         "description": "Poles updated after this date.",
-                        "example": "[6.7499552751, 36.619987291, 18.4802470232, 47.1153931748]",
+                        "example": "2021-01-01T00:00:00Z",
                         "required": false,
                         "schema": {
                             "type": "string"

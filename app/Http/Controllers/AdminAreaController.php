@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminArea;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -94,6 +95,11 @@ class AdminAreaController extends Controller
         }
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
+        $adminAreas->getCollection()->transform(function ($adminArea) {
+            $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
+            return $adminArea;
+        });
 
         return response()->json($adminAreas);
     }

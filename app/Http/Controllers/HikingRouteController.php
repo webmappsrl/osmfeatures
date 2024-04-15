@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HikingRoute;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -81,6 +82,11 @@ class HikingRouteController extends Controller
         }
 
         $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
+        $hikingRoutes->getCollection()->transform(function ($hr) {
+            $hr->updated_at = Carbon::parse($hr->updated_at)->toIso8601String();
+            return $hr;
+        });
 
         return response()->json($hikingRoutes);
     }

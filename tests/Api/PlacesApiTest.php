@@ -2,12 +2,13 @@
 
 namespace Tests\Api;
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlacesApiTest extends TestCase
 {
@@ -61,7 +62,7 @@ class PlacesApiTest extends TestCase
                     'name' => 'Place '.$i,
                     'class' => 'class',
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
-                    'tags' => json_encode(['tag' => 'value']),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
                     'elevation' => rand(50, 300),
                     'score' => rand(1, 5),
                 ]);
@@ -120,7 +121,11 @@ class PlacesApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );

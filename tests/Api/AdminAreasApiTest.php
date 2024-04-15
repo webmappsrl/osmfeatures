@@ -3,6 +3,7 @@
 namespace Tests\Api;
 
 use App\Models\AdminArea;
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -62,7 +63,8 @@ class AdminAreasApiTest extends TestCase
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
                     'admin_level' => rand(1, 11),
                     'score' => rand(1, 4),
-                    'tags' => json_encode(['tag' => 'value']),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
+                    'updated_at' => Carbon::now(),
                 ]);
             }
             $this->usingTestData = true;
@@ -118,7 +120,11 @@ class AdminAreasApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );

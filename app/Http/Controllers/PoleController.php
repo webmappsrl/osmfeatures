@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pole;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -86,6 +87,11 @@ class PoleController extends Controller
         }
 
         $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+
+        $poles->getCollection()->transform(function ($pole) {
+            $pole->updated_at = Carbon::parse($pole->updated_at)->toIso8601String();
+            return $pole;
+        });
 
         return response()->json($poles);
     }

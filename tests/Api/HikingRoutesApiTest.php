@@ -2,12 +2,13 @@
 
 namespace Tests\Api;
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class HikingRoutesApiTest extends TestCase
 {
@@ -138,7 +139,33 @@ class HikingRoutesApiTest extends TestCase
                     'ref' => 'T8',
                     'source' => 'source',
                     'members' => json_encode(['member' => 'value']),
-                    'tags' => json_encode(['tag' => 'value']),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
+                    'survey_date' => '2021-01-01',
+                    'roundtrip' => 'yes',
+                    'symbol' => 'symbol',
+                    'symbol_it' => 'symbol_it',
+                    'ascent' => '1000',
+                    'descent' => '1000',
+                    'distance' => '10000',
+                    'duration_forward' => '01:00:00',
+                    'duration_backward' => '01:00:00',
+                    'from' => 'start',
+                    'to' => 'end',
+                    'rwn_name' => 'rwn_name',
+                    'ref_REI' => 'ref_REI',
+                    'maintenance' => 'maintenance',
+                    'maintenance_it' => 'maintenance_it',
+                    'operator' => 'operator',
+                    'state' => 'state',
+                    'source_ref' => 'source_ref',
+                    'note' => 'note',
+                    'note_it' => 'note_it',
+                    'old_ref' => 'old_ref',
+                    'note_project_page' => 'note_project_page',
+                    'website' => 'website',
+                    'wikimedia_commons' => 'wikimedia_commons',
+                    'description' => 'description',
+                    'description_it' => 'description_it',
                 ]);
             }
             $this->usingTestData = true;
@@ -194,7 +221,11 @@ class HikingRoutesApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );
@@ -266,6 +297,7 @@ class HikingRoutesApiTest extends TestCase
                     ->has('properties.roundtrip')
                     ->has('properties.symbol')
                     ->has('properties.symbol_it')
+                    ->whereType('properties.symbol_it', 'string')
                     ->has('properties.ascent')
                     ->has('properties.descent')
                     ->has('properties.distance')
@@ -293,7 +325,9 @@ class HikingRoutesApiTest extends TestCase
                     ->has('properties.osm_tags')
                     ->has('properties.members')
                     ->has('properties.wikidata')
-                    ->has('properties.wikipedia');
+                    ->has('properties.wikipedia')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api');
             }
         );
     }
