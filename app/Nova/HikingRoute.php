@@ -100,7 +100,7 @@ class HikingRoute extends Resource
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
-                return $this->getWikiLinks();
+                return $this->getWikiLinksAsHtml();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center')->fullWidth(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pole;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -87,6 +88,12 @@ class PoleController extends Controller
 
         $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
+        $poles->getCollection()->transform(function ($pole) {
+            $pole->updated_at = Carbon::parse($pole->updated_at)->toIso8601String();
+
+            return $pole;
+        });
+
         return response()->json($poles);
     }
 
@@ -131,9 +138,87 @@ class PoleController extends Controller
         $properties = $pole->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
+        unset($properties['elevation']);
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$pole->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
         $properties['osm_tags'] = json_decode($pole->tags, true);
+        $properties['wikidata'] = $pole->getWikidataUrl();
+        $properties['wikipedia'] = $pole->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $pole->getWikimediaCommonsUrl();
+
+        $geojsonFeature = [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($geom),
+        ];
+
+        return response()->json($geojsonFeature);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/features/poles/osm/{osmtype}/{osmid}",
+     *     operationId="getPoleByOsmId",
+     *     tags={"Poles"},
+     *     summary="Get Pole by OSM ID",
+     *     description="Returns a single Pole in GeoJSON format",
+     *     @OA\Parameter(
+     *         name="osmtype",
+     *         description="OSM Type (relation, way, node)",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="osmid",
+     *         description="OSM ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Pole not found"
+     *     )
+     * )
+     */
+    public function osm(string $osmType, int $osmid)
+    {
+        $acceptedTypes = ['relation', 'way', 'node'];
+
+        if (! in_array($osmType, $acceptedTypes)) {
+            return response()->json(['message' => 'Bad request'], 404);
+        }
+
+        $pole = Pole::where('osm_type', strtoupper(substr($osmType, 0, 1)))
+            ->where('osm_id', $osmid)
+            ->first();
+
+        if (! $pole) {
+            return response()->json(['message' => 'Pole not found'], 404);
+        }
+
+        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
+        match ($pole->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        $properties = $pole->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        unset($properties['elevation']);
+        $properties['osm_url'] = $pole->getOsmUrl();
+        $properties['osm_api'] = $pole->getOsmApiUrl();
+        $properties['osm_tags'] = json_decode($pole->tags, true);
+        $properties['wikidata'] = $pole->getWikidataUrl();
+        $properties['wikipedia'] = $pole->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $pole->getWikimediaCommonsUrl();
 
         $geojsonFeature = [
             'type' => 'Feature',

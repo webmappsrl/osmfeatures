@@ -3,7 +3,8 @@
 namespace Tests\Api;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -11,7 +12,7 @@ use Tests\TestCase;
 
 class HikingRoutesApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 
@@ -129,7 +130,42 @@ class HikingRoutesApiTest extends TestCase
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
                     'updated_at' => now(),
+                    'updated_at_osm' => now(),
+                    'cai_scale' => 'scale',
+                    'osm2cai_status' => 1,
                     'score' => rand(1, 7),
+                    'osmc_symbol' => 'symbol',
+                    'network' => 'lwn',
+                    'ref' => 'T8',
+                    'source' => 'source',
+                    'members' => json_encode(['member' => 'value']),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
+                    'survey_date' => '2021-01-01',
+                    'roundtrip' => 'yes',
+                    'symbol' => 'symbol',
+                    'symbol_it' => 'symbol_it',
+                    'ascent' => '1000',
+                    'descent' => '1000',
+                    'distance' => '10000',
+                    'duration_forward' => '01:00:00',
+                    'duration_backward' => '01:00:00',
+                    'from' => 'start',
+                    'to' => 'end',
+                    'rwn_name' => 'rwn_name',
+                    'ref_REI' => 'ref_REI',
+                    'maintenance' => 'maintenance',
+                    'maintenance_it' => 'maintenance_it',
+                    'operator' => 'operator',
+                    'state' => 'state',
+                    'source_ref' => 'source_ref',
+                    'note' => 'note',
+                    'note_it' => 'note_it',
+                    'old_ref' => 'old_ref',
+                    'note_project_page' => 'note_project_page',
+                    'website' => 'website',
+                    'wikimedia_commons' => 'wikimedia_commons',
+                    'description' => 'description',
+                    'description_it' => 'description_it',
                 ]);
             }
             $this->usingTestData = true;
@@ -185,7 +221,12 @@ class HikingRoutesApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );
@@ -229,9 +270,72 @@ class HikingRoutesApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_hiking_route_api_returns_correct_structure()
+    {
+        $response = $this->get('/api/v1/features/hiking-routes/1');
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('properties')
+                    ->has('geometry')
+                    ->has('type')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at_osm')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.cai_scale')
+                    ->has('properties.osm2cai_status')
+                    ->has('properties.score')
+                    ->has('properties.osmc_symbol')
+                    ->has('properties.network')
+                    ->has('properties.survey_date')
+                    ->has('properties.roundtrip')
+                    ->has('properties.symbol')
+                    ->has('properties.symbol_it')
+                    ->whereType('properties.symbol_it', 'string')
+                    ->has('properties.ascent')
+                    ->has('properties.descent')
+                    ->has('properties.distance')
+                    ->has('properties.duration_forward')
+                    ->has('properties.duration_backward')
+                    ->has('properties.from')
+                    ->has('properties.to')
+                    ->has('properties.rwn_name')
+                    ->has('properties.ref_REI')
+                    ->has('properties.maintenance')
+                    ->has('properties.maintenance_it')
+                    ->has('properties.operator')
+                    ->has('properties.state')
+                    ->has('properties.ref')
+                    ->has('properties.source')
+                    ->has('properties.source_ref')
+                    ->has('properties.note')
+                    ->has('properties.note_it')
+                    ->has('properties.old_ref')
+                    ->has('properties.note_project_page')
+                    ->has('properties.website')
+                    ->has('properties.wikimedia_commons')
+                    ->has('properties.description')
+                    ->has('properties.description_it')
+                    ->has('properties.osm_tags')
+                    ->has('properties.members')
+                    ->has('properties.wikidata')
+                    ->has('properties.wikipedia')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_hiking_routes');
+        Schema::dropIfExists('hiking_routes');
 
         parent::tearDown();
     }

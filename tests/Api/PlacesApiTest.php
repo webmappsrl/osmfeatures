@@ -3,7 +3,8 @@
 namespace Tests\Api;
 
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -11,7 +12,7 @@ use Tests\TestCase;
 
 class PlacesApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 
@@ -61,7 +62,7 @@ class PlacesApiTest extends TestCase
                     'name' => 'Place '.$i,
                     'class' => 'class',
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
-                    'tags' => json_encode(['tag' => 'value']),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
                     'elevation' => rand(50, 300),
                     'score' => rand(1, 5),
                 ]);
@@ -120,7 +121,12 @@ class PlacesApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );
@@ -164,9 +170,41 @@ class PlacesApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_place_api_returns_correct_structure()
+    {
+        $response = $this->get('/api/v1/features/places/1');
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('type')
+                    ->has('properties')
+                    ->has('geometry')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.class')
+                    ->has('properties.subclass')
+                    ->has('properties.elevation')
+                    ->has('properties.score')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api')
+                    ->has('properties.osm_tags')
+                    ->has('properties.wikidata')
+                    ->has('properties.wikipedia')
+                    ->has('properties.wikimedia_commons');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_places');
+        Schema::dropIfExists('places');
 
         parent::tearDown();
     }

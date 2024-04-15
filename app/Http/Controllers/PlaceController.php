@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Place;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -80,6 +81,12 @@ class PlaceController extends Controller
 
         $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
+        $places->getCollection()->transform(function ($place) {
+            $place->updated_at = Carbon::parse($place->updated_at)->toIso8601String();
+
+            return $place;
+        });
+
         return response()->json($places);
     }
 
@@ -128,6 +135,75 @@ class PlaceController extends Controller
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
         $properties['osm_tags'] = json_decode($place->tags, true);
+        $properties['wikidata'] = $place->getWikidataUrl();
+        $properties['wikipedia'] = $place->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $place->getWikimediaCommonsUrl();
+
+        $geojsonFeature = [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($geom),
+        ];
+
+        return response()->json($geojsonFeature);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/features/places/osm/{osmtype}/{osmid}",
+     *     operationId="getPlaceByOsmId",
+     *     tags={"Places"},
+     *     summary="Get Place by OSM ID",
+     *     description="Returns a single Place in GeoJSON format",
+     *     @OA\Parameter(
+     *         name="osmtype",
+     *         description="OSM type (node, way, relation)",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="osmid",
+     *         description="OSM ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Place not found"
+     *     )
+     * )
+     */
+    public function osm(string $osmType, int $osmid)
+    {
+        $acceptedOsmtypes = ['node', 'way', 'relation'];
+
+        if (! in_array($osmType, $acceptedOsmtypes)) {
+            return response()->json(['message' => 'Bad Request'], 404);
+        }
+
+        $place = Place::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmid)->first();
+
+        if (! $place) {
+            return response()->json(['message' => 'Place not found'], 404);
+        }
+
+        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
+
+        $properties = $place->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
+        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
+        $properties['osm_tags'] = json_decode($place->tags, true);
+        $properties['wikidata'] = $place->getWikidataUrl();
+        $properties['wikipedia'] = $place->getWikipediaUrl();
+        $properties['wikimedia_commons'] = $place->getWikimediaCommonsUrl();
 
         $geojsonFeature = [
             'type' => 'Feature',

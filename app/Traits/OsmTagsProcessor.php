@@ -8,40 +8,58 @@ trait OsmTagsProcessor
      * Get the wikidata from tags column if it exists
      * @return string|null
      */
-    public function getWikidata(): ?string
+    public function getWikidataUrl(): ?string
     {
         $tags = json_decode($this->tags, true);
 
-        return $tags['wikidata'] ?? null;
+        $wikidata = $tags['wikidata'] ?? null;
+
+        if ($wikidata) {
+            return 'https://www.wikidata.org/wiki/'.$wikidata;
+        }
+
+        return null;
     }
 
     /**
      * Get the wikimedia commons from tags column if it exists
      * @return string|null
      */
-    public function getWikimediaCommons(): ?string
+    public function getWikimediaCommonsUrl(): ?string
     {
         $tags = json_decode($this->tags, true);
 
-        return $tags['wikimedia_commons'] ?? null;
+        $wikimediaCommons = $tags['wikimedia_commons'] ?? null;
+
+        if ($wikimediaCommons) {
+            return 'https://commons.wikimedia.org/wiki/'.$wikimediaCommons;
+        }
+
+        return null;
     }
 
     /**
      * Get the wikipedia from tags column if it exists
      * @return string|null
      */
-    public function getWikipedia(): ?string
+    public function getWikipediaUrl(): ?string
     {
         $tags = json_decode($this->tags, true);
 
-        return $tags['wikipedia'] ?? null;
+        $wikipedia = $tags['wikipedia'] ?? null;
+
+        if ($wikipedia) {
+            return 'https://en.wikipedia.org/wiki/'.$wikipedia;
+        }
+
+        return null;
     }
 
     /**
      * Get the wiki links in an html string
      * @return string
      */
-    public function getWikiLinks(): string
+    public function getWikiLinksAsHtml(): string
     {
         $links = ['<div style="display:flex; justify-content:center; text-align: center;">'];
 
@@ -68,5 +86,35 @@ trait OsmTagsProcessor
         $links[] = '</div>';
 
         return implode('', $links);
+    }
+
+    /**
+     * Get the osm url
+     * @return string
+     */
+    public function getOsmUrl(): string
+    {
+        match ($this->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        return "https://www.openstreetmap.org/$osmType/$this->osm_id";
+    }
+
+    /**
+     * Get the osm api url
+     * @return string
+     */
+    public function getOsmApiUrl(): string
+    {
+        match ($this->osm_type) {
+            'R' => $osmType = 'relation',
+            'W' => $osmType = 'way',
+            'N' => $osmType = 'node',
+        };
+
+        return "https://www.openstreetmap.org/api/0.6/$osmType/$this->osm_id.json";
     }
 }

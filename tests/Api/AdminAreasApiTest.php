@@ -3,8 +3,8 @@
 namespace Tests\Api;
 
 use App\Models\AdminArea;
+use Carbon\Carbon;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +14,7 @@ use Tests\TestCase;
 
 class AdminAreasApiTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     private $usingTestData = false;
 
@@ -30,10 +30,10 @@ class AdminAreasApiTest extends TestCase
                     $table->string('name');
                     $table->bigInteger('osm_id');
                     $table->string('osm_type');
-                    //create a geometry type table for the geom column
                     $table->geometry('geom');
                     $table->integer('admin_level');
                     $table->integer('score');
+                    $table->jsonb('tags')->nullable();
                     $table->timestamps();
                 }
             );
@@ -63,6 +63,8 @@ class AdminAreasApiTest extends TestCase
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
                     'admin_level' => rand(1, 11),
                     'score' => rand(1, 4),
+                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
+                    'updated_at' => Carbon::now(),
                 ]);
             }
             $this->usingTestData = true;
@@ -118,7 +120,12 @@ class AdminAreasApiTest extends TestCase
                     ->has('prev_page_url')
                     ->has('data.0', function (AssertableJson $json) {
                         $json->has('id')
-                            ->has('updated_at');
+                            ->has('updated_at')
+                            ->where('updated_at', function ($value) {
+                                $date = Carbon::parse($value);
+
+                                return $date->format('Y-m-d\TH:i:sP') === $value;
+                            });
                     });
             }
         );
@@ -174,9 +181,40 @@ class AdminAreasApiTest extends TestCase
         $this->assertNotEquals(0, count($response->json()['data']));
     }
 
+    /**
+     * Test if the single feature api returns the correct structure
+     * @test
+     */
+    public function get_single_admin_area_api_returns_correct_structure()
+    {
+        $adminArea = DB::table('admin_areas')->first();
+        $response = $this->get('/api/v1/features/admin-areas/'.$adminArea->id);
+
+        $response->assertJson(
+            function (AssertableJson $json) {
+                $json->has('type')
+                    ->has('properties')
+                    ->has('geometry')
+                    ->has('properties.osm_type')
+                    ->has('properties.osm_id')
+                    ->has('properties.id')
+                    ->has('properties.updated_at')
+                    ->has('properties.name')
+                    ->has('properties.admin_level')
+                    ->has('properties.score')
+                    ->has('properties.osm_url')
+                    ->has('properties.osm_api')
+                    ->has('properties.osm_tags')
+                    ->has('properties.wikidata')
+                    ->has('properties.wikipedia')
+                    ->has('properties.wikimedia_commons');
+            }
+        );
+    }
+
     public function tearDown(): void
     {
-        Schema::dropIfExists('temp_admin_areas');
+        Schema::dropIfExists('admin_areas');
 
         parent::tearDown();
     }

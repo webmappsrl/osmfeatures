@@ -103,7 +103,7 @@ class Place extends Resource
                 ->onlyOnIndex(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
-                return $this->getWikiLinks();
+                return $this->getWikiLinksAsHtml();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
             Text::make('Name')->displayUsing(
                 function ($value) {

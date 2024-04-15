@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AdminArea;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -95,6 +96,12 @@ class AdminAreaController extends Controller
 
         $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
 
+        $adminAreas->getCollection()->transform(function ($adminArea) {
+            $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
+
+            return $adminArea;
+        });
+
         return response()->json($adminAreas);
     }
 
@@ -123,12 +130,12 @@ class AdminAreaController extends Controller
      *     )
      * )
      */
-    public function show($id)
+    public function show(int $id)
     {
         $adminArea = AdminArea::where('id', $id)->first();
 
         if (! $adminArea) {
-            return response()->json(['message' => 'Admin Area non trovato'], 404);
+            return response()->json(['message' => 'Admin Area not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
 
@@ -144,7 +151,77 @@ class AdminAreaController extends Controller
         $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
         $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
+        $properties['wikipedia'] = $adminArea->getWikipediaUrl();
+        $properties['wikidata'] = $adminArea->getWikidataUrl();
+        $properties['wikimedia_commons'] = $adminArea->getWikimediaCommonsUrl();
+        $geojsonFeature = [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($geom, true),
+        ];
 
+        return response()->json($geojsonFeature);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/features/admin-areas/osm/{osmtype}/{osmid}",
+     *     operationId="getAdminAreaByOsmId",
+     *     tags={"AdminAreas"},
+     *     summary="Get Admin Area by OSM ID",
+     *     description="Returns a single Admin Area in GeoJSON format",
+     *     @OA\Parameter(
+     *         name="osmtype",
+     *         description="OSM type (node, way, relation)",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="osmid",
+     *         description="OSM ID",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/AdminAreaGeojsonFeature")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Admin Area not found"
+     *     )
+     * )
+     */
+    public function osm(string $osmType, int $osmid)
+    {
+        $acceptedOsmtypes = ['node', 'way', 'relation'];
+
+        if (! in_array($osmType, $acceptedOsmtypes)) {
+            return response()->json(['message' => 'Bad Request'], 404);
+        }
+
+        $adminArea = AdminArea::where('osm_type', strtoupper(substr($osmType, 0, 1)))
+            ->where('osm_id', $osmid)
+            ->first();
+
+        if (! $adminArea) {
+            return response()->json(['message' => 'Admin Area not found'], 404);
+        }
+
+        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
+
+        $properties = $adminArea->toArray();
+        unset($properties['geom']);
+        unset($properties['tags']);
+        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
+        $properties['osm_tags'] = json_decode($adminArea->tags, true);
+        $properties['wikipedia'] = $adminArea->getWikipediaUrl();
+        $properties['wikidata'] = $adminArea->getWikidataUrl();
+        $properties['wikimedia_commons'] = $adminArea->getWikimediaCommonsUrl();
         $geojsonFeature = [
             'type' => 'Feature',
             'properties' => $properties,
