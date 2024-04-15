@@ -21,7 +21,7 @@ class AdminAreasApiTest extends TestCase
     {
         parent::setUp();
 
-        if (!Schema::hasTable('admin_areas')) {
+        if (! Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -56,7 +56,7 @@ class AdminAreasApiTest extends TestCase
                 );
 
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area ' . $i,
+                    'name' => 'Admin Area '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
@@ -144,7 +144,7 @@ class AdminAreasApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/admin-areas/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -181,7 +181,7 @@ class AdminAreasApiTest extends TestCase
     public function get_single_admin_area_api_returns_correct_structure()
     {
         $adminArea = DB::table('admin_areas')->first();
-        $response = $this->get('/api/v1/features/admin-areas/' . $adminArea->id);
+        $response = $this->get('/api/v1/features/admin-areas/'.$adminArea->id);
 
         $response->assertJson(
             function (AssertableJson $json) {

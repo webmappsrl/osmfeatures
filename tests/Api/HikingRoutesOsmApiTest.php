@@ -2,13 +2,13 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class HikingRoutesOsmApiTest extends TestCase
 {
@@ -18,7 +18,7 @@ class HikingRoutesOsmApiTest extends TestCase
     {
         parent::setUp();
 
-        if (!Schema::hasTable('hiking_routes')) {
+        if (! Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -81,7 +81,7 @@ class HikingRoutesOsmApiTest extends TestCase
                 $geomText = "MULTILINESTRING(($lineString))";
 
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route ' . $i,
+                    'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
@@ -115,7 +115,7 @@ class HikingRoutesOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/hiking-routes/osm/' . $osmType . '/' . $hikingRoute->osm_id);
+        $response = $this->get('/api/v1/features/hiking-routes/osm/'.$osmType.'/'.$hikingRoute->osm_id);
 
         $response->assertStatus(200);
     }
@@ -128,7 +128,7 @@ class HikingRoutesOsmApiTest extends TestCase
     {
         $hikingRoute = DB::table('hiking_routes')->inRandomOrder()->first();
 
-        $response = $this->get('/api/v1/features/hiking-routes/osm/randomvalue/' . $hikingRoute->osm_id);
+        $response = $this->get('/api/v1/features/hiking-routes/osm/randomvalue/'.$hikingRoute->osm_id);
 
         $response->assertStatus(404);
     }
@@ -146,7 +146,7 @@ class HikingRoutesOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/hiking-routes/osm/' . $osmType . '/' . $hikingRoute->osm_id);
+        $response = $this->get('/api/v1/features/hiking-routes/osm/'.$osmType.'/'.$hikingRoute->osm_id);
 
         $response->assertJson(
             function (AssertableJson $json) {

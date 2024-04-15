@@ -2,13 +2,13 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class AdminAreasOsmApiTest extends TestCase
 {
@@ -18,7 +18,7 @@ class AdminAreasOsmApiTest extends TestCase
     {
         parent::setUp();
 
-        if (!Schema::hasTable('admin_areas')) {
+        if (! Schema::hasTable('admin_areas')) {
             Schema::create(
                 'admin_areas',
                 function (Blueprint $table) {
@@ -53,7 +53,7 @@ class AdminAreasOsmApiTest extends TestCase
                 );
 
                 DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area ' . $i,
+                    'name' => 'Admin Area '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
@@ -78,7 +78,7 @@ class AdminAreasOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/admin-areas/osm/' . $osmType . '/' . $adminArea->osm_id);
+        $response = $this->get('/api/v1/features/admin-areas/osm/'.$osmType.'/'.$adminArea->osm_id);
 
         $response->assertStatus(200);
     }
@@ -108,7 +108,7 @@ class AdminAreasOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/admin-areas/osm/' . $osmType . '/' . $adminArea->osm_id);
+        $response = $this->get('/api/v1/features/admin-areas/osm/'.$osmType.'/'.$adminArea->osm_id);
 
         $response->assertJson(
             function (AssertableJson $json) {

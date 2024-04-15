@@ -2,18 +2,17 @@
 
 namespace Tests\Api;
 
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PlacesOsmApiTest extends TestCase
 {
     use RefreshDatabase;
-
 
     public function setUp(): void
     {
@@ -30,7 +29,7 @@ class PlacesOsmApiTest extends TestCase
         // 9	tags	jsonb	YES	NULL	NULL		NULL
         // 10	elevation	int4	YES	NULL	NULL		NULL
 
-        if (!Schema::hasTable('places')) {
+        if (! Schema::hasTable('places')) {
             Schema::create(
                 'places',
                 function (Blueprint $table) {
@@ -58,7 +57,7 @@ class PlacesOsmApiTest extends TestCase
                     'osm_type' => 'N',
                     'osm_id' => $i,
                     'updated_at' => now(),
-                    'name' => 'Place ' . $i,
+                    'name' => 'Place '.$i,
                     'class' => 'class',
                     'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                     'tags' => json_encode(['tag' => 'value']),
@@ -84,7 +83,7 @@ class PlacesOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/places/osm/' . $osmType . '/' . $place->osm_id);
+        $response = $this->get('/api/v1/features/places/osm/'.$osmType.'/'.$place->osm_id);
 
         $response->assertStatus(200);
     }
@@ -97,7 +96,7 @@ class PlacesOsmApiTest extends TestCase
     {
         $place = DB::table('places')->inRandomOrder()->first();
 
-        $response = $this->get('/api/v1/features/places/osm/randomvalue/' . $place->osm_id);
+        $response = $this->get('/api/v1/features/places/osm/randomvalue/'.$place->osm_id);
 
         $response->assertStatus(404);
     }
@@ -115,7 +114,7 @@ class PlacesOsmApiTest extends TestCase
             'W' => 'way',
             'N' => 'node',
         };
-        $response = $this->get('/api/v1/features/places/osm/' . $osmType . '/' . $place->osm_id);
+        $response = $this->get('/api/v1/features/places/osm/'.$osmType.'/'.$place->osm_id);
 
         $response->assertJson(
             function (AssertableJson $json) {

@@ -144,7 +144,6 @@ class HikingRouteController extends Controller
         return response()->json($geojsonFeature);
     }
 
-
     /**
      * @OA\Get(
      *     path="/api/v1/features/hiking-routes/osm/{osmtype}/{osmid}",
@@ -180,13 +179,13 @@ class HikingRouteController extends Controller
     {
         $acceptedTypes = ['relation', 'way', 'node'];
 
-        if (!in_array($osmType, $acceptedTypes)) {
+        if (! in_array($osmType, $acceptedTypes)) {
             return response()->json(['error' => 'Bad Request'], 404);
         }
 
         $hikingRoute = HikingRoute::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmId)->first();
 
-        if (!$hikingRoute) {
+        if (! $hikingRoute) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
         }
 

@@ -118,7 +118,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value . ' m';
+                        return $value.' m';
                     } else {
                         return ' ';
                     }
