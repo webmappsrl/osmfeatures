@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.18.1](https://github.com/webmappsrl/osmfeatures/compare/v1.18.0...v1.18.1) (2024-04-16)
+
+
+### Bug Fixes
+
+* fixed typo ([6a9b3c5](https://github.com/webmappsrl/osmfeatures/commit/6a9b3c5ffae9ae0408a4d3f5ec3e06660ecb03e0))
+
 ## [1.18.0](https://github.com/webmappsrl/osmfeatures/compare/v1.17.0...v1.18.0) (2024-04-15)
 
 
