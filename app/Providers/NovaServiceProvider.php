@@ -2,15 +2,17 @@
 
 namespace App\Providers;
 
-use App\Nova\Dashboards\Features;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Gate;
-use Laravel\Nova\Menu\Menu;
-use Laravel\Nova\Menu\MenuGroup;
-use Laravel\Nova\Menu\MenuItem;
-use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Nova;
+use Laravel\Nova\Badge;
+use Laravel\Nova\Menu\Menu;
+use Illuminate\Http\Request;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuGroup;
+use App\Nova\Dashboards\Features;
+use Illuminate\Support\Facades\DB;
+use Laravel\Nova\Menu\MenuSection;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Blade;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
@@ -43,6 +45,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     //create a link menu item
                     MenuItem::make('API', url('/api/documentation'))->external()->openInNewTab(),
                 ])->icon('users')->collapsable(),
+                MenuSection::make('Tools', [
+                    MenuItem::externalLink('Display Jobs', url('/jobs'))->withBadgeIf(Badge::make('Some jobs failed', 'warning'), 'warning', fn () => DB::table('queue_monitor')->where('status', 2)->count() > 0)->openInNewTab(),
+
+                ])->icon('briefcase'),
             ];
         });
     }
