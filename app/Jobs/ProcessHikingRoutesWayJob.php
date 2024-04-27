@@ -30,9 +30,15 @@ class ProcessHikingRoutesWayJob implements ShouldQueue
             foreach ($hikingRoutes as $hikingRoute) {
                 // Compare the updated_at of the hiking_route and hiking_route_way and update if it is the most recent
                 if ($this->hikingRoutesWay->updated_at > $hikingRoute->updated_at) {
-                    DB::table('hiking_routes')
-                        ->where('id', $hikingRoute->id)
-                        ->update(['updated_at' => $this->hikingRoutesWay->updated_at]);
+                    if ($this->hikingRoutesWay->updated_at > $hikingRoute->updated_at_osm) {
+                        DB::table('hiking_routes')
+                            ->where('id', $hikingRoute->id)
+                            ->update(['updated_at' => $this->hikingRoutesWay->updated_at]);
+                    } else {
+                        DB::table('hiking_routes')
+                            ->where('id', $hikingRoute->id)
+                            ->update(['updated_at' => $hikingRoute->updated_at_osm]);
+                    }
 
                     Log::info('Updated hiking route: '.$hikingRoute->id.' with updated_at: '.$this->hikingRoutesWay->updated_at);
                 }
