@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessHikingRoutesWayJob;
 
 class HikingRoutesCorrectTimestamp extends Command
 {
@@ -28,44 +29,48 @@ class HikingRoutesCorrectTimestamp extends Command
      */
     public function handle()
     {
-        $hikingRoutes = DB::select('SELECT id, members, updated_at FROM hiking_routes WHERE members IS NOT NULL');
-        $updateTime = now();
+        try {
+            // Get the most recent last update from osm2pgsql_last_updates table in the imported_at column
+            $lastUpdate = DB::select('SELECT MAX(imported_at) as imported_at FROM osm2pgsql_last_updates')[0]->imported_at;
+            $lastUpdate ? $this->info('Last update: ' . $lastUpdate) : $this->info('No last update found');
+            $this->info('Selecting hiking routes ways updated after the last update...');
 
-        foreach ($hikingRoutes as $hikingRoute) {
-            $this->info('Processing hiking route '.$hikingRoute->id);
-            $members = json_decode($hikingRoute->members, true);
+            // Query the database to get all the hiking_routes_ways that have the updated_at value that is more recent than the last update date
+            if ($lastUpdate == null) {
+                $hikingRoutesWays = DB::table('hiking_routes_ways')->get();
+            } else {
+                $hikingRoutesWays = DB::table('hiking_routes_ways')
+                    ->where('updated_at', '>', $lastUpdate)
+                    ->get();
+            }
 
-            $latestTimestamp = null;
-            foreach ($members as $member) {
-                if ($member['type'] === 'w') {
-                    $osmApiUrl = 'https://api.openstreetmap.org/api/0.6/way/'.$member['ref'].'.json';
-                    try {
-                        $osmData = json_decode(file_get_contents($osmApiUrl), true);
-                        $timestamp = $osmData['elements'][0]['timestamp'];
-                        //format the timestamp to iso8601
-                        $timestamp = Carbon::parse($timestamp)->toIso8601String();
-                    } catch (\Exception $e) {
-                        $this->error('Error while fetching data from OSM API: '.$e->getMessage());
-                        continue;
-                    }
+            // Create a new progress bar
+            $bar = $this->output->createProgressBar(count($hikingRoutesWays));
 
-                    if ($latestTimestamp === null || $timestamp > $latestTimestamp) {
-                        $latestTimestamp = $timestamp;
-                    }
+            $this->info('Dispatching jobs...');
+
+            // Dispatch a job for each hiking_routes_ways
+            foreach ($hikingRoutesWays as $hikingRoutesWay) {
+                //check if the way is a member of a hiking route
+                $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
+                if ($hikingRoutes->count() > 0) {
+                    dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
                 }
+                // Advance the progress bar
+                $bar->advance();
             }
-            //update the updated_at column of the hiking routes with the latest timestamp if is more recent than the current one
-            if ($latestTimestamp > $hikingRoute->updated_at) {
-                DB::table('hiking_routes')
-                    ->where('id', $hikingRoute->id)
-                    ->update(['updated_at' => $latestTimestamp]);
-                $this->info('Updated hiking route '.$hikingRoute->id.' with timestamp '.$latestTimestamp);
-            }
-            $this->info('Hiking routes already up to date.');
-        }
 
-        $updateTime = now()->diffInSeconds() / 60;
-        $this->info('All hiking routes have been processed in '.$updateTime.' minutes.');
-        Log::info('All hiking routes have been processed in '.$updateTime.' minutes.');
+            // Finish the progress bar
+            $bar->finish();
+            $this->info(''); // Add a new line after the progress bar (for better readability
+            $this->info('Jobs dispatched successfully!');
+
+            // Update the imported_at column in the osm2pgsql_last_updates table
+            DB::table('osm2pgsql_last_updates')
+                ->insert(['imported_at' => Carbon::now()]);
+        } catch (\Exception $e) {
+            $this->error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+            Log::error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+        }
     }
 }
