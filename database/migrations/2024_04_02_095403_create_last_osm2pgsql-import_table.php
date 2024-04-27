@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('last_osm2pgsql_import');
+        Schema::dropIfExists('osm2pgsql_crontab_updates');
     }
 };
