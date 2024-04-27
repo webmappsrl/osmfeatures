@@ -2,17 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ProcessHikingRoutesWayJob;
 use Carbon\Carbon;
-use Tests\TestCase;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Schema;
-use App\Jobs\ProcessHikingRoutesWayJob;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class ProcessHikingRoutesWayJobTest extends TestCase
 {
@@ -22,7 +22,7 @@ class ProcessHikingRoutesWayJobTest extends TestCase
     {
         parent::setUp();
 
-        if (!Schema::hasTable('hiking_routes')) {
+        if (! Schema::hasTable('hiking_routes')) {
             Schema::create(
                 'hiking_routes',
                 function (Blueprint $table) {
@@ -85,7 +85,7 @@ class ProcessHikingRoutesWayJobTest extends TestCase
                 $geomText = "MULTILINESTRING(($lineString))";
 
                 DB::table('hiking_routes')->insert([
-                    'name' => 'Hiking Route ' . $i,
+                    'name' => 'Hiking Route '.$i,
                     'osm_id' => $i,
                     'osm_type' => 'R',
                     'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
@@ -129,7 +129,7 @@ class ProcessHikingRoutesWayJobTest extends TestCase
                 ]);
             }
         }
-        if (!Schema::hasTable('hiking_routes_ways')) {
+        if (! Schema::hasTable('hiking_routes_ways')) {
             Schema::create(
                 'hiking_routes_ways',
                 function (Blueprint $table) {
@@ -165,13 +165,11 @@ class ProcessHikingRoutesWayJobTest extends TestCase
         $this->assertDatabaseHas('queue_monitor', ['status' => 4, 'name' => 'App\Jobs\ProcessHikingRoutesWayJob']);
     }
 
-
     public function test_jobs_correctly_update_hiking_routes_when_updated_at_is_more_recent()
     {
         $hikingRoutesWay = DB::table('hiking_routes_ways')->get()->random();
 
-        $hikingRoute = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' =>
-        $hikingRoutesWay->osm_id]])->first();
+        $hikingRoute = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->first();
 
         $hikingRoutesWay->updated_at = now();
 
@@ -188,8 +186,7 @@ class ProcessHikingRoutesWayJobTest extends TestCase
     {
         $hikingRoutesWay = DB::table('hiking_routes_ways')->get()->random();
 
-        $hikingRoute = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' =>
-        $hikingRoutesWay->osm_id]])->first();
+        $hikingRoute = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->first();
 
         $hikingRoutesWay->updated_at = $hikingRoute->updated_at;
 
