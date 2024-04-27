@@ -101,7 +101,6 @@ The command supports several parameters and options:
 
 1. **defaultName**: The name of the final file that will be saved after the pbf download.
 
-
 2. **defaultLua**: IThe name of the .lua file (to be typed without the \*.lua extension) to be used for importing with osm2pgsql. This file must be present in the `storage/app/osm/lua` folder. Required.
 
 3. **Option --skip-download**: If you do not want to download the PBF file again, use this option. NOTE: It is necessary that the PBF file is already present in the `storage/app/osm/pbf` folder.
@@ -111,7 +110,6 @@ The command supports several parameters and options:
 ## Example of Use
 
 Using the Laravel Prompts package, the `osmfeatures:sync` command guides the user through the available options. It will not be necessary, therefore, to type the entire list of required parameters. For example, if you launch:
-
 
 ```bash
 osmfeatures:sync
@@ -127,12 +125,39 @@ This example uses the `skip download` option end takes a previously downloaded f
 
 In this specific example, the PBF is not downloaded from Geofabrik. If you want to download a new PBF file from Geofabrik, simply answer "No" to the "**Skip Download and use a local PBF file?**" prompt. You will then be asked to enter the URL of the PBF file to download and the name for the file, which will be saved in the `storage/app/osm/pbf` folder.
 
+# Documentation for the `osmfeatures:correct-hr-timestamps` Command
+
+## Description
+
+The `osmfeatures:correct-hr-timestamps` command is an Artisan command that corrects the timestamps of hiking routes. It loops over all the members of a relation and sets the timestamp of the relation to the most recent one.
+
+## How it works
+
+1. The command starts by retrieving the most recent update from the `osm2pgsql_crontab_updates` table in the `imported_at` column where `from_lua` is equal to `hiking_routes.lua`.
+
+2. It then selects all the `hiking_routes_ways` that have an `updated_at` value that is more recent than the last update date.
+
+3. For each `hiking_routes_way`, it checks if the way is a member of a hiking route. If it is, a new `ProcessHikingRoutesWayJob` job is dispatched for that way.
+
+4. The `ProcessHikingRoutesWayJob` job retrieves all hiking routes that contain the way as a member. It then loops over these hiking routes and compares the `updated_at` timestamp of the hiking route and the way. If the way's `updated_at` timestamp is more recent, it updates the hiking route's `updated_at` timestamp to match the way's.
+
+## How to run the command
+
+To manually run the command, open the terminal and type:
+
+```bash
+php artisan osmfeatures:correct-hr-timestamps
+```
+
+However, the command is scheduled to run automatically every day at 23:00.
+
+This command does not require any parameters.
+
 ## Documentation for osm2pgsql and osmium
 
 -   **osm2pgsql**: Used to convert OSM data into a format usable by the PostgreSQL database. Detailed documentation available on [osm2pgsql.org](https://osm2pgsql.org/doc/manual.html).
 
 -   **osmium**: A tool for working with OSM data, used to filter and manipulate data before import. Documentation available on [Osmium Tool](https://osmcode.org/osmium-tool/manual.html).
-
 
 ## Laravel Prompts
 

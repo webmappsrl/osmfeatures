@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.12",
         "outl1ne/nova-tooltip-field": "^1.0",
+        "romanzipp/laravel-queue-monitor": "^5.2",
         "rpj/daterangepicker": "^0.0.7",
         "spatie/db-dumper": "^3.3",
         "spatie/laravel-translatable": "^6.3",
