@@ -2,17 +2,17 @@
 
 namespace App\Providers;
 
-use Laravel\Nova\Nova;
+use App\Nova\Dashboards\Features;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Badge;
 use Laravel\Nova\Menu\Menu;
-use Illuminate\Http\Request;
-use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Menu\MenuGroup;
-use App\Nova\Dashboards\Features;
-use Illuminate\Support\Facades\DB;
+use Laravel\Nova\Menu\MenuItem;
 use Laravel\Nova\Menu\MenuSection;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Blade;
+use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
 
 class NovaServiceProvider extends NovaApplicationServiceProvider
