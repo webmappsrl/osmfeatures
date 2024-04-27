@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.20.0](https://github.com/webmappsrl/osmfeatures/compare/v1.19.0...v1.20.0) (2024-04-27)
+
+
+### Features
+
+* written tests for job ([42f73cf](https://github.com/webmappsrl/osmfeatures/commit/42f73cfe1ab6f7091e50d4f81872afba95e6de3f))
+
+
+### Bug Fixes
+
+* migration ([57ca4db](https://github.com/webmappsrl/osmfeatures/commit/57ca4db796f98d99dec474a5ff77d9143c926eff))
+
 ## [1.19.0](https://github.com/webmappsrl/osmfeatures/compare/v1.18.1...v1.19.0) (2024-04-27)
 
 

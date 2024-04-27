@@ -13,8 +13,8 @@ return [
     |
     */
 
-    'version' => '1.19.0', //x-release-please-version
-    'release' => '1.19.0', // x-release-please-version
+    'version' => '1.20.0', //x-release-please-version
+    'release' => '1.20.0', // x-release-please-version
     'release_date' => '23/03/2024',
 
     /*
