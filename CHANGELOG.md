@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.19.0](https://github.com/webmappsrl/osmfeatures/compare/v1.18.1...v1.19.0) (2024-04-27)
+
+
+### Features
+
+* hiking_routes updated_at enhancement ([4b33e96](https://github.com/webmappsrl/osmfeatures/commit/4b33e9682ce6dd8d17805877cf3c23cb1db43bd6))
+* implemented job queue monitor ([29f864c](https://github.com/webmappsrl/osmfeatures/commit/29f864cd70be57f0a9bf63bebc3c6c784182f8e2))
+* updated readme ([ff721bc](https://github.com/webmappsrl/osmfeatures/commit/ff721bc452ab4568d6413c37b773af9e7b5fac23))
+
 ## [1.18.1](https://github.com/webmappsrl/osmfeatures/compare/v1.18.0...v1.18.1) (2024-04-16)
 
 
