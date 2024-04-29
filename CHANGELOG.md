@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/webmappsrl/osmfeatures/compare/v1.20.5...v1.21.0) (2024-04-29)
+
+
+### Features
+
+* enhanced hiking_routes timestamp update job ([3dfe4ba](https://github.com/webmappsrl/osmfeatures/commit/3dfe4ba5e14b02295ecbcb49642bec4ae682999c))
+
 ## [1.20.5](https://github.com/webmappsrl/osmfeatures/compare/v1.20.4...v1.20.5) (2024-04-29)
 
 
