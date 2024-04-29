@@ -21,11 +21,9 @@ local hiking_routes_ways = osm2pgsql.define_table({
 })
 
 function osm2pgsql.process_way(object)
-    if not object.tags.highway then
-        return
-    end
     local row = {
     updated_at = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
+    geom = object:as_linestring(),
 	trail_visibility = object.tags.trail_visibility,
 	sac_scale = object.tags.sac_scale,
 	tracktype = object.tags.tracktype,
