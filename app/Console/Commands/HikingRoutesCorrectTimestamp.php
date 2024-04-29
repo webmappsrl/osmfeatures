@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
+use App\Jobs\ProcessHikingRoutesJob;
+use App\Jobs\ProcessHikingRoutesWayJob;
 use App\Models\HikingRoute;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\ProcessHikingRoutesJob;
-use App\Jobs\ProcessHikingRoutesWayJob;
 
 class HikingRoutesCorrectTimestamp extends Command
 {
@@ -46,8 +46,8 @@ class HikingRoutesCorrectTimestamp extends Command
             $this->info(''); // Add a new line after the progress bar (for better readability
             $this->info('Jobs dispatched successfully!');
         } catch (\Exception $e) {
-            $this->error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
-            Log::error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+            $this->error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
+            Log::error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
         }
     }
 }
