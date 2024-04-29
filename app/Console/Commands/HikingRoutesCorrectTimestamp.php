@@ -42,13 +42,12 @@ class HikingRoutesCorrectTimestamp extends Command
             if ($lastUpdate != null) {
                 //subtract one day to the last update
                 $lastUpdate = Carbon::parse($lastUpdate[0]->imported_at)->subDay();
-                $this->info('Last update: ' . $lastUpdate);
+                $this->info('Last update: '.$lastUpdate);
             } else {
                 $this->info('No last update found');
             }
 
             $this->info('Selecting hiking routes ways updated after the last update...');
-
 
             $this->info('Dispatching jobs...');
 
@@ -86,8 +85,8 @@ class HikingRoutesCorrectTimestamp extends Command
             $this->info(''); // Add a new line after the progress bar (for better readability
             $this->info('Jobs dispatched successfully!');
         } catch (\Exception $e) {
-            $this->error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
-            Log::error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+            $this->error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
+            Log::error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
         }
     }
 }
