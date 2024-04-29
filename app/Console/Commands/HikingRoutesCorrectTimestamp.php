@@ -49,31 +49,37 @@ class HikingRoutesCorrectTimestamp extends Command
 
             $this->info('Selecting hiking routes ways updated after the last update...');
 
+            $this->info('Dispatching jobs...');
+
             // Query the database to get all the hiking_routes_ways that have the updated_at value that is more recent than the last update date
             if ($lastUpdate == null) {
-                $hikingRoutesWays = DB::table('hiking_routes_ways')->get();
+                $hikingRoutesWays = DB::table('hiking_routes_ways')->orderBy('updated_at', 'desc')->chunk(1000, function ($hikingRoutesWays) {
+                    // Create a new progress bar
+                    $bar = $this->output->createProgressBar(count($hikingRoutesWays));
+                    foreach ($hikingRoutesWays as $hikingRoutesWay) {
+                        $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
+                        if ($hikingRoutes->count() > 0) {
+                            dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
+                            $bar->advance();
+                        }
+                    }
+                });
             } else {
                 $hikingRoutesWays = DB::table('hiking_routes_ways')
                     ->where('updated_at', '>', $lastUpdate)
-                    ->get();
+                    ->orderBy('updated_at', 'desc')
+                    ->chunk(1000, function ($hikingRoutesWays) {
+                        // Create a new progress bar
+                        $bar = $this->output->createProgressBar(count($hikingRoutesWays));
+                        foreach ($hikingRoutesWays as $hikingRoutesWay) {
+                            $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
+                            if ($hikingRoutes->count() > 0) {
+                                dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
+                                $bar->advance();
+                            }
+                        }
+                    });
             }
-
-            // Create a new progress bar
-            $bar = $this->output->createProgressBar(count($hikingRoutesWays));
-
-            $this->info('Dispatching jobs...');
-
-            // Dispatch a job for each hiking_routes_ways
-            foreach ($hikingRoutesWays as $hikingRoutesWay) {
-                //only dispatch jobs for ways that are part of a hiking route
-                $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
-                if ($hikingRoutes->count() > 0) {
-                    dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
-                }
-                // Advance the progress bar
-                $bar->advance();
-            }
-
             // Finish the progress bar
             $bar->finish();
             $this->info(''); // Add a new line after the progress bar (for better readability

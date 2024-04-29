@@ -43,28 +43,7 @@ local hiking_routes = osm2pgsql.define_table({
         { column = 'tags', type = 'jsonb'},
         { column = 'geom', type = 'multilinestring', projection = 4326 },
         { column = 'members', type = 'jsonb' },
-    }
-})
-
-local hiking_routes_ways = osm2pgsql.define_table({
-    name = 'hiking_routes_ways',
-    schema = 'public',
-    ids = { type = 'any', type_column = 'osm_type', id_column = 'osm_id' },
-    columns = {
-        { column = 'updated_at'},
-        { column = 'trail_visibility', type='text'},
-        { column = 'sac_scale', type='text'},
-        { column = 'tracktype', type='text'},
-        { column = 'highway', type='text'},
-        { column = 'name', type='text'},
-        { column = 'ref', type='text'},
-        { column = 'access', type='text'},
-        { column = 'incline', type='text'},
-        { column = 'surface', type='text'},
-        { column = 'ford', type='bool'},
-        { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'linestring' },
-
+        { column = 'members_ids', type = 'text'}
     }
 })
 
@@ -104,6 +83,22 @@ function process_hiking_route(object, geom)
 
     -- add osm2cai status to score
     score = score + osm2cai_status
+    
+    -- get the members_id from object.members ref
+    local members_ids = ''
+    if object.members then
+        for i, member in ipairs(object.members) do
+            if member.type and member.type == 'w' then
+                if member.ref then
+                    members_id = members_id .. tostring(member.ref) .. ','
+                end
+            end
+        end
+    end
+    --remove final comma
+    if members_id ~= '' then
+        members_id = string.sub(members_id, 1, -2)
+    end
 
     local a = {
         name = object.tags.name,
@@ -144,11 +139,10 @@ function process_hiking_route(object, geom)
         tags = object.tags,
         geom = geom,
         members = object.members,
+        members_ids = members_ids
     }
     hiking_routes:insert(a)
-end
-
-   
+end  
 
 function osm2pgsql.process_relation(object)
     if object.tags.type == 'route' and object.tags.route == 'hiking' then
@@ -159,25 +153,4 @@ function osm2pgsql.process_relation(object)
     end
 end
 
-function osm2pgsql.process_way(object)
-        print("osm2pgsql.process_way called")
-    if not object.tags.highway then
-        return
-    end
-    local row = {
-    updated_at = os.date('%Y-%m-%d %H:%M:%S', object.timestamp) or nil,
-	trail_visibility = object.tags.trail_visibility,
-	sac_scale = object.tags.sac_scale,
-	tracktype = object.tags.tracktype,
-	highway = object.tags.highway,
-	name = object.tags.name,
-	ref = object.tags.ref,
-	access = object.tags.access,
-	incline = object.tags.incline,
-	surface = object.tags.surface,
-	ford = object.tags.ford,
-	tags = object.tags.tags
-    }
-    hiking_routes_ways:insert(row)
-end
 
