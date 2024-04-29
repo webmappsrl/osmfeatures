@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/webmappsrl/osmfeatures/compare/v1.21.0...v1.21.1) (2024-04-29)
+
+
+### Bug Fixes
+
+* added is monitored trait to job ([8a50dcc](https://github.com/webmappsrl/osmfeatures/commit/8a50dcc5ced2c464a4acbd49e751d192010e4881))
+
 ## [1.21.0](https://github.com/webmappsrl/osmfeatures/compare/v1.20.5...v1.21.0) (2024-04-29)
 
 
