@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.4](https://github.com/webmappsrl/osmfeatures/compare/v1.20.3...v1.20.4) (2024-04-29)
+
+
+### Bug Fixes
+
+* fixed typo ([a6b48f3](https://github.com/webmappsrl/osmfeatures/commit/a6b48f30a951bbd68b401acdecf217c627253e21))
+
 ## [1.20.3](https://github.com/webmappsrl/osmfeatures/compare/v1.20.2...v1.20.3) (2024-04-29)
 
 
