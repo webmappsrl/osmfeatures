@@ -90,14 +90,14 @@ function process_hiking_route(object, geom)
         for i, member in ipairs(object.members) do
             if member.type and member.type == 'w' then
                 if member.ref then
-                    members_id = members_id .. tostring(member.ref) .. ','
+                    members_ids = members_ids .. tostring(member.ref) .. ','
                 end
             end
         end
     end
     --remove final comma
-    if members_id ~= '' then
-        members_id = string.sub(members_id, 1, -2)
+    if members_ids ~= '' then
+        members_ids = string.sub(members_ids, 1, -2)
     end
 
     local a = {
