@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.3](https://github.com/webmappsrl/osmfeatures/compare/v1.20.2...v1.20.3) (2024-04-29)
+
+
+### Bug Fixes
+
+* fixed geometry in hiking routes ways lua ([194319a](https://github.com/webmappsrl/osmfeatures/commit/194319abffdec896c1d64e0d800610ec4189899d))
+
 ## [1.20.2](https://github.com/webmappsrl/osmfeatures/compare/v1.20.1...v1.20.2) (2024-04-29)
 
 
