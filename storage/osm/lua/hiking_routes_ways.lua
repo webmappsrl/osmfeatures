@@ -34,7 +34,7 @@ function osm2pgsql.process_way(object)
 	incline = object.tags.incline,
 	surface = object.tags.surface,
 	ford = object.tags.ford,
-	tags = object.tags.tags
+	tags = object.tags
     }
     hiking_routes_ways:insert(row)
 end
