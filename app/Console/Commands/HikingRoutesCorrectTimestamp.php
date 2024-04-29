@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\ProcessHikingRoutesWayJob;
 use Carbon\Carbon;
+use App\Models\HikingRoute;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessHikingRoutesJob;
+use App\Jobs\ProcessHikingRoutesWayJob;
 
 class HikingRoutesCorrectTimestamp extends Command
 {
@@ -30,63 +32,22 @@ class HikingRoutesCorrectTimestamp extends Command
     public function handle()
     {
         try {
-            // Get the most recent last update from osm2pgsql_last_updates table in the imported_at column
-            $lastUpdate = DB::table('osm2pgsql_crontab_updates')
-                ->select(DB::raw('MAX(imported_at) as imported_at'))
-                ->where('from_lua', '=', 'hiking_routes.lua')
-                ->get();
-            $lastUpdate = $lastUpdate[0]->imported_at;
-
-            //subtract one day to the last update to avoid missing ways
-
-            if ($lastUpdate != null) {
-                //subtract one day to the last update
-                $lastUpdate = Carbon::parse($lastUpdate[0]->imported_at)->subDay();
-                $this->info('Last update: '.$lastUpdate);
-            } else {
-                $this->info('No last update found');
-            }
-
-            $this->info('Selecting hiking routes ways updated after the last update...');
+            $hikingRoutes = HikingRoute::all('id', 'updated_at_osm', 'updated_at');
 
             $this->info('Dispatching jobs...');
+            $bar = $this->output->createProgressBar(count($hikingRoutes));
 
-            // Query the database to get all the hiking_routes_ways that have the updated_at value that is more recent than the last update date
-            if ($lastUpdate == null) {
-                $hikingRoutesWays = DB::table('hiking_routes_ways')->orderBy('updated_at', 'desc')->chunk(1000, function ($hikingRoutesWays) {
-                    // Create a new progress bar
-                    $bar = $this->output->createProgressBar(count($hikingRoutesWays));
-                    foreach ($hikingRoutesWays as $hikingRoutesWay) {
-                        $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
-                        if ($hikingRoutes->count() > 0) {
-                            dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
-                            $bar->advance();
-                        }
-                    }
-                });
-            } else {
-                $hikingRoutesWays = DB::table('hiking_routes_ways')
-                    ->where('updated_at', '>', $lastUpdate)
-                    ->orderBy('updated_at', 'desc')
-                    ->chunk(1000, function ($hikingRoutesWays) {
-                        // Create a new progress bar
-                        $bar = $this->output->createProgressBar(count($hikingRoutesWays));
-                        foreach ($hikingRoutesWays as $hikingRoutesWay) {
-                            $hikingRoutes = DB::table('hiking_routes')->whereJsonContains('members', [['type' => 'w', 'ref' => $hikingRoutesWay->osm_id]])->get();
-                            if ($hikingRoutes->count() > 0) {
-                                dispatch(new ProcessHikingRoutesWayJob($hikingRoutesWay));
-                                $bar->advance();
-                            }
-                        }
-                    });
+            foreach ($hikingRoutes as $route) {
+                dispatch(new ProcessHikingRoutesJob($route));
+                $bar->advance();
             }
-            // Finish the progress bar
+
             $bar->finish();
             $this->info(''); // Add a new line after the progress bar (for better readability
             $this->info('Jobs dispatched successfully!');
         } catch (\Exception $e) {
-            $this->error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
-            Log::error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
+            $this->error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+            Log::error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
         }
     }
 }
