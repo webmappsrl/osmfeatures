@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.2](https://github.com/webmappsrl/osmfeatures/compare/v1.20.1...v1.20.2) (2024-04-29)
+
+
+### Bug Fixes
+
+* separated hiking routes lua from hiking_routes_way lua ([c8ffbc4](https://github.com/webmappsrl/osmfeatures/commit/c8ffbc44f9259885141e3ab962ab482bb719a9e8))
+
 ## [1.20.1](https://github.com/webmappsrl/osmfeatures/compare/v1.20.0...v1.20.1) (2024-04-27)
 
 
