@@ -2,13 +2,14 @@
 
 namespace Tests\Api;
 
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 use Illuminate\Support\Carbon;
+use Database\Seeders\TestDBSeeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class PlacesApiTest extends TestCase
 {
@@ -19,55 +20,9 @@ class PlacesApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        //       1	osm_type	bpchar(1)	NO	NULL	NULL		NULL
-        // 2	osm_id	int8	NO	NULL	NULL		NULL
-        // 3	id	int4	NO	NULL	"nextval('places_tmp_id_seq'::regclass)"		NULL
-        // 4	updated_at	text	YES	NULL	NULL		NULL
-        // 5	name	text	YES	NULL	NULL		NULL
-        // 6	class	text	NO	NULL	NULL		NULL
-        // 7	subclass	text	YES	NULL	NULL		NULL
-        // 8	geom	geometry(Point,3857)	NO	NULL	NULL		NULL
-        // 9	tags	jsonb	YES	NULL	NULL		NULL
-        // 10	elevation	int4	YES	NULL	NULL		NULL
-
-        if (! Schema::hasTable('places')) {
-            Schema::create(
-                'places',
-                function (Blueprint $table) {
-                    $table->string('osm_type');
-                    $table->bigInteger('osm_id');
-                    $table->increments('id');
-                    $table->timestamp('updated_at');
-                    $table->string('name');
-                    $table->string('class');
-                    $table->string('subclass')->nullable();
-                    $table->point('geom');
-                    $table->jsonb('tags')->nullable();
-                    $table->integer('elevation')->nullable();
-                    $table->integer('score')->nullable();
-                }
-            );
-
-            //create 200 places
-            for ($i = 0; $i < 200; $i++) {
-                // generate random point inside Italy bounding box
-                $lat = rand(3600, 4700) / 100;
-                $lon = rand(600, 1900) / 100;
-
-                DB::table('places')->insert([
-                    'osm_type' => 'N',
-                    'osm_id' => $i,
-                    'updated_at' => now(),
-                    'name' => 'Place '.$i,
-                    'class' => 'class',
-                    'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
-                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
-                    'elevation' => rand(50, 300),
-                    'score' => rand(1, 5),
-                ]);
-            }
-
+        if (!Schema::hasTable('places')) {
+            $seeder = new TestDBSeeder('Places');
+            $seeder->run();
             $this->usingTestData = true;
         }
     }
@@ -152,7 +107,7 @@ class PlacesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/places/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/places/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
