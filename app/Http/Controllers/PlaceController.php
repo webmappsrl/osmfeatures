@@ -83,6 +83,8 @@ class PlaceController extends Controller
 
         $places->getCollection()->transform(function ($place) {
             $place->updated_at = Carbon::parse($place->updated_at)->toIso8601String();
+            $model = Place::find($place->id);
+            $place->id = $model->getOsmFeaturesId();
 
             return $place;
         });
@@ -118,7 +120,7 @@ class PlaceController extends Controller
     {
         $place = Place::where('id', $id)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
@@ -183,13 +185,13 @@ class PlaceController extends Controller
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
 
-        if (! in_array($osmType, $acceptedOsmtypes)) {
+        if (!in_array($osmType, $acceptedOsmtypes)) {
             return response()->json(['message' => 'Bad Request'], 404);
         }
 
         $place = Place::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmid)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'Place not found'], 404);
         }
 

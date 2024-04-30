@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HikingRoute;
+use App\Models\HikingWay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,6 +86,8 @@ class HikingRouteController extends Controller
 
         $hikingRoutes->getCollection()->transform(function ($hr) {
             $hr->updated_at = Carbon::parse($hr->updated_at)->toIso8601String();
+            $model = HikingRoute::find($hr->id);
+            $hr->id = $model->getOsmFeaturesId();
 
             return $hr;
         });
@@ -186,13 +189,13 @@ class HikingRouteController extends Controller
     {
         $acceptedTypes = ['relation', 'way', 'node'];
 
-        if (! in_array($osmType, $acceptedTypes)) {
+        if (!in_array($osmType, $acceptedTypes)) {
             return response()->json(['error' => 'Bad Request'], 404);
         }
 
         $hikingRoute = HikingRoute::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmId)->first();
 
-        if (! $hikingRoute) {
+        if (!$hikingRoute) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
         }
 
