@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\OsmTagsProcessor;
 use App\Traits\OsmFeaturesIdProcessor;
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\OsmTagsProcessor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Pole extends Model
 {

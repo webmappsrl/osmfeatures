@@ -22,8 +22,9 @@ class AdminAreasApiTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp(); {
-            if (!Schema::hasTable('admin_areas')) {
+        parent::setUp();
+        {
+            if (! Schema::hasTable('admin_areas')) {
                 $seeder = new TestDBSeeder('AdminAreas');
                 $seeder->run();
                 $this->usingTestData = true;
@@ -111,7 +112,7 @@ class AdminAreasApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/admin-areas/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
+        $response = $this->get('/api/v1/features/admin-areas/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -148,7 +149,7 @@ class AdminAreasApiTest extends TestCase
     public function get_single_admin_area_api_returns_correct_structure()
     {
         $adminArea = AdminArea::first();
-        $response = $this->get('/api/v1/features/admin-areas/' . $adminArea->getOsmfeaturesId());
+        $response = $this->get('/api/v1/features/admin-areas/'.$adminArea->getOsmfeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {

@@ -100,6 +100,7 @@ class AdminAreaController extends Controller
             $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
             $model = AdminArea::find($adminArea->id);
             $adminArea->id = $model->getOsmfeaturesId();
+
             return $adminArea;
         });
 
@@ -135,7 +136,7 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::getOsmfeaturesByOsmfeaturesID($id);
 
-        if (!$adminArea) {
+        if (! $adminArea) {
             return response()->json(['message' => 'Admin Area not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
@@ -151,8 +152,8 @@ class AdminAreaController extends Controller
         unset($properties['tags']);
         unset($properties['id']);
         $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = 'https://www.openstreetmap.org/' . $osmType . '/' . $adminArea->osm_id;
-        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/' . $osmType . '/' . $adminArea->osm_id . '.json';
+        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
         $properties['wikipedia'] = $adminArea->getWikipediaUrl();
         $properties['wikidata'] = $adminArea->getWikidataUrl();
@@ -202,7 +203,7 @@ class AdminAreaController extends Controller
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
 
-        if (!in_array($osmType, $acceptedOsmtypes)) {
+        if (! in_array($osmType, $acceptedOsmtypes)) {
             return response()->json(['message' => 'Bad Request'], 404);
         }
 
@@ -210,7 +211,7 @@ class AdminAreaController extends Controller
             ->where('osm_id', $osmid)
             ->first();
 
-        if (!$adminArea) {
+        if (! $adminArea) {
             return response()->json(['message' => 'Admin Area not found'], 404);
         }
 
@@ -219,8 +220,8 @@ class AdminAreaController extends Controller
         $properties = $adminArea->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = 'https://www.openstreetmap.org/' . $osmType . '/' . $adminArea->osm_id;
-        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/' . $osmType . '/' . $adminArea->osm_id . '.json';
+        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
         $properties['wikipedia'] = $adminArea->getWikipediaUrl();
         $properties['wikidata'] = $adminArea->getWikidataUrl();

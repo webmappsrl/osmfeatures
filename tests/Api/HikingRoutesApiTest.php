@@ -4,14 +4,14 @@ namespace Tests\Api;
 
 use App\Models\HikingRoute;
 use App\Models\HikingWay;
-use Tests\TestCase;
-use Illuminate\Support\Carbon;
 use Database\Seeders\TestDBSeeder;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class HikingRoutesApiTest extends TestCase
 {
@@ -22,7 +22,7 @@ class HikingRoutesApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (!Schema::hasTable('hiking_routes')) {
+        if (! Schema::hasTable('hiking_routes')) {
             $seeder = new TestDBSeeder('HikingRoutes');
             $seeder->run();
             $this->usingTestData = true;
@@ -109,7 +109,7 @@ class HikingRoutesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/hiking-routes/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
+        $response = $this->get('/api/v1/features/hiking-routes/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -134,7 +134,7 @@ class HikingRoutesApiTest extends TestCase
     public function get_single_hiking_route_api_returns_correct_structure()
     {
         $hr = HikingRoute::first();
-        $response = $this->get('/api/v1/features/hiking-routes/' . $hr->getOsmFeaturesId());
+        $response = $this->get('/api/v1/features/hiking-routes/'.$hr->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {

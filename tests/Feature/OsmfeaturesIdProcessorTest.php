@@ -3,11 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\AdminArea;
-use Tests\TestCase;
 use App\Traits\OsmFeaturesIdProcessor;
 use Database\Seeders\TestDBSeeder;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestCase;
 
 class OsmfeaturesIdProcessorTest extends TestCase
 {
@@ -15,17 +15,17 @@ class OsmfeaturesIdProcessorTest extends TestCase
 
     protected $usingTestData = false;
 
-
     public function setUp(): void
     {
         parent::setUp();
 
-        if (!Schema::hasTable('admin_areas')) {
+        if (! Schema::hasTable('admin_areas')) {
             $seeder = new TestDBSeeder();
             $seeder->run();
             $this->usingTestData = true;
         }
     }
+
     /**
      * test the getOsmFeaturesId function
      * @test
@@ -41,11 +41,9 @@ class OsmfeaturesIdProcessorTest extends TestCase
      */
     public function test_getOsmFeaturesId_function()
     {
-
         $nodeModel = AdminArea::where('osm_type', 'N')->first();
         $wayModel = AdminArea::where('osm_type', 'W')->first();
         $relationModel = AdminArea::where('osm_type', 'R')->first();
-
 
         //first character of node model osmfeatures id should be N
         $this->assertSame('N', substr($nodeModel->getOsmFeaturesId(), 0, 1));
@@ -54,9 +52,9 @@ class OsmfeaturesIdProcessorTest extends TestCase
         //first character of relation model osmfeatures id should be R
         $this->assertSame('R', substr($relationModel->getOsmFeaturesId(), 0, 1));
 
-        $this->assertSame($nodeModel->osm_type . $nodeModel->osm_id, $nodeModel->getOsmFeaturesId());
-        $this->assertSame($wayModel->osm_type . $wayModel->osm_id, $wayModel->getOsmFeaturesId());
-        $this->assertSame($relationModel->osm_type . $relationModel->osm_id, $relationModel->getOsmFeaturesId());
+        $this->assertSame($nodeModel->osm_type.$nodeModel->osm_id, $nodeModel->getOsmFeaturesId());
+        $this->assertSame($wayModel->osm_type.$wayModel->osm_id, $wayModel->getOsmFeaturesId());
+        $this->assertSame($relationModel->osm_type.$relationModel->osm_id, $relationModel->getOsmFeaturesId());
     }
 
     /**

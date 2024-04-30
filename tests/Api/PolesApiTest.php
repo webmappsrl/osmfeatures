@@ -22,7 +22,7 @@ class PolesApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (!Schema::hasTable('poles')) {
+        if (! Schema::hasTable('poles')) {
             $seeder = new TestDBSeeder('Poles');
             $seeder->run();
             $this->usingTestData = true;
@@ -109,7 +109,7 @@ class PolesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/poles/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
+        $response = $this->get('/api/v1/features/poles/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -134,7 +134,7 @@ class PolesApiTest extends TestCase
     public function get_pole_api_returns_correct_structure()
     {
         $pole = Pole::first();
-        $response = $this->get('/api/v1/features/poles/' . $pole->getOsmFeaturesId());
+        $response = $this->get('/api/v1/features/poles/'.$pole->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {

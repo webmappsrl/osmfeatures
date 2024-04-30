@@ -8,17 +8,17 @@ trait OsmFeaturesIdProcessor
 {
     /**
      * Get the osmfeatures id by combining osm_type and osm_id
-     * 
+     *
      * @return string
      */
     public function getOsmFeaturesId(): string
     {
-        return $this->osm_type . $this->osm_id;
+        return $this->osm_type.$this->osm_id;
     }
 
     /**
      * Get an instance of the model based on the osmfeatures ID
-     * 
+     *
      * @param string $osmFeaturesId
      * @return \Illuminate\Database\Eloquent\Model|null
      */
