@@ -13,7 +13,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Admin Areas",
-                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' parameter to filter areas updated after the specified date. Paginated results are available, with each page containing 100 areas. Use the 'page' parameter to specify the page number to retrieve.",
+                "description": "Returns a list of Admin Areas with their details. Optionally, provide an 'updated_at' and bbox parameter to filter areas. Paginated results are available, with each page containing 100 areas. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listAdminAreas",
                 "parameters": [
                     {
@@ -73,8 +73,8 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "id": {
-                                        "type": "integer",
+                                    "osmfeatures_id": {
+                                        "type": "string",
                                         "description": "Osmfeatures ID of the area"
                                     },
                                     "updated_at": {
@@ -84,7 +84,7 @@
                                     },
                                     "type": "object",
                                     "example": {
-                                        "id": 123456,
+                                        "id": "R123456",
                                         "updated_at": "2021-01-01T00:00:00Z"
                                     }
                                 }
@@ -97,159 +97,18 @@
         "/api/v1/features/admin-areas/{id}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get Admin Area by ID",
+                "summary": "Get Admin Area by Osmfeatures ID",
                 "description": "Returns a single Admin Area in GeoJSON format",
                 "operationId": "getAdminAreaById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Admin Area ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "description": "Type of the GeoJSON object"
-                                        },
-                                        "properties": {
-                                            "properties": {
-                                                "osm_type": {
-                                                    "type": "string",
-                                                    "description": "Type of the OSM object (N, W, R)"
-                                                },
-                                                "osm_id": {
-                                                    "type": "integer",
-                                                    "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the area"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "When the area was last updated in OSM, in ISO 8601 format."
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "Name of the area"
-                                                },
-                                                "admin_level": {
-                                                    "type": "string",
-                                                    "description": "Administrative level of the area"
-                                                },
-                                                "osm_url": {
-                                                    "type": "string",
-                                                    "description": "URL to the Openstreetmap corresponding feature."
-                                                },
-                                                "osm_api": {
-                                                    "type": "string",
-                                                    "description": "URL to the OSM API for the object"
-                                                },
-                                                "osm_tags": {
-                                                    "type": "json",
-                                                    "description": "OSM tags of the object"
-                                                },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the area"
-                                                },
-                                                "wikidata": {
-                                                    "type": "string",
-                                                    "description": "Wikidata link for the area"
-                                                },
-                                                "wikimedia_commons": {
-                                                    "type": "string",
-                                                    "description": "Wikimedia Commons link for the area"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "geometry": {
-                                            "type": "geojson",
-                                            "description": "Geometry of the area in GeoJSON format"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "osm_type": "R",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Admin Area",
-                                            "admin_level": "6",
-                                            "osm_url": "https://www.openstreetmap.org/relation/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
-                                            "osm_tags": {
-                                                "type": "boundary",
-                                                "boundary": "administrative"
-                                            },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
-                                        },
-                                        "geometry": {
-                                            "type": "Polygon",
-                                            "coordinates": [
-                                                [
-                                                    [100.0, 0.0],
-                                                    [101.0, 0.0],
-                                                    [101.0, 1.0],
-                                                    [100.0, 1.0],
-                                                    [100.0, 0.0]
-                                                ]
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Admin Area not found"
-                    }
-                }
-            }
-        },
-        "/api/v1/features/admin-areas/osm/{osmtype}/{osmid}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get Admin Area by OSM Type and OSM ID",
-                "description": "Returns a single Admin Area in GeoJSON format",
-                "operationId": "getAdminAreaByOsmId",
-                "parameters": [
-                    {
-                        "name": "osmtype",
-                        "in": "path",
-                        "description": "OSM type of the object (node, way, relation)",
+                        "description": "Admin Area Osmfeatures ID",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "relation"
-                    },
-                    {
-                        "name": "osmid",
-                        "in": "path",
-                        "description": "OSM ID of the object",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 10987325
+                        }
                     }
                 ],
                 "responses": {
@@ -273,10 +132,6 @@
                                                     "type": "integer",
                                                     "description": "ID of the OSM object"
                                                 },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the area"
-                                                },
                                                 "updated_at": {
                                                     "type": "string",
                                                     "format": "date-time",
@@ -289,6 +144,14 @@
                                                 "admin_level": {
                                                     "type": "string",
                                                     "description": "Administrative level of the area"
+                                                },
+                                                "score": {
+                                                    "type": "integer",
+                                                    "description": "Score of the area"
+                                                },
+                                                "osmfeatures_id": {
+                                                    "type": "string",
+                                                    "description": "Osmfeatures ID of the area"
                                                 },
                                                 "osm_url": {
                                                     "type": "string",
@@ -328,10 +191,11 @@
                                         "properties": {
                                             "osm_type": "R",
                                             "osm_id": 123456,
-                                            "id": 123456,
                                             "updated_at": "2021-01-01T00:00:00Z",
                                             "name": "Admin Area",
                                             "admin_level": "6",
+                                            "score": 1,
+                                            "osmfeatures_id": "R123456",
                                             "osm_url": "https://www.openstreetmap.org/relation/123456",
                                             "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
@@ -369,7 +233,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Places",
-                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter places updated after the specified date. Paginated results are available, with each page containing 100 places. Use the 'page' parameter to specify the page number to retrieve.",
+                "description": "Returns a list of Places with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter places. Paginated results are available, with each page containing 100 places. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPlaces",
                 "parameters": [
                     {
@@ -419,8 +283,8 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "id": {
-                                        "type": "integer",
+                                    "osmfeatures_id": {
+                                        "type": "string",
                                         "description": "Osmfeatures ID of the place"
                                     },
                                     "updated_at": {
@@ -430,7 +294,7 @@
                                     },
                                     "type": "object",
                                     "example": {
-                                        "id": 123456,
+                                        "id": "N123456",
                                         "updated_at": "2021-01-01T00:00:00Z"
                                     }
                                 }
@@ -443,160 +307,18 @@
         "/api/v1/features/places/{id}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get Place by ID",
+                "summary": "Get Place by Osmfeatures ID",
                 "description": "Returns a single Place in GeoJSON format",
                 "operationId": "getPlaceById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Place ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "description": "Type of the GeoJSON object"
-                                        },
-                                        "properties": {
-                                            "properties": {
-                                                "osm_type": {
-                                                    "type": "string",
-                                                    "description": "Type of the OSM object (N, W, R)"
-                                                },
-                                                "osm_id": {
-                                                    "type": "integer",
-                                                    "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the place"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "When the place was last updated in OSM, in ISO 8601 format."
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "Name of the place"
-                                                },
-                                                "class": {
-                                                    "type": "string",
-                                                    "description": "Class of the place"
-                                                },
-                                                "subclass": {
-                                                    "type": "string",
-                                                    "description": "Subclass of the place"
-                                                },
-                                                "elevation": {
-                                                    "type": "number",
-                                                    "description": "Elevation of the place in meters"
-                                                },
-                                                "osm_url": {
-                                                    "type": "string",
-                                                    "description": "URL to the Openstreetmap corresponding feature."
-                                                },
-                                                "osm_api": {
-                                                    "type": "string",
-                                                    "description": "URL to the OSM API for the object"
-                                                },
-                                                "osm_tags": {
-                                                    "type": "json",
-                                                    "description": "OSM tags of the object"
-                                                },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the place"
-                                                },
-                                                "wikidata": {
-                                                    "type": "string",
-                                                    "description": "Wikidata link for the place"
-                                                },
-                                                "wikimedia_commons": {
-                                                    "type": "string",
-                                                    "description": "Wikimedia Commons link for the place"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "geometry": {
-                                            "type": "geojson",
-                                            "description": "Geometry of the place in GeoJSON format"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "osm_type": "N",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Place",
-                                            "class": "amenity",
-                                            "subclass": "restaurant",
-                                            "elevation": 1000,
-                                            "osm_url": "https://www.openstreetmap.org/node/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
-                                            "osm_tags": {
-                                                "amenity": "restaurant"
-                                            },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
-                                        },
-                                        "geometry": {
-                                            "type": "Point",
-                                            "coordinates": [100.0, 0.0]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Place not found"
-                    }
-                }
-            }
-        },
-        "/api/v1/features/places/osm/{osmtype}/{osmid}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get Place by OSM Type and OSM ID",
-                "description": "Returns a single Place in GeoJSON format",
-                "operationId": "getPlaceByOsmId",
-                "parameters": [
-                    {
-                        "name": "osmtype",
-                        "in": "path",
-                        "description": "OSM type of the object (node, way, relation)",
+                        "description": "Place Osmfeatures ID",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "node"
-                    },
-                    {
-                        "name": "osmid",
-                        "in": "path",
-                        "description": "OSM ID of the object",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 4806244456
+                        }
                     }
                 ],
                 "responses": {
@@ -620,10 +342,6 @@
                                                     "type": "integer",
                                                     "description": "ID of the OSM object"
                                                 },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the place"
-                                                },
                                                 "updated_at": {
                                                     "type": "string",
                                                     "format": "date-time",
@@ -645,6 +363,14 @@
                                                     "type": "number",
                                                     "description": "Elevation of the place in meters"
                                                 },
+                                                "score": {
+                                                    "type": "number",
+                                                    "description": "Score of the place"
+                                                },
+                                                "osmfeatures_id": {
+                                                    "type": "integer",
+                                                    "description": "Osmfeatures ID of the place"
+                                                },
                                                 "osm_url": {
                                                     "type": "string",
                                                     "description": "URL to the Openstreetmap corresponding feature."
@@ -657,13 +383,13 @@
                                                     "type": "json",
                                                     "description": "OSM tags of the object"
                                                 },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the place"
-                                                },
                                                 "wikidata": {
                                                     "type": "string",
                                                     "description": "Wikidata link for the place"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the place"
                                                 },
                                                 "wikimedia_commons": {
                                                     "type": "string",
@@ -683,19 +409,20 @@
                                         "properties": {
                                             "osm_type": "N",
                                             "osm_id": 123456,
-                                            "id": 123456,
                                             "updated_at": "2021-01-01T00:00:00Z",
                                             "name": "Place",
                                             "class": "amenity",
                                             "subclass": "restaurant",
                                             "elevation": 1000,
+                                            "score": 1,
+                                            "osmfeatures_id": "N123456",
                                             "osm_url": "https://www.openstreetmap.org/node/123456",
                                             "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
                                             "osm_tags": {
                                                 "amenity": "restaurant"
                                             },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
                                             "wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
                                             "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
                                         },
                                         "geometry": {
@@ -717,7 +444,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Hiking Routes",
-                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at' parameter to filter routes updated after the specified date. Paginated results are available, with each page containing 100 routes. Use the 'page' parameter to specify the page number to retrieve.",
+                "description": "Returns a list of Hiking Routes with their details. Optionally, provide an 'updated_at'and bbox parameter to filter routes. Paginated results are available, with each page containing 100 routes. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listHikingRoutes",
                 "parameters": [
                     {
@@ -768,7 +495,7 @@
                             "application/json": {
                                 "schema": {
                                     "id": {
-                                        "type": "integer",
+                                        "type": "string",
                                         "description": "Osmfeatures ID of the hiking route"
                                     },
                                     "updated_at": {
@@ -778,7 +505,7 @@
                                     },
                                     "type": "object",
                                     "example": {
-                                        "id": 123456,
+                                        "id": "R123456",
                                         "updated_at": "2021-01-01T00:00:00Z"
                                     }
                                 }
@@ -791,286 +518,18 @@
         "/api/v1/features/hiking-routes/{id}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get Hiking Routes by ID",
+                "summary": "Get Hiking Routes by Osmfeatures ID",
                 "description": "Returns a single Hiking Route in GeoJSON format",
                 "operationId": "getHikingRouteById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Hiking Route ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Return the Geojson Feature of the Hiking Route",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "description": "Type of the GeoJSON object"
-                                        },
-                                        "properties": {
-                                            "properties": {
-                                                "osm_type": {
-                                                    "type": "string",
-                                                    "description": "Type of the OSM object (N, W, R)"
-                                                },
-                                                "osm_id": {
-                                                    "type": "integer",
-                                                    "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the route"
-                                                },
-                                                "updated_at_osm": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "When the route was last updated in OSM, in ISO 8601 format"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "When the route was last updated in osmfeatures, in ISO 8601 format. This data is computed by calculating the most recent updated_at of the members hiking route"
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "Name of the route"
-                                                },
-
-                                                "cai_scale": {
-                                                    "type": "string",
-                                                    "description": "Difficulty level 'E' indicating easy trails suitable for most hikers."
-                                                },
-                                                "osm2cai_status": {
-                                                    "type": "integer",
-                                                    "description": "Score calculated based on cai survey and cai scale presence in osm tags. If both are present, the score is 3. If only Cai Survey is present, the score is 2. If only Cai Scale is present, the score is 1. If neither are present, the score is 0."
-                                                },
-                                                "osmc_symbol": {
-                                                    "type": "string",
-                                                    "description": "OSMC symbol showing trail marking colors and number."
-                                                },
-                                                "network": {
-                                                    "type": "string",
-                                                    "description": "Part of the local walking network."
-                                                },
-                                                "survey_date": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "Date when the trail survey was conducted."
-                                                },
-                                                "roundtrip": {
-                                                    "type": "string",
-                                                    "description": "Indicates if the route is a roundtrip."
-                                                },
-                                                "symbol": {
-                                                    "type": "string",
-                                                    "description": "Symbol used to mark the trail."
-                                                },
-                                                "symbol_it": {
-                                                    "type": "string",
-                                                    "description": "Italian symbol marking the trail."
-                                                },
-                                                "ascent": {
-                                                    "type": "integer",
-                                                    "description": "Total ascent of the trail in meters."
-                                                },
-                                                "descent": {
-                                                    "type": "integer",
-                                                    "description": "Total descent of the trail in meters."
-                                                },
-                                                "distance": {
-                                                    "type": "number",
-                                                    "description": "Length of the trail in kilometers."
-                                                },
-                                                "duration_forward": {
-                                                    "type": "string",
-                                                    "description": "Estimated time to complete the trail forward."
-                                                },
-                                                "duration_backward": {
-                                                    "type": "string",
-                                                    "description": "Estimated time to complete the trail backward."
-                                                },
-                                                "from": {
-                                                    "type": "string",
-                                                    "description": "Starting point of the trail."
-                                                },
-                                                "to": {
-                                                    "type": "string",
-                                                    "description": "Ending point of the trail."
-                                                },
-                                                "rwn_name": {
-                                                    "type": "string",
-                                                    "description": "Name in the regional walking network."
-                                                },
-                                                "ref_REI": {
-                                                    "type": "string",
-                                                    "description": "Reference number in the Italian Excursionist Network."
-                                                },
-                                                "maintenance": {
-                                                    "type": "string",
-                                                    "description": "Information about trail maintenance."
-                                                },
-                                                "maintenance_it": {
-                                                    "type": "string",
-                                                    "description": "Maintenance information in Italian."
-                                                },
-                                                "operator": {
-                                                    "type": "string",
-                                                    "description": "Organization responsible for the trail."
-                                                },
-                                                "state": {
-                                                    "type": "string",
-                                                    "description": "Current condition or status of the trail."
-                                                },
-                                                "ref": {
-                                                    "type": "string",
-                                                    "description": "Reference number of the trail."
-                                                },
-                                                "source": {
-                                                    "type": "string",
-                                                    "description": "Trail information obtained from CAI survey."
-                                                },
-                                                "source_ref": {
-                                                    "type": "string",
-                                                    "description": "Reference source for trail information."
-                                                },
-                                                "note": {
-                                                    "type": "string",
-                                                    "description": "Additional notes regarding the trail."
-                                                },
-                                                "note_it": {
-                                                    "type": "string",
-                                                    "description": "Notes in Italian regarding the trail."
-                                                },
-                                                "old_ref": {
-                                                    "type": "string",
-                                                    "description": "Previous reference number of the trail."
-                                                },
-                                                "note_project_page": {
-                                                    "type": "string",
-                                                    "description": "Project page notes related to the trail."
-                                                },
-                                                "website": {
-                                                    "type": "string",
-                                                    "description": "Website with more information about the trail."
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "description": "Description of the trail."
-                                                },
-                                                "description_it": {
-                                                    "type": "string",
-                                                    "description": "Description of the trail in Italian."
-                                                },
-                                                "members": {
-                                                    "type": "array",
-                                                    "description": "Data about trail members or segments."
-                                                },
-
-                                                "osm_url": {
-                                                    "type": "string",
-                                                    "description": "URL to the Openstreetmap corresponding feature."
-                                                },
-                                                "osm_api": {
-                                                    "type": "string",
-                                                    "description": "URL to the OSM API for the object"
-                                                },
-                                                "osm_tags": {
-                                                    "type": "json",
-                                                    "description": "OSM tags of the object"
-                                                },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the hiking route"
-                                                },
-                                                "wikidata": {
-                                                    "type": "string",
-                                                    "description": "Wikidata link for the hiking route"
-                                                },
-                                                "wikimedia_commons": {
-                                                    "type": "string",
-                                                    "description": "Wikimedia Commons link for the trail."
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "geometry": {
-                                            "type": "geojson",
-                                            "description": "Geometry of the area in GeoJSON format"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "osm_type": "R",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Hiking Route",
-                                            "admin_level": "6",
-                                            "osm_url": "https://www.openstreetmap.org/relation/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
-                                            "osm_tags": {
-                                                "type": "route",
-                                                "route": "hiking"
-                                            },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
-                                        },
-                                        "geometry": {
-                                            "type": "LineString",
-                                            "coordinates": [
-                                                [100.0, 0.0],
-                                                [101.0, 1.0]
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Hiking Route not found"
-                    }
-                }
-            }
-        },
-        "/api/v1/features/hiking-routes/osm/{osmtype}/{osmid}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get Hiking Routes by OSM Type and OSM ID",
-                "description": "Returns a single Hiking Route in GeoJSON format",
-                "operationId": "getHikingRouteByOsmId",
-                "parameters": [
-                    {
-                        "name": "osmtype",
-                        "in": "path",
-                        "description": "Hiking Route OSM Type",
+                        "description": "Hiking Route Osmfeatures ID",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "relation"
-                    },
-                    {
-                        "name": "osmid",
-                        "in": "path",
-                        "description": "Hiking Route OSM ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 11789715
+                        }
                     }
                 ],
                 "responses": {
@@ -1093,10 +552,6 @@
                                                 "osm_id": {
                                                     "type": "integer",
                                                     "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the route"
                                                 },
                                                 "updated_at_osm": {
                                                     "type": "string",
@@ -1135,7 +590,7 @@
                                                     "description": "Date when the trail survey was conducted."
                                                 },
                                                 "roundtrip": {
-                                                    "type": "boolean",
+                                                    "type": "string",
                                                     "description": "Indicates if the route is a roundtrip."
                                                 },
                                                 "symbol": {
@@ -1230,6 +685,10 @@
                                                     "type": "string",
                                                     "description": "Website with more information about the trail."
                                                 },
+                                                "wikimedia_commons": {
+                                                    "type": "string",
+                                                    "description": "Wikimedia Commons link for the trail."
+                                                },
                                                 "description": {
                                                     "type": "string",
                                                     "description": "Description of the trail."
@@ -1242,7 +701,14 @@
                                                     "type": "array",
                                                     "description": "Data about trail members or segments."
                                                 },
-
+                                                "members_ids": {
+                                                    "type": "string",
+                                                    "description": "Comma separated list of member ids."
+                                                },
+                                                "osmfeatures_id": {
+                                                    "type": "string",
+                                                    "description": "Osmfeatures ID of the route"
+                                                },
                                                 "osm_url": {
                                                     "type": "string",
                                                     "description": "URL to the Openstreetmap corresponding feature."
@@ -1255,17 +721,13 @@
                                                     "type": "json",
                                                     "description": "OSM tags of the object"
                                                 },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the hiking route"
-                                                },
                                                 "wikidata": {
                                                     "type": "string",
                                                     "description": "Wikidata link for the hiking route"
                                                 },
-                                                "wikimedia_commons": {
+                                                "wikipedia": {
                                                     "type": "string",
-                                                    "description": "Wikimedia Commons link for the trail."
+                                                    "description": "Wikipedia link for the hiking route"
                                                 }
                                             },
                                             "type": "object"
@@ -1279,21 +741,233 @@
                                     "example": {
                                         "type": "Feature",
                                         "properties": {
+                                            "type": "Feature",
                                             "osm_type": "R",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Hiking Route",
-                                            "admin_level": "6",
-                                            "osm_url": "https://www.openstreetmap.org/relation/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
+                                            "osm_id": 4099576,
+                                            "updated_at_osm": "2024-04-14 09:57:19",
+                                            "updated_at": "2024-04-14T09:57:19.000000Z",
+                                            "name": "Via Alpina Red R116",
+                                            "cai_scale": null,
+                                            "score": 2,
+                                            "osmc_symbol": "black:red:white_triangle:V:blue",
+                                            "network": "iwn",
+                                            "survey_date": null,
+                                            "roundtrip": null,
+                                            "symbol": null,
+                                            "symbol_it": null,
+                                            "ascent": null,
+                                            "descent": null,
+                                            "distance": null,
+                                            "duration_forward": null,
+                                            "duration_backward": null,
+                                            "from": null,
+                                            "to": null,
+                                            "rwn_name": null,
+                                            "ref_REI": null,
+                                            "maintenance": null,
+                                            "maintenance_it": null,
+                                            "operator": "via-alpina.org",
+                                            "state": null,
+                                            "ref": "VA-R116",
+                                            "source": null,
+                                            "source_ref": null,
+                                            "note": null,
+                                            "note_it": null,
+                                            "old_ref": null,
+                                            "note_project_page": null,
+                                            "website": "http://www.via-alpina.org/en/stage/296",
+                                            "wikimedia_commons": null,
+                                            "description": "Bourg-St-Pierre - Col du Grand-Saint-Bernard",
+                                            "description_it": null,
+                                            "members": [
+                                                {
+                                                    "ref": 298650101,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 298650055,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 40645775,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44794326,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 298650053,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 298650020,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44794803,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44795636,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44795635,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 731262847,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386398987,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386398978,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44795637,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 114377830,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 75783540,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 171545782,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386397195,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386397193,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 75783548,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386397194,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386397192,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 171545784,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386397197,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 78167697,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 78167696,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 78167681,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386395970,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 1272470178,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 386395966,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 78167679,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 44796563,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 396656551,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 295638931,
+                                                    "role": "",
+                                                    "type": "w"
+                                                },
+                                                {
+                                                    "ref": 128624368,
+                                                    "role": "",
+                                                    "type": "w"
+                                                }
+                                            ],
+                                            "members_ids": "298650101,298650055,40645775,44794326,298650053,298650020,44794803,44795636,44795635,731262847,386398987,386398978,44795637,114377830,75783540,171545782,386397195,386397193,75783548,386397194,386397192,171545784,386397197,78167697,78167696,78167681,386395970,1272470178,386395966,78167679,44796563,396656551,295638931,128624368",
+                                            "osmfeatures_id": "R4099576",
+                                            "osm_url": "https://www.openstreetmap.org/relation/4099576",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/relation/4099576.json",
                                             "osm_tags": {
+                                                "ref": "VA-R116",
+                                                "name": "Via Alpina Red R116",
                                                 "type": "route",
-                                                "route": "hiking"
+                                                "route": "hiking",
+                                                "network": "iwn",
+                                                "website": "http://www.via-alpina.org/en/stage/296",
+                                                "operator": "via-alpina.org",
+                                                "description": "Bourg-St-Pierre - Col du Grand-Saint-Bernard",
+                                                "osmc:symbol": "black:red:white_triangle:V:blue"
                                             },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
+                                            "wikidata": null,
+                                            "wikipedia": null
                                         },
                                         "geometry": {
                                             "type": "LineString",
@@ -1317,7 +991,7 @@
             "get": {
                 "tags": ["API V1"],
                 "summary": "List all Poles",
-                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' parameter to filter poles updated after the specified date. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
+                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPoles",
                 "parameters": [
                     {
@@ -1378,7 +1052,7 @@
                                     },
                                     "type": "object",
                                     "example": {
-                                        "id": 123456,
+                                        "id": "N123456",
                                         "updated_at": "2021-01-01T00:00:00Z"
                                     }
                                 }
@@ -1391,165 +1065,18 @@
         "/api/v1/features/poles/{id}": {
             "get": {
                 "tags": ["API V1"],
-                "summary": "Get Pole by ID",
+                "summary": "Get Pole by Osmfeatures ID",
                 "description": "Returns a single Pole in GeoJSON format",
                 "operationId": "getPoleById",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Pole ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "description": "Type of the GeoJSON object"
-                                        },
-                                        "properties": {
-                                            "properties": {
-                                                "osm_type": {
-                                                    "type": "string",
-                                                    "description": "Type of the OSM object (N, W, R)"
-                                                },
-                                                "osm_id": {
-                                                    "type": "integer",
-                                                    "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the pole"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "description": "When the pole was last updated in OSM, in ISO 8601 format."
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "Name of the pole"
-                                                },
-                                                "ref": {
-                                                    "type": "string",
-                                                    "description": "Reference number of the pole"
-                                                },
-                                                "ele": {
-                                                    "type": "number",
-                                                    "description": "Elevation of the pole in meters"
-                                                },
-                                                "destination": {
-                                                    "type": "string",
-                                                    "description": "Destination of the pole"
-                                                },
-                                                "support": {
-                                                    "type": "string",
-                                                    "description": "Support of the pole"
-                                                },
-                                                "osm_url": {
-                                                    "type": "string",
-                                                    "description": "URL to the Openstreetmap corresponding feature."
-                                                },
-                                                "osm_api": {
-                                                    "type": "string",
-                                                    "description": "URL to the OSM API for the object"
-                                                },
-                                                "osm_tags": {
-                                                    "type": "json",
-                                                    "description": "OSM tags of the object"
-                                                },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the pole"
-                                                },
-                                                "wikidata": {
-                                                    "type": "string",
-                                                    "description": "Wikidata link for the pole"
-                                                },
-                                                "wikimedia_commons": {
-                                                    "type": "string",
-                                                    "description": "Wikimedia Commons link for the pole"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "geometry": {
-                                            "type": "geojson",
-                                            "description": "Geometry of the pole in GeoJSON format"
-                                        }
-                                    },
-                                    "type": "object",
-                                    "example": {
-                                        "type": "Feature",
-                                        "properties": {
-                                            "osm_type": "N",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Pole",
-                                            "ref": "123",
-                                            "ele": 1000,
-                                            "destination": "Destination",
-                                            "support": "Support",
-                                            "osm_url": "https://www.openstreetmap.org/node/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
-                                            "osm_tags": {
-                                                "amenity": "restaurant"
-                                            },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
-                                        },
-                                        "geometry": {
-                                            "type": "Point",
-                                            "coordinates": [100.0, 0.0]
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Pole not found"
-                    }
-                }
-            }
-        },
-        "/api/v1/features/poles/osm/{osmtype}/{osmid}": {
-            "get": {
-                "tags": ["API V1"],
-                "summary": "Get Pole by OSM Type and OSM ID",
-                "description": "Returns a single Pole in GeoJSON format",
-                "operationId": "getPoleByOsmId",
-                "parameters": [
-                    {
-                        "name": "osmtype",
-                        "in": "path",
-                        "description": "Pole OSM Type",
+                        "description": "Pole osmfeatures ID",
                         "required": true,
                         "schema": {
                             "type": "string"
-                        },
-                        "example": "node"
-                    },
-                    {
-                        "name": "osmid",
-                        "in": "path",
-                        "description": "Pole OSM ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "example": 4399094594
+                        }
                     }
                 ],
                 "responses": {
@@ -1572,10 +1099,6 @@
                                                 "osm_id": {
                                                     "type": "integer",
                                                     "description": "ID of the OSM object"
-                                                },
-                                                "id": {
-                                                    "type": "integer",
-                                                    "description": "Osmfeatures ID of the pole"
                                                 },
                                                 "updated_at": {
                                                     "type": "string",
@@ -1602,6 +1125,14 @@
                                                     "type": "string",
                                                     "description": "Support of the pole"
                                                 },
+                                                "score": {
+                                                    "type": "number",
+                                                    "description": "Score of the pole"
+                                                },
+                                                "osmfeatures_id": {
+                                                    "type": "string",
+                                                    "description": "Osmfeatures ID of the pole"
+                                                },
                                                 "osm_url": {
                                                     "type": "string",
                                                     "description": "URL to the Openstreetmap corresponding feature."
@@ -1614,13 +1145,13 @@
                                                     "type": "json",
                                                     "description": "OSM tags of the object"
                                                 },
-                                                "wikipedia": {
-                                                    "type": "string",
-                                                    "description": "Wikipedia link for the pole"
-                                                },
                                                 "wikidata": {
                                                     "type": "string",
                                                     "description": "Wikidata link for the pole"
+                                                },
+                                                "wikipedia": {
+                                                    "type": "string",
+                                                    "description": "Wikipedia link for the pole"
                                                 },
                                                 "wikimedia_commons": {
                                                     "type": "string",
@@ -1638,23 +1169,31 @@
                                     "example": {
                                         "type": "Feature",
                                         "properties": {
+                                            "type": "Feature",
                                             "osm_type": "N",
-                                            "osm_id": 123456,
-                                            "id": 123456,
-                                            "updated_at": "2021-01-01T00:00:00Z",
-                                            "name": "Pole",
-                                            "ref": "123",
-                                            "ele": 1000,
-                                            "destination": "Destination",
-                                            "support": "Support",
-                                            "osm_url": "https://www.openstreetmap.org/node/123456",
-                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/1952252737.json",
+                                            "osm_id": 11659699244,
+                                            "updated_at": "2024-02-24T15:35:44.000000Z",
+                                            "name": "Loc. I Ciompi",
+                                            "ref": null,
+                                            "ele": "812",
+                                            "destination": "Casera Prà de Val 0:20;Bivio Triòl del Camillo 1:10;Casera Castelin 2:30|Casera Fagarè 0:50; Casèra del Mugon 1:10;Rifugio Bosconero 2:30",
+                                            "support": "pole",
+                                            "score": 2,
+                                            "osmfeatures_id": "N11659699244",
+                                            "osm_url": "https://www.openstreetmap.org/node/11659699244",
+                                            "osm_api": "https://www.openstreetmap.org/api/0.6/node/11659699244.json",
                                             "osm_tags": {
-                                                "amenity": "restaurant"
+                                                "ele": "812",
+                                                "name": "Loc. I Ciompi",
+                                                "hiking": "yes",
+                                                "support": "pole",
+                                                "tourism": "information",
+                                                "destination": "Casera Prà de Val 0:20;Bivio Triòl del Camillo 1:10;Casera Castelin 2:30|Casera Fagarè 0:50; Casèra del Mugon 1:10;Rifugio Bosconero 2:30",
+                                                "information": "guidepost"
                                             },
-                                            "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikidata": "https://www.wikidata.org/wiki/Q123456",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
+                                            "wikidata": null,
+                                            "wikipedia": null,
+                                            "wikimedia_commons": null
                                         },
                                         "geometry": {
                                             "type": "Point",
