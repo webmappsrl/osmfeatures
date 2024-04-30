@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.22.0](https://github.com/webmappsrl/osmfeatures/compare/v1.21.1...v1.22.0) (2024-04-30)
+
+
+### Features
+
+* added tests for osmfeaturesidprocessor trait ([8bac21e](https://github.com/webmappsrl/osmfeatures/commit/8bac21e74db649040f11eacd129d7a3dc4d300eb))
+* deleted osmtype apis ([e609d40](https://github.com/webmappsrl/osmfeatures/commit/e609d40e4fa55397c7929c7d43849ffcd025e235))
+* improved api tests ([7270e8a](https://github.com/webmappsrl/osmfeatures/commit/7270e8ae88c250a3f5801f32854952c69fe43eff))
+* updated api documentation ([fbb6e35](https://github.com/webmappsrl/osmfeatures/commit/fbb6e35c7ccbd4c2629ea83e7eb3636393608376))
+* updated list apis to provide osmfeatures id ([f2f6c6f](https://github.com/webmappsrl/osmfeatures/commit/f2f6c6f1db9447515a2f255c37845346a68bff41))
+* updated single feature apis to accept osmfeatures_id as parameter ([09f77ac](https://github.com/webmappsrl/osmfeatures/commit/09f77acfcf6745fff6beaa0b390da8735ad0cce0))
+* updated tests ([20431d5](https://github.com/webmappsrl/osmfeatures/commit/20431d522c62ef8f44dffb01490669d0b00d65ae))
+
 ## [1.21.1](https://github.com/webmappsrl/osmfeatures/compare/v1.21.0...v1.21.1) (2024-04-29)
 
 
