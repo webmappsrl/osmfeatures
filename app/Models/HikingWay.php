@@ -10,7 +10,7 @@ class HikingWay extends Model
 {
     use HasFactory, OsmTagsProcessor;
 
-    protected $table = 'hiking_ways';
+    protected $table = 'hiking_routes_ways';
 
     protected $primaryKey = 'osm_id';
 }

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\OsmFeaturesIdProcessor;
 use App\Traits\OsmTagsProcessor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HikingRoute extends Model
 {
-    use HasFactory, OsmTagsProcessor;
+    use HasFactory, OsmTagsProcessor, OsmFeaturesIdProcessor;
 
     protected $table = 'hiking_routes';
 

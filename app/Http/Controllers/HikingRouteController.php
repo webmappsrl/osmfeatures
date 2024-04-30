@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HikingRoute;
+use App\Models\HikingWay;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,6 +86,8 @@ class HikingRouteController extends Controller
 
         $hikingRoutes->getCollection()->transform(function ($hr) {
             $hr->updated_at = Carbon::parse($hr->updated_at)->toIso8601String();
+            $model = HikingRoute::find($hr->id);
+            $hr->id = $model->getOsmFeaturesId();
 
             return $hr;
         });
@@ -116,9 +119,9 @@ class HikingRouteController extends Controller
      *     )
      * )
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $hikingRoute = HikingRoute::find($id);
+        $hikingRoute = HikingRoute::getOsmfeaturesByOsmfeaturesID($id);
 
         if ($hikingRoute === null) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
@@ -134,6 +137,8 @@ class HikingRouteController extends Controller
         $properties = $hikingRoute->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
+        unset($properties['id']);
+        $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
         $properties['osm_tags'] = json_decode($hikingRoute->tags, true);

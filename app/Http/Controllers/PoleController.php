@@ -90,6 +90,8 @@ class PoleController extends Controller
 
         $poles->getCollection()->transform(function ($pole) {
             $pole->updated_at = Carbon::parse($pole->updated_at)->toIso8601String();
+            $model = Pole::find($pole->id);
+            $pole->id = $model->getOsmfeaturesId();
 
             return $pole;
         });
@@ -121,9 +123,9 @@ class PoleController extends Controller
      *     )
      * )
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $pole = Pole::where('id', $id)->first();
+        $pole = Pole::getOsmfeaturesByOsmfeaturesID($id);
 
         if (! $pole) {
             return response()->json(['message' => 'Pole not found'], 404);
@@ -139,6 +141,8 @@ class PoleController extends Controller
         unset($properties['geom']);
         unset($properties['tags']);
         unset($properties['elevation']);
+        unset($properties['id']);
+        $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$pole->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
         $properties['osm_tags'] = json_decode($pole->tags, true);

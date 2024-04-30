@@ -4,7 +4,9 @@ namespace Tests\Api;
 
 use App\Models\AdminArea;
 use Carbon\Carbon;
+use Database\Seeders\TestDBSeeder;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
@@ -21,53 +23,12 @@ class AdminAreasApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        if (! Schema::hasTable('admin_areas')) {
-            Schema::create(
-                'admin_areas',
-                function (Blueprint $table) {
-                    $table->increments('id');
-                    $table->string('name');
-                    $table->bigInteger('osm_id');
-                    $table->string('osm_type');
-                    $table->geometry('geom');
-                    $table->integer('admin_level');
-                    $table->integer('score');
-                    $table->jsonb('tags')->nullable();
-                    $table->timestamps();
-                }
-            );
-            //create 200 admin areas
-            for ($i = 0; $i < 200; $i++) {
-                $lat = rand(3600, 4700) / 100;
-                $lon = rand(600, 1900) / 100;
-
-                $polygon = sprintf(
-                    '((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
-                    $lon - 0.01,
-                    $lat - 0.01,  // Lower Left
-                    $lon + 0.01,
-                    $lat - 0.01,  // Lower Right
-                    $lon + 0.01,
-                    $lat + 0.01,  // Upper Right
-                    $lon - 0.01,
-                    $lat + 0.01,  // Upper Left
-                    $lon - 0.01,
-                    $lat - 0.01   // Closing at start point to complete the loop
-                );
-
-                DB::table('admin_areas')->insert([
-                    'name' => 'Admin Area '.$i,
-                    'osm_id' => $i,
-                    'osm_type' => 'R',
-                    'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
-                    'admin_level' => rand(1, 11),
-                    'score' => rand(1, 4),
-                    'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
-                    'updated_at' => Carbon::now(),
-                ]);
+        {
+            if (! Schema::hasTable('admin_areas')) {
+                $seeder = new TestDBSeeder('AdminAreas');
+                $seeder->run();
+                $this->usingTestData = true;
             }
-            $this->usingTestData = true;
         }
     }
 
@@ -187,8 +148,8 @@ class AdminAreasApiTest extends TestCase
      */
     public function get_single_admin_area_api_returns_correct_structure()
     {
-        $adminArea = DB::table('admin_areas')->first();
-        $response = $this->get('/api/v1/features/admin-areas/'.$adminArea->id);
+        $adminArea = AdminArea::first();
+        $response = $this->get('/api/v1/features/admin-areas/'.$adminArea->getOsmfeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {
@@ -197,7 +158,7 @@ class AdminAreasApiTest extends TestCase
                     ->has('geometry')
                     ->has('properties.osm_type')
                     ->has('properties.osm_id')
-                    ->has('properties.id')
+                    ->has('properties.osmfeatures_id')
                     ->has('properties.updated_at')
                     ->has('properties.name')
                     ->has('properties.admin_level')

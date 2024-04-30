@@ -98,6 +98,8 @@ class AdminAreaController extends Controller
 
         $adminAreas->getCollection()->transform(function ($adminArea) {
             $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
+            $model = AdminArea::find($adminArea->id);
+            $adminArea->id = $model->getOsmfeaturesId();
 
             return $adminArea;
         });
@@ -110,14 +112,14 @@ class AdminAreaController extends Controller
      *     path="/api/v1/features/admin-areas/{id}",
      *     operationId="getAdminAreaById",
      *     tags={"AdminAreas"},
-     *     summary="Get Admin Area by ID",
+     *     summary="Get Admin Area by osmfeatures ID",
      *     description="Returns a single Admin Area in GeoJSON format",
      *     @OA\Parameter(
-     *         name="id",
+     *         name="osmfeatures_id",
      *         description="Admin Area ID",
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -130,9 +132,9 @@ class AdminAreaController extends Controller
      *     )
      * )
      */
-    public function show(int $id)
+    public function show(string $id)
     {
-        $adminArea = AdminArea::where('id', $id)->first();
+        $adminArea = AdminArea::getOsmfeaturesByOsmfeaturesID($id);
 
         if (! $adminArea) {
             return response()->json(['message' => 'Admin Area not found'], 404);
@@ -148,6 +150,8 @@ class AdminAreaController extends Controller
         $properties = $adminArea->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
+        unset($properties['id']);
+        $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
         $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
