@@ -119,9 +119,9 @@ class HikingRouteController extends Controller
      *     )
      * )
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $hikingRoute = HikingRoute::find($id);
+        $hikingRoute = HikingRoute::getOsmfeaturesByOsmfeaturesID($id);
 
         if ($hikingRoute === null) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
@@ -137,6 +137,8 @@ class HikingRouteController extends Controller
         $properties = $hikingRoute->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
+        unset($properties['id']);
+        $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
         $properties['osm_tags'] = json_decode($hikingRoute->tags, true);

@@ -97,14 +97,14 @@ class PlaceController extends Controller
      *     path="/api/v1/features/places/{id}",
      *     operationId="getPlaceById",
      *     tags={"Places"},
-     *     summary="Get Place by ID",
+     *     summary="Get Place by osmfeatures ID",
      *     description="Returns a single Place in GeoJSON format",
      *     @OA\Parameter(
-     *         name="id",
-     *         description="Place ID",
+     *         name="osmfeatures_id",
+     *         description="Place osmfeatures ID",
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -116,9 +116,9 @@ class PlaceController extends Controller
      *     )
      * )
      */
-    public function show($id)
+    public function show(string $id)
     {
-        $place = Place::where('id', $id)->first();
+        $place = Place::getOsmfeaturesByOsmfeaturesID($id);
 
         if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
@@ -134,6 +134,8 @@ class PlaceController extends Controller
         $properties = $place->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
+        unset($properties['id']);
+        $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
         $properties['osm_tags'] = json_decode($place->tags, true);
