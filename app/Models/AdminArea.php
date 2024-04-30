@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\OsmFeaturesIdProcessor;
 use App\Traits\OsmTagsProcessor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AdminArea extends Pivot
 {
-    use HasFactory, OsmTagsProcessor;
+    use HasFactory, OsmTagsProcessor, OsmFeaturesIdProcessor;
 
     protected $table = 'admin_areas';
 

@@ -13,7 +13,7 @@ class TestDBSeeder extends Seeder
 {
     protected $class;
     //create a construct that must accept a class as parameter
-    public function __construct(string $modelClass)
+    public function __construct(string $modelClass = null)
     {
         $this->class = $modelClass;
     }
@@ -35,6 +35,11 @@ class TestDBSeeder extends Seeder
             case 'Places':
                 $this->createPlacesTableWithData();
                 break;
+            default:
+                $this->createAdminAreasTableWithData();
+                $this->createPolesTableWithData();
+                $this->createHikingRoutesTableWithData();
+                $this->createPlacesTableWithData();
         }
     }
 
@@ -54,6 +59,7 @@ class TestDBSeeder extends Seeder
                 $table->timestamps();
             }
         );
+        $osmTypes = ['N', 'R', 'W'];
         //create 200 admin areas
         for ($i = 0; $i < 200; $i++) {
             $lat = rand(3600, 4700) / 100;
@@ -76,7 +82,7 @@ class TestDBSeeder extends Seeder
             DB::table('admin_areas')->insert([
                 'name' => 'Admin Area ' . $i,
                 'osm_id' => $i,
-                'osm_type' => 'R',
+                'osm_type' => $osmTypes[rand(0, 2)],
                 'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
                 'admin_level' => rand(1, 11),
                 'score' => rand(1, 4),
