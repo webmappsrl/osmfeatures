@@ -133,7 +133,8 @@ class PolesApiTest extends TestCase
      */
     public function get_pole_api_returns_correct_structure()
     {
-        $response = $this->get('/api/v1/features/poles/1');
+        $pole = Pole::first();
+        $response = $this->get('/api/v1/features/poles/' . $pole->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {
@@ -142,7 +143,7 @@ class PolesApiTest extends TestCase
                     ->has('geometry')
                     ->has('properties.osm_type')
                     ->has('properties.osm_id')
-                    ->has('properties.id')
+                    ->has('properties.osmfeatures_id')
                     ->has('properties.updated_at')
                     ->has('properties.name')
                     ->has('properties.ref')

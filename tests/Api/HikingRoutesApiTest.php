@@ -2,6 +2,8 @@
 
 namespace Tests\Api;
 
+use App\Models\HikingRoute;
+use App\Models\HikingWay;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Database\Seeders\TestDBSeeder;
@@ -131,7 +133,8 @@ class HikingRoutesApiTest extends TestCase
      */
     public function get_single_hiking_route_api_returns_correct_structure()
     {
-        $response = $this->get('/api/v1/features/hiking-routes/1');
+        $hr = HikingRoute::first();
+        $response = $this->get('/api/v1/features/hiking-routes/' . $hr->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {
@@ -140,7 +143,7 @@ class HikingRoutesApiTest extends TestCase
                     ->has('type')
                     ->has('properties.osm_type')
                     ->has('properties.osm_id')
-                    ->has('properties.id')
+                    ->has('properties.osmfeatures_id')
                     ->has('properties.updated_at_osm')
                     ->has('properties.updated_at')
                     ->has('properties.name')

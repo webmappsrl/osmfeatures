@@ -2,6 +2,7 @@
 
 namespace Tests\Api;
 
+use App\Models\Place;
 use Tests\TestCase;
 use Illuminate\Support\Carbon;
 use Database\Seeders\TestDBSeeder;
@@ -131,7 +132,8 @@ class PlacesApiTest extends TestCase
      */
     public function get_single_place_api_returns_correct_structure()
     {
-        $response = $this->get('/api/v1/features/places/1');
+        $place = Place::first();
+        $response = $this->get('/api/v1/features/places/' . $place->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {
@@ -140,7 +142,7 @@ class PlacesApiTest extends TestCase
                     ->has('geometry')
                     ->has('properties.osm_type')
                     ->has('properties.osm_id')
-                    ->has('properties.id')
+                    ->has('properties.osmfeatures_id')
                     ->has('properties.updated_at')
                     ->has('properties.name')
                     ->has('properties.class')

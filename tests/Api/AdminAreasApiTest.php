@@ -147,8 +147,8 @@ class AdminAreasApiTest extends TestCase
      */
     public function get_single_admin_area_api_returns_correct_structure()
     {
-        $adminArea = DB::table('admin_areas')->first();
-        $response = $this->get('/api/v1/features/admin-areas/' . $adminArea->id);
+        $adminArea = AdminArea::first();
+        $response = $this->get('/api/v1/features/admin-areas/' . $adminArea->getOsmfeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {
@@ -157,7 +157,7 @@ class AdminAreasApiTest extends TestCase
                     ->has('geometry')
                     ->has('properties.osm_type')
                     ->has('properties.osm_id')
-                    ->has('properties.id')
+                    ->has('properties.osmfeatures_id')
                     ->has('properties.updated_at')
                     ->has('properties.name')
                     ->has('properties.admin_level')
