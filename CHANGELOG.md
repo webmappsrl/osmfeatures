@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.1](https://github.com/webmappsrl/osmfeatures/compare/v1.23.0...v1.23.1) (2024-05-02)
+
+
+### Bug Fixes
+
+* fixed wiki links ([624bfe8](https://github.com/webmappsrl/osmfeatures/commit/624bfe8d1e92421f1659a4a05e1455d3e638caae))
+
 ## [1.23.0](https://github.com/webmappsrl/osmfeatures/compare/v1.22.0...v1.23.0) (2024-05-02)
 
 
