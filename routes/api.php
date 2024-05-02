@@ -30,4 +30,4 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     Route::get('/features/hiking-routes/{id}', [HikingRouteController::class, 'show']);
     Route::get('/features/places/list', [PlaceController::class, 'list']);
     Route::get('/features/places/{id}', [PlaceController::class, 'show']);
-});
+})->middleware('throttle:1000');
