@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/webmappsrl/osmfeatures/compare/v1.22.0...v1.23.0) (2024-05-02)
+
+
+### Features
+
+* increased api throttle ([8ad8c8a](https://github.com/webmappsrl/osmfeatures/commit/8ad8c8a13d309b7e2fdff0cea84b6692527f7987))
+
 ## [1.22.0](https://github.com/webmappsrl/osmfeatures/compare/v1.21.1...v1.22.0) (2024-04-30)
 
 
