@@ -35,19 +35,22 @@ function process_place(object, geom)
 
         -- calculate score value --
     if object.tags.name then
-        score = score + 1
-    end
-    if object.tags.wikidata then
-        score = score + 1
-    end
-    if object.tags.wikipedia then
-        score = score + 1
-    end
-    if object.tags.wikimedia_commons then
-        score = score + 1
+        score = 1
     end
     if object.tags.elem then
-        score = score + 1
+        score = 2
+    end
+    if object.tags.wikidata then
+        score = 3
+    end
+    if object.tags.wikimedia_commons then
+        score = 4
+    end
+    if object.tags.wikipedia then
+        score = 5
+    end
+    if object.tags['contact:website'] or object.tags.source or object.tags.website then
+        score = 6
     end
 
 
