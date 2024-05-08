@@ -27,10 +27,15 @@ function process_place(object, geom)
             { key = 'man_made', values = { tower = 'tower', watermill = 'watermill'}, class = 'man_made'},
             { key = 'aerialway_station', values = { station = 'station'}, class = 'aerialway'},
             { key = 'place', values = { city = 'city', town = 'town', suburb = 'suburb', suburb = 'borough', suburb = 'quarter', suburb = 'neighbourhood', suburb = 'allotments', village = 'village', square = 'square', island = 'island', islet = 'islet', hamlet = 'hamlet', isolated_dwelling = 'isolated_dwelling', isolated_dwelling = 'farm', locality = 'locality',  }, class = 'place' },
-            { key = 'natural', values = { peak = 'peak', saddle = 'saddle', cape = 'cape', beach = 'beach', spring = 'spring', glacier = 'glacier', cave_entrance = 'cave_entrance' }, class = 'natural' },
+            { key = 'natural', values = { peak = 'peak', saddle = 'saddle', cape = 'cape', beach = 'beach', spring = 'spring', glacier = 'glacier', cave_entrance = 'cave_entrance',
+            wood = 'wood', tree = 'tree', water = 'water', hot_spring = 'hot_spring', sinkhole = 'sinkhole', cliff = 'cliff', rock = 'rock', volcano = 'volcano',  }, class = 'natural' },
             { key = 'tourism', values = { alpine_hut = 'alpine_hut', wilderness_hut = 'wilderness_hut', aquarium = 'aquarium', camp_site = 'camp_site', caravan_site = 'caravan_site', picnic_site = 'picnic_site', hostel = 'hostel', museum = 'museum', zoo = 'zoo', theme_park = 'theme_park' }, class = 'tourism' },
             { key = 'historic', values = { wayside_shrine = 'wayside_shrine', wayside_cross = 'wayside_cross', monastery = 'monastery', archaeological_site = 'archaeological_site', castle = 'castle', farm = 'farm', fort = 'fort', manor = 'manor'}, class = 'historic' },
-            { key = 'amenity', values = { place_of_worship = 'place_of_worship', cemetery = 'grave_yard', bus_station = 'bus_station', parking_point = 'parking', drinking_water = 'drinking_water', hospital = 'hospital', theatre = 'theatre', university = 'university' }, class = 'amenity' },
+            { key = 'amenity', values = { place_of_worship = 'place_of_worship', cemetery = 'grave_yard', bus_station = 'bus_station', parking_point = 'parking', drinking_water = 'drinking_water', 
+            hospital = 'hospital', theatre = 'theatre', university = 'university', public_building = 'public_building', 
+            planetarium = 'planetarium', rock_shelter = 'rock_shelter', lavoir = 'lavoir', social_facility = 'social_facility', community_centre = 'community_centre',
+            neviera = 'neviera',watering_place = 'watering_place', shelter = 'shelter', public_bath = 'public_bath', water_point = 'water_point', fountain = 'fountain',
+        }, class = 'amenity' },
     }
 
         -- calculate score value --
