@@ -87,9 +87,9 @@ function process_place(object, geom)
     end
 end
 
--- function osm2pgsql.process_node(object)
---     process_place(object, object:as_point())
--- end
+function osm2pgsql.process_node(object)
+    process_place(object, object:as_point())
+end
 
 function osm2pgsql.process_way(object)
     if object.is_closed then
