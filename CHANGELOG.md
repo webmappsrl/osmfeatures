@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/webmappsrl/osmfeatures/compare/v1.25.0...v1.26.0) (2024-05-09)
+
+
+### Features
+
+* updated places lua ([ade5c01](https://github.com/webmappsrl/osmfeatures/commit/ade5c01832ef2267c7a538f6f7984ebc217edae3))
+
 ## [1.25.0](https://github.com/webmappsrl/osmfeatures/compare/v1.24.0...v1.25.0) (2024-05-09)
 
 
