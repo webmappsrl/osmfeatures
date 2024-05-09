@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/webmappsrl/osmfeatures/compare/v1.24.0...v1.25.0) (2024-05-09)
+
+
+### Features
+
+* updated places mapping in lua script ([3e0c503](https://github.com/webmappsrl/osmfeatures/commit/3e0c5033e4673e21ba1e65d85a03d3400d49f576))
+
 ## [1.24.0](https://github.com/webmappsrl/osmfeatures/compare/v1.23.1...v1.24.0) (2024-05-08)
 
 
