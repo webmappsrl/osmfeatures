@@ -2,19 +2,9 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
-use Illuminate\Http\Request;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Number;
 use App\Nova\OsmFeaturesResource;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Textarea;
-use Rpj\Daterangepicker\DateHelper;
 use App\Nova\Filters\ElevationFilter;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Place extends OsmFeaturesResource

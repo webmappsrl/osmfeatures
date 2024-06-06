@@ -2,11 +2,9 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
