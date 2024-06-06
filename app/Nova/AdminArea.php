@@ -55,17 +55,28 @@ class AdminArea extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                    return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
-                }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->onlyOnIndex(),
+            Text::make('Details')->displayUsing(function () {
+                $name = wordwrap($this->name, 50, '<br>', true);
+
+                $osmIdLink = <<<HTML
+                <a style='color:green;' href='https://www.openstreetmap.org/relation/{$this->osm_id}' target='_blank'>
+                    <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
+                </a>
+                HTML;
+
+                $osmType = <<<HTML
+                <span>
+                    <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
+                </span>
+                HTML;
+
+                return <<<HTML
+                $osmIdLink<br>
+                $osmType<br>
+                <span style='font-weight: bold;'>Name:</span> $name
+                HTML;
+            })->asHtml()->onlyOnIndex(),
+
             Text::make('OSM Type')
                 ->onlyOnDetail(),
             DateTime::make('Updated_at')
