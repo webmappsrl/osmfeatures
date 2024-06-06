@@ -14,37 +14,25 @@ use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\DateHelper;
 use Rpj\Daterangepicker\Daterangepicker;
 
-class HikingRoute extends Resource
+class OsmFeaturesResource extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\HikingRoute>
      */
-    public static $model = \App\Models\HikingRoute::class;
+    public static $model = \App\Models\AdminArea::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
-     * @var string
      */
-    public static $title = 'id';
+    public static $title;
 
     /**
      * The columns that should be searched.
      *
-     * @var array
      */
-    public static $search = [
-        'osm_id', 'name', 'ref',
-    ];
-
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        \Log::info($query->toSql());
-
-        return $query;
-    }
+    public static $search;
 
     /**
      * Get the fields displayed by the resource.
@@ -55,19 +43,36 @@ class HikingRoute extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                    $link = $this->getOsmUrl();
-                    return "<a style='color:green;' href='$link' target='_blank'>$value</a>";
+            Text::make('Details')->displayUsing(function () {
+                if (!$this->name) {
+                    $name = '-';
+                } else {
+                    $name = wordwrap($this->name, 50, '<br>', true);
                 }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->sortable()
-                ->onlyOnIndex(),
+
+                $link = $this->getOsmUrl();
+
+                $osmIdLink =
+                    <<<HTML
+                    <a style='color:green;' href='{$link}' target='_blank'>
+                        <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
+                    </a>
+                    HTML;
+
+                $osmType =
+                    <<<HTML
+                    <span>
+                        <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
+                    </span>
+                HTML;
+
+                return <<<HTML
+                        $osmIdLink<br>
+                        $osmType<br>
+                        <span style='font-weight: bold;'>Name:</span> $name
+                        HTML;
+            })->asHtml()->onlyOnIndex(),
+
             Text::make('OSM Type')
                 ->onlyOnDetail(),
             DateTime::make('Updated_at')
@@ -76,13 +81,6 @@ class HikingRoute extends Resource
                         return Carbon::parse($value)->toIso8601String();
                     }
                 )->sortable(),
-            DateTime::make('Updated_at_osm')
-                ->sortable()
-                ->displayUsing(
-                    function ($value) {
-                        return Carbon::parse($value)->toIso8601String();
-                    }
-                ),
             Tooltip::make('Tags', 'tags')
                 ->iconFromPath(public_path('images/pricetags-outline.svg'))
                 ->content(
@@ -90,33 +88,12 @@ class HikingRoute extends Resource
                         return "{$key}: {$value}";
                     })->implode('<br>')
                 )
-                ->allowTooltipHTML()
-                ->onlyOnIndex(),
+                ->onlyOnIndex()
+                ->allowTooltipHTML(),
             Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center')->fullWidth(),
-            Text::make('Specs', function () {
-                $tags = json_decode($this->tags, true);
-                $ref = $tags['ref'] ?? 'N/A';
-                $source = $tags['source'] ?? 'N/A';
-                $cai_scale = $tags['cai_scale'] ?? 'N/A';
-                $name = $this->name ?? 'N/A';
-
-                $name = strlen($name) > 30 ? substr($name, 0, 30) . '<br>' . substr($name, 30) : $name;
-
-                $html = '<div>';
-                $html .= "<p><strong>ref:</strong> {$ref}</p>";
-                $html .= "<p><strong>source:</strong> {$source}</p>";
-                $html .= "<p><strong>cai_scale:</strong> {$cai_scale}</p>";
-                $html .= '<p><strong>name:</strong> ' . $name . '</p>';
-                $html .= '</div>';
-
-                return $html;
-            })
-                ->asHtml(),
-            Text::make('Osm2cai Status')
-                ->sortable(),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
             Number::make('Score', 'score')
                 ->displayUsing(function ($value) {
                     //return a star rating
@@ -159,9 +136,6 @@ class HikingRoute extends Resource
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
             new Daterangepicker('updated_at', DateHelper::ALL),
-            new Filters\CaiScaleFilter(),
-            new Filters\Osm2caiStatusFilter(),
-
         ];
     }
 

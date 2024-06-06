@@ -2,19 +2,20 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Fields\DateTime;
 use Rpj\Daterangepicker\DateHelper;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class AdminArea extends Resource
+class AdminArea extends OsmFeaturesResource
 {
     /**
      * The model the resource corresponds to.
@@ -39,12 +40,6 @@ class AdminArea extends Resource
         'osm_id', 'name',
     ];
 
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        \Log::info($query->toSql());
-
-        return $query;
-    }
 
     /**
      * Get the fields displayed by the resource.
@@ -54,73 +49,14 @@ class AdminArea extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            Text::make('Details')->displayUsing(function () {
-                $name = wordwrap($this->name, 50, '<br>', true);
+        $osmfeaturesFields = parent::fields($request);
 
-                $osmIdLink = <<<HTML
-                <a style='color:green;' href='https://www.openstreetmap.org/relation/{$this->osm_id}' target='_blank'>
-                    <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
-                </a>
-                HTML;
-
-                $osmType = <<<HTML
-                <span>
-                    <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
-                </span>
-                HTML;
-
-                return <<<HTML
-                $osmIdLink<br>
-                $osmType<br>
-                <span style='font-weight: bold;'>Name:</span> $name
-                HTML;
-            })->asHtml()->onlyOnIndex(),
-
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
-            DateTime::make('Updated_at')
-                ->displayUsing(
-                    function ($value) {
-                        return Carbon::parse($value)->toIso8601String();
-                    }
-                )->sortable(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
-                    })->implode('<br>')
-                )
-                ->onlyOnIndex()
-                ->allowTooltipHTML(),
-            Code::make('Tags')->json()->hideFromIndex(),
-            Text::make('Wiki', function () {
-                return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
-            Text::make('Name')->displayUsing(
-                function ($value) {
-                    //max length should be 50 characters then break the line
-                    return wordwrap($value, 50, '<br>', true);
-                }
-            )->asHtml(),
+        $specificFields = [
             Text::make('Level', 'admin_level')
                 ->sortable(),
-            Number::make('Score', 'score')
-                ->displayUsing(function ($value) {
-                    //return a star rating
-                    $stars = '';
-
-                    if ($value == 0 || $value == null) {
-                        return 'No rating';
-                    }
-                    for ($i = 0; $i < $value; $i++) {
-                        $stars .= '⭐';
-                    }
-
-                    return $stars;
-                })->sortable()->filterable(),
         ];
+
+        return array_merge($osmfeaturesFields, $specificFields);
     }
 
     /**
@@ -142,14 +78,14 @@ class AdminArea extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [
-            new Filters\WikiDataFilter(),
-            new Filters\WikiMediaFilter(),
-            new Filters\WikiPediaFilter(),
-            new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL),
+        $osmfeaturesFilters = parent::filters($request);
+
+        $specificFilters = [
             new Filters\AdminLevelFilter(),
+
         ];
+
+        return array_merge($osmfeaturesFilters, $specificFilters);
     }
 
     /**

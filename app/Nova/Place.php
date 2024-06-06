@@ -2,21 +2,22 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\ElevationFilter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Textarea;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\DateHelper;
+use App\Nova\Filters\ElevationFilter;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Place extends Resource
+class Place extends OsmFeaturesResource
 {
     /**
      * The model the resource corresponds to.
@@ -40,13 +41,6 @@ class Place extends Resource
         return $model;
     }
 
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        \Log::info($query->toSql());
-
-        return $query;
-    }
-
     /**
      * The columns that should be searched.
      *
@@ -64,83 +58,9 @@ class Place extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            Text::make('Details')->displayUsing(function () {
-                $name = wordwrap($this->name, 50, '<br>', true);
+        $osmfeaturesFields = parent::fields($request);
 
-                switch ($this->osm_type) {
-                    case 'N':
-                        $link = "https://www.openstreetmap.org/node/{$this->osm_id}";
-                        break;
-                    case 'W':
-                        $link = "https://www.openstreetmap.org/way/{$this->osm_id}";
-                        break;
-                    case 'R':
-                        $link = "https://www.openstreetmap.org/relation/{$this->osm_id}";
-                        break;
-                    default:
-                        $link = "#";
-                }
-
-                $osmIdLink =
-                    <<<HTML
-                    <a style='color:green;' href='{$link}' target='_blank'>
-                        <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
-                    </a>
-                    HTML;
-
-                $osmType =
-                    <<<HTML
-                    <span>
-                        <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
-                    </span>
-                HTML;
-
-                return <<<HTML
-                        $osmIdLink<br>
-                        $osmType<br>
-                        <span style='font-weight: bold;'>Name:</span> $name
-                        HTML;
-            })->asHtml()->onlyOnIndex(),
-
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->sortable()
-                ->onlyOnIndex(),
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
-            DateTime::make('Updated_at')
-                ->displayUsing(
-                    function ($value) {
-                        return Carbon::parse($value)->toIso8601String();
-                    }
-                )->sortable(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
-                    })->implode('<br>')
-                )
-                ->allowTooltipHTML()
-                ->onlyOnIndex(),
-            Code::make('Tags')->json()->hideFromIndex(),
-            Text::make('Wiki', function () {
-                return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
-            Text::make('Name')->displayUsing(
-                function ($value) {
-                    //max length should be 50 characters then break the line
-                    return wordwrap($value, 50, '<br>', true);
-                }
-            )->asHtml(),
+        $specificFields =  [
             Text::make('Class')
                 ->sortable(),
             Text::make('Subclass')
@@ -154,22 +74,9 @@ class Place extends Resource
                     }
                 }
             ),
-            Number::make('Score', 'score')
-                ->displayUsing(function ($value) {
-                    //return a star rating
-                    $stars = '';
-
-                    if ($value == 0 || $value == null) {
-                        return 'No rating';
-                    }
-                    for ($i = 0; $i < $value; $i++) {
-                        $stars .= '⭐';
-                    }
-
-                    return $stars;
-                })->sortable()->filterable(),
-
         ];
+
+        return array_merge($osmfeaturesFields, $specificFields);
     }
 
     /**
@@ -191,10 +98,9 @@ class Place extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [
-            new Filters\WikiDataFilter(),
-            new Filters\WikiMediaFilter(),
-            new Filters\WikiPediaFilter(),
+        $osmfeaturesFilters = parent::filters($request);
+
+        $specificFilters = [
             new Filters\ClassFilter(),
             new Filters\SubclassFilter(),
             ElevationFilter::make()
@@ -203,10 +109,8 @@ class Place extends Resource
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
-            new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL),
-
         ];
+        return array_merge($osmfeaturesFilters, $specificFilters);
     }
 
     /**
