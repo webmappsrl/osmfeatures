@@ -65,16 +65,46 @@ class Place extends Resource
     public function fields(NovaRequest $request)
     {
         return [
+            Text::make('Details')->displayUsing(function () {
+                $name = wordwrap($this->name, 50, '<br>', true);
+
+                switch ($this->osm_type) {
+                    case 'N':
+                        $link = "https://www.openstreetmap.org/node/{$this->osm_id}";
+                        break;
+                    case 'W':
+                        $link = "https://www.openstreetmap.org/way/{$this->osm_id}";
+                        break;
+                    case 'R':
+                        $link = "https://www.openstreetmap.org/relation/{$this->osm_id}";
+                        break;
+                    default:
+                        $link = "#";
+                }
+
+                $osmIdLink =
+                    <<<HTML
+                    <a style='color:green;' href='{$link}' target='_blank'>
+                        <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
+                    </a>
+                    HTML;
+
+                $osmType =
+                    <<<HTML
+                    <span>
+                        <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
+                    </span>
+                HTML;
+
+                return <<<HTML
+                        $osmIdLink<br>
+                        $osmType<br>
+                        <span style='font-weight: bold;'>Name:</span> $name
+                        HTML;
+            })->asHtml()->onlyOnIndex(),
+
             Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
                 function ($value) {
-                    switch ($this->osm_type) {
-                        case 'N':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
-                        case 'W':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/way/$value' target='_blank'>$value</a>";
-                        case 'R':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
-                    }
                 }
             )->asHtml(),
             Text::make('OSM Type', 'osm_type')->displayUsing(
@@ -118,7 +148,7 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value.' m';
+                        return $value . ' m';
                     } else {
                         return ' ';
                     }
