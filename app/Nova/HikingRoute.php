@@ -56,7 +56,10 @@ class HikingRoute extends Resource
             Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
                 function ($value) {
                     $link = $this->getOsmUrl();
-                    return "<a style='color:green;' href='$link' target='_blank'>$value</a>";
+                    $html = <<< HTML
+                        <a style="color:green"href="$link" target="_blank">$value</a>
+                    HTML;
+                    return $html;
                 }
             )->asHtml(),
             Text::make('OSM Type', 'osm_type')->displayUsing(
