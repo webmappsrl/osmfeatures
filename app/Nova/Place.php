@@ -2,9 +2,9 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\Text;
-use App\Nova\OsmFeaturesResource;
 use App\Nova\Filters\ElevationFilter;
+use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Place extends OsmFeaturesResource
@@ -50,7 +50,7 @@ class Place extends OsmFeaturesResource
     {
         $osmfeaturesFields = parent::fields($request);
 
-        $specificFields =  [
+        $specificFields = [
             Text::make('Class')
                 ->sortable(),
             Text::make('Subclass')
@@ -58,7 +58,7 @@ class Place extends OsmFeaturesResource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value . ' m';
+                        return $value.' m';
                     } else {
                         return ' ';
                     }
@@ -100,6 +100,7 @@ class Place extends OsmFeaturesResource
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
         ];
+
         return array_merge($osmfeaturesFilters, $specificFilters);
     }
 

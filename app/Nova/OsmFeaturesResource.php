@@ -18,19 +18,16 @@ class OsmFeaturesResource extends Resource
 {
     /**
      * The model the resource corresponds to.
-     *
      */
     public static $model = \App\Models\AdminArea::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
-     *
      */
     public static $title;
 
     /**
      * The columns that should be searched.
-     *
      */
     public static $search;
 
@@ -44,7 +41,7 @@ class OsmFeaturesResource extends Resource
     {
         return [
             Text::make('Details')->displayUsing(function () {
-                if (!$this->name) {
+                if (! $this->name) {
                     $name = '-';
                 } else {
                     $name = wordwrap($this->name, 50, '<br>', true);

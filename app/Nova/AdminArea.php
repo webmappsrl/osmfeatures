@@ -2,8 +2,8 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\Text;
 use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AdminArea extends OsmFeaturesResource
@@ -30,7 +30,6 @@ class AdminArea extends OsmFeaturesResource
     public static $search = [
         'osm_id', 'name',
     ];
-
 
     /**
      * Get the fields displayed by the resource.
