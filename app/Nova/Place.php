@@ -2,21 +2,12 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\ElevationFilter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\Textarea;
+use App\Nova\OsmFeaturesResource;
+use App\Nova\Filters\ElevationFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\DateHelper;
-use Rpj\Daterangepicker\Daterangepicker;
 
-class Place extends Resource
+class Place extends OsmFeaturesResource
 {
     /**
      * The model the resource corresponds to.
@@ -40,13 +31,6 @@ class Place extends Resource
         return $model;
     }
 
-    public static function indexQuery(NovaRequest $request, $query)
-    {
-        \Log::info($query->toSql());
-
-        return $query;
-    }
-
     /**
      * The columns that should be searched.
      *
@@ -64,53 +48,9 @@ class Place extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                    switch ($this->osm_type) {
-                        case 'N':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
-                        case 'W':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/way/$value' target='_blank'>$value</a>";
-                        case 'R':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
-                    }
-                }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->sortable()
-                ->onlyOnIndex(),
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
-            DateTime::make('Updated_at')
-                ->displayUsing(
-                    function ($value) {
-                        return Carbon::parse($value)->toIso8601String();
-                    }
-                )->sortable(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
-                    })->implode('<br>')
-                )
-                ->allowTooltipHTML()
-                ->onlyOnIndex(),
-            Code::make('Tags')->json()->hideFromIndex(),
-            Text::make('Wiki', function () {
-                return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
-            Text::make('Name')->displayUsing(
-                function ($value) {
-                    //max length should be 50 characters then break the line
-                    return wordwrap($value, 50, '<br>', true);
-                }
-            )->asHtml(),
+        $osmfeaturesFields = parent::fields($request);
+
+        $specificFields =  [
             Text::make('Class')
                 ->sortable(),
             Text::make('Subclass')
@@ -118,28 +58,15 @@ class Place extends Resource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value.' m';
+                        return $value . ' m';
                     } else {
                         return ' ';
                     }
                 }
             ),
-            Number::make('Score', 'score')
-                ->displayUsing(function ($value) {
-                    //return a star rating
-                    $stars = '';
-
-                    if ($value == 0 || $value == null) {
-                        return 'No rating';
-                    }
-                    for ($i = 0; $i < $value; $i++) {
-                        $stars .= '⭐';
-                    }
-
-                    return $stars;
-                })->sortable()->filterable(),
-
         ];
+
+        return array_merge($osmfeaturesFields, $specificFields);
     }
 
     /**
@@ -161,10 +88,9 @@ class Place extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [
-            new Filters\WikiDataFilter(),
-            new Filters\WikiMediaFilter(),
-            new Filters\WikiPediaFilter(),
+        $osmfeaturesFilters = parent::filters($request);
+
+        $specificFilters = [
             new Filters\ClassFilter(),
             new Filters\SubclassFilter(),
             ElevationFilter::make()
@@ -173,10 +99,8 @@ class Place extends Resource
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
-            new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL),
-
         ];
+        return array_merge($osmfeaturesFilters, $specificFilters);
     }
 
     /**
