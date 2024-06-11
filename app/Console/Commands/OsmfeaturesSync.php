@@ -20,7 +20,7 @@ class OsmfeaturesSync extends Command
             hint: 'If you already have the PBF file, you can skip the download.'
         );
 
-        if (! $skipDownload) {
+        if (!$skipDownload) {
             $pbfUrl = text(
                 label: 'URL of the PBF file to download',
                 placeholder: 'https://download.geofabrik.de/europe/italy-latest.osm.pbf',
@@ -46,14 +46,6 @@ class OsmfeaturesSync extends Command
             );
         }
 
-        // $dbHost = text(
-        //     label: 'PostgreSQL database host',
-        //     placeholder: 'localhost',
-        //     hint: 'Run: docker inspect -f \'{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}\' postgres_osmfeatures',
-        //     required: true,
-        //     default: $this->argument('defaultHost') ?? 'db',
-        // );
-
         $luaFile = text(
             label: 'Lua file to use for osm2pgsql',
             placeholder: 'pois',
@@ -73,7 +65,7 @@ class OsmfeaturesSync extends Command
         $this->info("Starting synchronization for $name...");
 
         // Create directory if it doesn't exist
-        if (! file_exists(storage_path('osm/pbf'))) {
+        if (!file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'));
         }
 
@@ -81,8 +73,8 @@ class OsmfeaturesSync extends Command
         $originalPath = storage_path("osm/pbf/original_$name.pbf");
 
         //check if the file exists
-        if (! file_exists($originalPath) && $skipDownload) {
-            $this->error('PBF file not found at:'.$originalPath.' Please make sure the file exists.');
+        if (!file_exists($originalPath) && $skipDownload) {
+            $this->error('PBF file not found at:' . $originalPath . ' Please make sure the file exists.');
 
             return false;
         }
@@ -91,7 +83,7 @@ class OsmfeaturesSync extends Command
         //$extractedPbfPath = storage_path("osm/pbf/extracted_$name.pbf");
 
         // Handle download
-        if (! $skipDownload) {
+        if (!$skipDownload) {
             $this->handleDownload($pbfUrl, $originalPath);
         }
 
@@ -118,7 +110,7 @@ class OsmfeaturesSync extends Command
     {
         if ($pbfUrl) {
             $this->info("Downloading PBF file from $pbfUrl...");
-            if (! $this->downloadPbf($pbfUrl, $originalPath)) {
+            if (!$this->downloadPbf($pbfUrl, $originalPath)) {
                 return false;
             }
         } else {
@@ -175,13 +167,13 @@ class OsmfeaturesSync extends Command
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaPath = 'storage/osm/lua/'.$luaFile.'.lua';
-        if (! file_exists($luaPath)) {
-            $this->error('Lua file not found at:'.$luaPath);
+        $luaPath = 'storage/osm/lua/' . $luaFile . '.lua';
+        if (!file_exists($luaPath)) {
+            $this->error('Lua file not found at:' . $luaPath);
 
             return false;
         }
-        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -x -S $luaPath $pbfPath --log-level=debug";
+        $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -x -S $luaPath $pbfPath --slim --log-level=debug";
         $this->info('About to run osm2pgsql...');
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
@@ -224,7 +216,7 @@ class OsmfeaturesSync extends Command
             ) {
                 // Show the amount of data downloaded / file size
                 if ($downloadSize > 0) {
-                    $this->output->write("\rDownloaded: ".$this->formatBytes($downloaded).' / '.$this->formatBytes($downloadSize));
+                    $this->output->write("\rDownloaded: " . $this->formatBytes($downloaded) . ' / ' . $this->formatBytes($downloadSize));
                 }
             });
 
@@ -236,8 +228,8 @@ class OsmfeaturesSync extends Command
             curl_close($ch);
             fclose($fp);
 
-            if (! $data) {
-                echo 'cURL error: '.curl_error($ch);
+            if (!$data) {
+                echo 'cURL error: ' . curl_error($ch);
                 $this->error('Error during the PBF file download.');
 
                 return false;
@@ -247,8 +239,8 @@ class OsmfeaturesSync extends Command
 
             return true;
         } catch (Exception $e) {
-            $this->error('Error during the PBF file download: '.$e->getMessage());
-            Log::error('cURL error during the PBF file download: '.$e->getMessage());
+            $this->error('Error during the PBF file download: ' . $e->getMessage());
+            Log::error('cURL error during the PBF file download: ' . $e->getMessage());
 
             return false;
         }
@@ -271,6 +263,6 @@ class OsmfeaturesSync extends Command
 
         $bytes /= pow(1024, $pow);
 
-        return round($bytes, $precision).' '.$units[$pow];
+        return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }
