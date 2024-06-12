@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
@@ -42,22 +41,23 @@ class UpdateOsmPbf extends Command
             );
         }
 
-        $pbfPath = storage_path('osm/pbf/original_' . $pbf . '.pbf');
+        $pbfPath = storage_path('osm/pbf/original_'.$pbf.'.pbf');
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
         $luaFile = storage_path('osm/lua/all_imports.lua');
 
         //check if pbf_file name exists in storage/osm/pbf
-        if (!file_exists($pbfPath)) {
-            $existingLuaFiles = array_map('basename', glob(storage_path('osm/pbf') . '/*.pbf'));
-            $this->error('The file ' . $pbf . ' does not exist in storage/osm/lua. Existing pbf files: ' . implode(', ', $existingLuaFiles));
+        if (! file_exists($pbfPath)) {
+            $existingLuaFiles = array_map('basename', glob(storage_path('osm/pbf').'/*.pbf'));
+            $this->error('The file '.$pbf.' does not exist in storage/osm/lua. Existing pbf files: '.implode(', ', $existingLuaFiles));
+
             return;
         }
 
         //osm2pgsql-replication init command only if the init has not already been launched
         $this->info('Executing osm2pgsql-replication init');
-        if (!Schema::hasTable('planet_osm_replication_status')) {
+        if (! Schema::hasTable('planet_osm_replication_status')) {
             $this->info('The database has not been initialized yet, launching osm2pgsql-replication init');
             Log::info('The database has not been initialized yet, launching osm2pgsql-replication init');
             $this->osm2pgsqlReplicationInit($dbPassword, $dbName, $dbUser, $pbfPath);
@@ -72,8 +72,6 @@ class UpdateOsmPbf extends Command
         Log::info('OSM PBF file updated successfully');
         $this->info('OSM PBF file updated successfully');
     }
-
-
 
     /**
      * Initializes the osm2pgsql replication process for the given database and PBF file.
@@ -116,7 +114,7 @@ class UpdateOsmPbf extends Command
         $osm2pgsqlUpdate = "PGPASSWORD=$dbPassword osm2pgsql-replication update -d $dbName -H 'db' -U $dbUser -- -O flex -x -S $luaFile";
 
         // execute osm2pgsql-replication update
-        $this->info('Executing osm2pgsql-replication update for ' . $luaFile);
+        $this->info('Executing osm2pgsql-replication update for '.$luaFile);
         exec($osm2pgsqlUpdate, $output, $return_var);
 
         // if the command failed, display an error message and return
