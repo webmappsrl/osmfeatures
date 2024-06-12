@@ -28,6 +28,6 @@ class AdminAreasCount extends HtmlCard
     {
         $adminAreasCount = \App\Models\AdminArea::count();
 
-        return '<h1 class="text-4xl shadow ">Admin Areas</h1><p class="text-2xl text-center pt-3 ">'.$adminAreasCount.'</p>';
+        return '<h1 class="text-4xl shadow ">Admin Areas</h1><p class="text-2xl text-center pt-3 ">' . $adminAreasCount . '</p>';
     }
 }

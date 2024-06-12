@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class HikingWay extends Model
 {
-    use HasFactory, OsmTagsProcessor;
+    use HasFactory;
+    use OsmTagsProcessor;
 
     protected $table = 'hiking_routes_ways';
 

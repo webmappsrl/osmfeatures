@@ -46,7 +46,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::make('API', url('/api/documentation'))->external()->openInNewTab(),
                 ])->icon('users')->collapsable(),
                 MenuSection::make('Tools', [
-                    MenuItem::externalLink('Display Jobs', url('/jobs'))->withBadgeIf(Badge::make('Some jobs failed', 'warning'), 'warning', fn () => DB::table('queue_monitor')->where('status', 2)->count() > 0)->openInNewTab(),
+                    MenuItem::externalLink('Display Jobs', url('/jobs'))->withBadgeIf(Badge::make('Some jobs failed', 'warning'), 'warning', fn() => DB::table('queue_monitor')->where('status', 2)->count() > 0)->openInNewTab(),
 
                 ])->icon('briefcase'),
             ];
@@ -90,7 +90,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function dashboards()
     {
         return [
-            new Features,
+            new Features(),
         ];
     }
 

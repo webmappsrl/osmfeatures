@@ -109,7 +109,7 @@ class HikingRoutesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/hiking-routes/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/hiking-routes/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -134,7 +134,7 @@ class HikingRoutesApiTest extends TestCase
     public function get_single_hiking_route_api_returns_correct_structure()
     {
         $hr = HikingRoute::first();
-        $response = $this->get('/api/v1/features/hiking-routes/'.$hr->getOsmFeaturesId());
+        $response = $this->get('/api/v1/features/hiking-routes/' . $hr->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {

@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class HikingRoute extends Model
 {
-    use HasFactory, OsmTagsProcessor, OsmFeaturesIdProcessor;
+    use HasFactory;
+    use OsmTagsProcessor;
+    use OsmFeaturesIdProcessor;
 
     protected $table = 'hiking_routes';
 

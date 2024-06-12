@@ -152,8 +152,8 @@ class AdminAreaController extends Controller
         unset($properties['tags']);
         unset($properties['id']);
         $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
-        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
+        $properties['osm_url'] = 'https://www.openstreetmap.org/' . $osmType . '/' . $adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/' . $osmType . '/' . $adminArea->osm_id . '.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
         $properties['wikipedia'] = $adminArea->getWikipediaUrl();
         $properties['wikidata'] = $adminArea->getWikidataUrl();
@@ -220,8 +220,8 @@ class AdminAreaController extends Controller
         $properties = $adminArea->toArray();
         unset($properties['geom']);
         unset($properties['tags']);
-        $properties['osm_url'] = 'https://www.openstreetmap.org/'.$osmType.'/'.$adminArea->osm_id;
-        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/'.$osmType.'/'.$adminArea->osm_id.'.json';
+        $properties['osm_url'] = 'https://www.openstreetmap.org/' . $osmType . '/' . $adminArea->osm_id;
+        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/' . $osmType . '/' . $adminArea->osm_id . '.json';
         $properties['osm_tags'] = json_decode($adminArea->tags, true);
         $properties['wikipedia'] = $adminArea->getWikipediaUrl();
         $properties['wikidata'] = $adminArea->getWikidataUrl();

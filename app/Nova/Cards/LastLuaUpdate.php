@@ -31,7 +31,7 @@ class LastLuaUpdate extends HtmlCard
         $lastLuaUpdate = \App\Models\Osm2pgsqlCrontabUpdate::where('success', true)->orderBy('imported_at', 'desc')->first();
 
         if ($lastLuaUpdate) {
-            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">Imported at: '.$lastLuaUpdate->imported_at.'</p>';
+            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">Imported at: ' . $lastLuaUpdate->imported_at . '</p>';
         } else {
             return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">No imports performed</p>';
         }

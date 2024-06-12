@@ -108,7 +108,7 @@ class PlacesApiTest extends TestCase
     {
         //italy bounding box
         $bbox = '6.6273,36.619987,18.520601,47.095761';
-        $response = $this->get('/api/v1/features/places/list?bbox='.$bbox.'&testdata='.$this->usingTestData);
+        $response = $this->get('/api/v1/features/places/list?bbox=' . $bbox . '&testdata=' . $this->usingTestData);
 
         $response->assertStatus(200);
         $response->assertJsonCount(100, 'data');
@@ -133,7 +133,7 @@ class PlacesApiTest extends TestCase
     public function get_single_place_api_returns_correct_structure()
     {
         $place = Place::first();
-        $response = $this->get('/api/v1/features/places/'.$place->getOsmFeaturesId());
+        $response = $this->get('/api/v1/features/places/' . $place->getOsmFeaturesId());
 
         $response->assertJson(
             function (AssertableJson $json) {

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\text;
 
@@ -41,7 +42,7 @@ class UpdateOsmPbf extends Command
             );
         }
 
-        $pbfPath = storage_path('osm/pbf/original_'.$pbf.'.pbf');
+        $pbfPath = storage_path('osm/pbf/original_' . $pbf . '.pbf');
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
@@ -49,8 +50,8 @@ class UpdateOsmPbf extends Command
 
         //check if pbf_file name exists in storage/osm/pbf
         if (! file_exists($pbfPath)) {
-            $existingLuaFiles = array_map('basename', glob(storage_path('osm/pbf').'/*.pbf'));
-            $this->error('The file '.$pbf.' does not exist in storage/osm/lua. Existing pbf files: '.implode(', ', $existingLuaFiles));
+            $existingLuaFiles = array_map('basename', glob(storage_path('osm/pbf') . '/*.pbf'));
+            $this->error('The file ' . $pbf . ' does not exist in storage/osm/lua. Existing pbf files: ' . implode(', ', $existingLuaFiles));
 
             return;
         }
@@ -114,7 +115,7 @@ class UpdateOsmPbf extends Command
         $osm2pgsqlUpdate = "PGPASSWORD=$dbPassword osm2pgsql-replication update -d $dbName -H 'db' -U $dbUser -- -O flex -x -S $luaFile";
 
         // execute osm2pgsql-replication update
-        $this->info('Executing osm2pgsql-replication update for '.$luaFile);
+        $this->info('Executing osm2pgsql-replication update for ' . $luaFile);
         exec($osm2pgsqlUpdate, $output, $return_var);
 
         // if the command failed, display an error message and return

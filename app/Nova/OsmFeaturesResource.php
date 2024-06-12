@@ -51,23 +51,23 @@ class OsmFeaturesResource extends Resource
 
                 $osmIdLink =
                     <<<HTML
-                    <a style='color:green;' href='{$link}' target='_blank'>
-                        <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
-                    </a>
-                    HTML;
+                        <a style='color:green;' href='{$link}' target='_blank'>
+                            <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
+                        </a>
+                        HTML;
 
                 $osmType =
                     <<<HTML
-                    <span>
-                        <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
-                    </span>
-                HTML;
+                            <span>
+                                <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
+                            </span>
+                        HTML;
 
                 return <<<HTML
-                        $osmIdLink<br>
-                        $osmType<br>
-                        <span style='font-weight: bold;'>Name:</span> $name
-                        HTML;
+                    $osmIdLink<br>
+                    $osmType<br>
+                    <span style='font-weight: bold;'>Name:</span> $name
+                    HTML;
             })->asHtml()->onlyOnIndex(),
 
             Text::make('OSM Type')

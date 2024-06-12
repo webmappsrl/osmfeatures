@@ -28,6 +28,6 @@ class HrCount extends HtmlCard
     {
         $hrCount = \App\Models\HikingRoute::count();
 
-        return '<h1 class="text-4xl shadow ">Hiking Routes</h1> <p class="text-2xl text-center pt-3 ">'.$hrCount.'</p>';
+        return '<h1 class="text-4xl shadow ">Hiking Routes</h1> <p class="text-2xl text-center pt-3 ">' . $hrCount . '</p>';
     }
 }

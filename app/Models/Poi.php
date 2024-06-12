@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Poi extends Model
 {
-    use HasFactory, OsmTagsProcessor;
+    use HasFactory;
+    use OsmTagsProcessor;
 
     protected $table = 'pois';
 

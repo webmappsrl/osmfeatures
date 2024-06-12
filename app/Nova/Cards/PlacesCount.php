@@ -28,6 +28,6 @@ class PlacesCount extends HtmlCard
     {
         $placesCount = \App\Models\Place::count();
 
-        return '<h1 class="text-4xl shadow ">Places</h1><p class="text-2xl pt-3 text-center">'.$placesCount.'</p>';
+        return '<h1 class="text-4xl shadow ">Places</h1><p class="text-2xl pt-3 text-center">' . $placesCount . '</p>';
     }
 }

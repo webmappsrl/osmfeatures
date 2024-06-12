@@ -82,7 +82,7 @@ class TestDBSeeder extends Seeder
             );
 
             DB::table('admin_areas')->insert([
-                'name' => 'Admin Area '.$i,
+                'name' => 'Admin Area ' . $i,
                 'osm_id' => $i,
                 'osm_type' => $osmTypes[rand(0, 2)],
                 'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)')"),
@@ -159,7 +159,7 @@ class TestDBSeeder extends Seeder
             $geomText = "MULTILINESTRING(($lineString))";
 
             DB::table('hiking_routes')->insert([
-                'name' => 'Hiking Route '.$i,
+                'name' => 'Hiking Route ' . $i,
                 'osm_id' => $i,
                 'osm_type' => 'R',
                 'geom' => DB::raw("ST_GeomFromText('$geomText', 4326)"),
@@ -233,7 +233,7 @@ class TestDBSeeder extends Seeder
                 'osm_type' => 'N',
                 'osm_id' => $i,
                 'updated_at' => now(),
-                'name' => 'Place '.$i,
+                'name' => 'Place ' . $i,
                 'class' => 'class',
                 'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                 'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
@@ -270,7 +270,7 @@ class TestDBSeeder extends Seeder
                 'osm_type' => 'N',
                 'osm_id' => $i,
                 'updated_at' => now(),
-                'name' => 'Pole '.$i,
+                'name' => 'Pole ' . $i,
                 'tags' => json_encode(['wikidata' => 'value', 'wikipedia' => 'value', 'wikimedia_commons' => 'value']),
                 'geom' => DB::raw("ST_GeomFromText('POINT($lon $lat)')"),
                 'ref' => 'ref',
