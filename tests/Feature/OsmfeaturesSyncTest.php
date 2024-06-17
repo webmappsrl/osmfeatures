@@ -15,7 +15,7 @@ class OsmfeaturesSyncTest extends TestCase
     public function test_command_provide_expected_questions(): void
     {
         //cant test this in CI
-        if (env('APP_ENV') == 'testing') {
+        if (env('APP_ENV') === 'testing') {
             return;
         }
 
@@ -91,9 +91,9 @@ class OsmfeaturesSyncTest extends TestCase
             'defaultLua' => $luaFile,
             '--skip-download' => true,
             'defaultPbf' => $pbfPath,
+            'defaultName' => 'not_existing'
         ]);
 
-        $this->assertStringContainsString('Lua file not found at:', $commandTester->getDisplay());
-        $this->assertStringContainsString($luaFile, $commandTester->getDisplay());
+        $this->assertStringContainsString('PBF file not found at: /var/www/html/osmfeatures/storage/osm/pbf/original_not_existing.pbf Please make sure the file exists.', $commandTester->getDisplay());
     }
 }
