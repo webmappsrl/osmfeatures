@@ -16,6 +16,7 @@ class OsmfeaturesSync extends Command
     {
         parent::__construct();
         $this->output = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $this->logger = Log::channel('osmfeatures');
     }
     protected $signature = 'osmfeatures:sync {defaultName?} {defaultLua?} {--skip-download} {defaultPbf?}';
 
@@ -23,14 +24,14 @@ class OsmfeaturesSync extends Command
 
     public function handle()
     {
-        Log::info('OsmfeaturesSync: Command started.');
+        Log::channel('osmfeatures')->info('Starting OSM features synchronization...');
 
         $skipDownload = confirm(
             label: 'Skip download and use a local PBF file?',
             default: $this->option('skip-download'),
             hint: 'If you already have the PBF file, you can skip the download.'
         );
-        Log::info('User selected skip download: ' . ($skipDownload ? 'Yes' : 'No'));
+        Log::channel('osmfeatures')->info('User selected skip download: ' . ($skipDownload ? 'Yes' : 'No'));
 
         if (!$skipDownload) {
             $pbfUrl = text(
@@ -58,7 +59,7 @@ class OsmfeaturesSync extends Command
                 required: true,
                 default: $this->argument('defaultName') ?? 'italy_centro_latest',
             );
-            Log::info('PBF file name to use: ' . $name);
+            Log::channel('osmfeatures')->info('PBF file name to use: ' . $name);
         }
 
         $luaFile = text(
@@ -68,39 +69,39 @@ class OsmfeaturesSync extends Command
             required: true,
             default: $this->argument('defaultLua') ?? 'pois',
         );
-        Log::info('Lua file: ' . $luaFile);
+        Log::channel('osmfeatures')->info('Lua file: ' . $luaFile);
 
         $this->info("Starting synchronization for $name...");
-        Log::info("Starting synchronization for $name...");
+        Log::channel('osmfeatures')->info("Starting synchronization for $name...");
 
         if (!file_exists(storage_path('osm/pbf'))) {
             mkdir(storage_path('osm/pbf'), 0o755, true);
-            Log::info('Directory created: ' . storage_path('osm/pbf'));
+            Log::channel('osmfeatures')->info('Directory created: ' . storage_path('osm/pbf'));
         }
 
         $originalPath = storage_path("osm/pbf/original_$name.pbf");
 
         if (!file_exists($originalPath) && $skipDownload) {
             $this->error('PBF file not found at: ' . $originalPath . ' Please make sure the file exists.');
-            Log::error('PBF file not found at: ' . $originalPath);
+            Log::channel('osmfeatures')->error('PBF file not found at: ' . $originalPath);
 
             return false;
         }
 
         if (!$skipDownload) {
             if (!$this->handleDownload($pbfUrl, $originalPath)) {
-                Log::error('Failed to download PBF file from ' . $pbfUrl);
+                Log::channel('osmfeatures')->error('Failed to download PBF file from ' . $pbfUrl);
                 return false;
             }
         }
 
         if (!$this->osm2pgsqlSync($name, $originalPath, $luaFile)) {
-            Log::error('Failed to synchronize with osm2pgsql.');
+            Log::channel('osmfeatures')->error('Failed to synchronize with osm2pgsql.');
             return false;
         }
 
         $this->info("Synchronization completed for $name.");
-        Log::info("Synchronization completed for $name.");
+        Log::channel('osmfeatures')->info("Synchronization completed for $name.");
 
         return true;
     }
@@ -109,15 +110,15 @@ class OsmfeaturesSync extends Command
     {
         if ($pbfUrl && Http::get($pbfUrl)->successful()) {
             $this->info("Downloading PBF file from $pbfUrl...");
-            Log::info("Downloading PBF file from $pbfUrl to $originalPath");
+            Log::channel('osmfeatures')->info("Downloading PBF file from $pbfUrl to $originalPath");
 
             if (!$this->downloadPbf($pbfUrl, $originalPath)) {
-                Log::error('Download failed from ' . $pbfUrl);
+                Log::channel('osmfeatures')->error('Download failed from ' . $pbfUrl);
                 return false;
             }
         } else {
             $this->error('PBF file URL not valid.');
-            Log::error('PBF file URL not valid.');
+            Log::channel('osmfeatures')->error('PBF file URL not valid.');
 
             return false;
         }
@@ -128,7 +129,7 @@ class OsmfeaturesSync extends Command
     public function osm2pgsqlSync($name, $pbfPath, $luaFile)
     {
         $this->info("Importing data with osm2pgsql for $name...");
-        Log::info("Importing data with osm2pgsql for $name from $pbfPath using $luaFile.lua");
+        Log::channel('osmfeatures')->info("Importing data with osm2pgsql for $name from $pbfPath using $luaFile.lua");
 
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
@@ -137,26 +138,26 @@ class OsmfeaturesSync extends Command
 
         if (!file_exists($luaPath)) {
             $this->error('Lua file not found at: ' . $luaPath);
-            Log::error('Lua file not found at: ' . $luaPath);
+            Log::channel('osmfeatures')->error('Lua file not found at: ' . $luaPath);
 
             return false;
         }
 
         $osm2pgsqlCmd = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H 'db' -U $dbUser -O flex -x -S $luaPath $pbfPath --slim --log-level=debug";
         $this->info('About to run osm2pgsql...');
-        Log::info('Running osm2pgsql with command: ' . $osm2pgsqlCmd);
+        Log::channel('osmfeatures')->info('Running osm2pgsql with command: ' . $osm2pgsqlCmd);
 
         exec($osm2pgsqlCmd, $osm2pgsqlOutput, $osm2pgsqlReturnVar);
 
         if ($osm2pgsqlReturnVar != 0) {
             $this->error('Error during import with osm2pgsql.');
-            Log::error('osm2pgsql import failed with return code: ' . $osm2pgsqlReturnVar);
+            Log::channel('osmfeatures')->error('osm2pgsql import failed with return code: ' . $osm2pgsqlReturnVar);
 
             return false;
         }
 
         $this->info('Import successfully completed.');
-        Log::info('Import successfully completed.');
+        Log::channel('osmfeatures')->info('Import successfully completed.');
 
         return true;
     }
@@ -188,19 +189,19 @@ class OsmfeaturesSync extends Command
             if (!$data) {
                 $error = 'cURL error: ' . curl_error($ch);
                 $this->error($error);
-                Log::error($error);
+                Log::channel('osmfeatures')->error($error);
 
                 return false;
             }
 
             $this->info("Download completed: $outputPath");
-            Log::info("Download completed: $outputPath");
+            Log::channel('osmfeatures')->info("Download completed: $outputPath");
 
             return true;
         } catch (Exception $e) {
             $error = 'Error during the PBF file download: ' . $e->getMessage();
             $this->error($error);
-            Log::error($error);
+            Log::channel('osmfeatures')->error($error);
 
             return false;
         }
