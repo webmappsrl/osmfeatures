@@ -11,7 +11,6 @@ use function Laravel\Prompts\text;
 
 class OsmfeaturesSync extends Command
 {
-
     public function __construct()
     {
         parent::__construct();

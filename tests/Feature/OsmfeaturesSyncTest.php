@@ -11,7 +11,6 @@ use App\Console\Commands\OsmfeaturesSync;
 
 class OsmfeaturesSyncTest extends TestCase
 {
-
     public function test_command_provide_expected_questions(): void
     {
         //cant test this in CI
@@ -91,7 +90,7 @@ class OsmfeaturesSyncTest extends TestCase
             'defaultLua' => $luaFile,
             '--skip-download' => true,
             'defaultPbf' => $pbfPath,
-            'defaultName' => 'not_existing'
+            'defaultName' => 'not_existing',
         ]);
 
         $this->assertStringContainsString('PBF file not found at: ' . $pbfPath, $commandTester->getDisplay());
