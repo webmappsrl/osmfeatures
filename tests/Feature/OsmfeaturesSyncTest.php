@@ -80,7 +80,7 @@ class OsmfeaturesSyncTest extends TestCase
 
     public function test_command_osm2pgsqlSync_return_correct_outputs_if_osm2pgsql_script_is_returning_error(): void
     {
-        $pbfPath = storage_path('tests/not_existing.pbf');
+        $pbfPath = storage_path('osm/pbf/original_not_existing.pbf');
         $luaFile = 'not_existing_lua';
         $command = new OsmfeaturesSync();
         $command->setLaravel($this->app);
