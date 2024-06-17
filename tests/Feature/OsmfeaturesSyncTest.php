@@ -83,7 +83,6 @@ class OsmfeaturesSyncTest extends TestCase
         $commandTester = new CommandTester($command);
 
         $commandTester->execute([
-            'defaultName' => 'italy_latest',
             'defaultLua' => $luaFile,
             '--skip-download' => true,
             'defaultPbf' => $pbfPath,
