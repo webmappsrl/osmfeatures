@@ -94,6 +94,6 @@ class OsmfeaturesSyncTest extends TestCase
             'defaultName' => 'not_existing'
         ]);
 
-        $this->assertStringContainsString('PBF file not found at: /var/www/html/osmfeatures/storage/osm/pbf/original_not_existing.pbf Please make sure the file exists.', $commandTester->getDisplay());
+        $this->assertStringContainsString('PBF file not found at: ' . $pbfPath, $commandTester->getDisplay());
     }
 }
