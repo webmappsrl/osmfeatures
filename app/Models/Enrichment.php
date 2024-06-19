@@ -10,21 +10,9 @@ class Enrichment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'enrichable_type',
+        'data',
         'enrichable_id',
-        'update',
-        'update_wikipedia',
-        'update_wikidata',
-        'update_wikicommons',
-        'abstract',
-        'description',
-        'images'
-    ];
-
-    protected $casts = [
-        'abstract' => 'array',
-        'description' => 'array',
-        'images' => 'array',
+        'enrichable_type',
     ];
 
     public function enrichable()
