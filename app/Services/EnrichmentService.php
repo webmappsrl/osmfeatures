@@ -235,7 +235,7 @@ class EnrichmentService
         // If the model has a Wikimedia Commons tag, fetch and upload the image.
         if (isset($tags['wikimedia_commons'])) {
             $wikimediaFilename = str_replace('File:', '', $tags['wikimedia_commons']);
-            $imageUrls = $this->wikimediaService->fetchAndUploadImage($wikimediaFilename);
+            $imageUrls = $this->wikimediaService->fetchAndUploadImages($wikimediaFilename, $tags['name'] ?? null);
         }
 
         // Return the URLs of the fetched images.
