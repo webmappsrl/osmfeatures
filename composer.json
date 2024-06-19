@@ -10,9 +10,10 @@
     "require": {
         "php": "^8.1.0",
         "abordage/nova-html-card": "^0.3.1",
+        "aws/aws-sdk-php": "^3.314",
         "darkaonline/l5-swagger": "^8.5",
         "digital-creative/nova-range-input-filter": "^1.1",
-        "guzzlehttp/guzzle": "^7.2",
+        "guzzlehttp/guzzle": "^7.8",
         "kongulov/nova-tab-translatable": "^2.1",
         "laravel/framework": "^10.0",
         "laravel/nova": "^4.32",
@@ -20,6 +21,7 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "league/flysystem-aws-s3-v3": "^3.12",
+        "openai-php/laravel": "^0.10.1",
         "outl1ne/nova-tooltip-field": "^1.0",
         "romanzipp/laravel-queue-monitor": "^5.2",
         "rpj/daterangepicker": "^0.0.7",
@@ -76,7 +78,8 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "dev",
