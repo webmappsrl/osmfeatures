@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('enrichable');
             $table->json('data')->nullable();
+            $table->timestamps();
         });
     }
 
