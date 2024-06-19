@@ -9,6 +9,7 @@ use Exception;
 use App\Services\WikimediaService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 /**
  * Service for enriching models with OpenAI
@@ -57,40 +58,67 @@ class EnrichmentService
      */
     public function enrich(Model $model)
     {
+        Log::info('Enriching model: ' . get_class($model) . ' ' . $model->id);
+
         $tags = json_decode($model->tags, true);
         try {
-            //Generate description
-            $description = $this->generateDescription($tags);
+            //Fetch existing enrichment
+            $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
+                ->where('enrichable_type', get_class($model))
+                ->first();
 
-            //Generate abstract from description
-            $abstract = $this->generateAbstract($description);
+            $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
 
-            //Translate description and abstract to English
-            $descriptionEn = $this->translateToEnglish($description);
-            $abstractEn = $this->translateToEnglish($abstract);
+            //Fetch data
+            $data = $this->fetchDataFromTags($tags);
 
-            //Fetch images
-            $imageUrls = $this->fetchImages($model);
+            //Check if we need to update the enrichment
+            $shouldUpdate = $this->shouldUpdateEnrichment($data, $existingData);
 
-            // Construct the final JSON
-            $json = [
-                'abstract' => [
-                    'it' => $abstract,
-                    'en' => $abstractEn
-                ],
-                'description' => [
-                    'it' => $description,
-                    'en' => $descriptionEn
-                ],
-                'images' => $imageUrls
-            ];
+            if ($shouldUpdate) {
+                Log::info('Updating enrichment');
+                //Generate description
+                $descriptionData = $this->generateDescription($tags);
+                $description = $descriptionData['response'];
+                $updatedAtWikipedia = $descriptionData['updatedAt'];
 
-            Enrichment::updateOrCreate([
-                'enrichable_id' => $model->id,
-            ], [
-                'enrichable_type' => get_class($model),
-                'data' => json_encode($json),
-            ]);
+                //Generate abstract from description
+                $abstract = $this->generateAbstract($description);
+
+                //Translate description and abstract to English
+                $descriptionEn = $this->translateToEnglish($description);
+                $abstractEn = $this->translateToEnglish($abstract);
+
+                //Fetch images
+                $imageUrls = $this->fetchImages($model);
+                $updatedAtWikimediaCommons = Carbon::now()->toIso8601String();
+
+                // Construct the final JSON
+                $json = [
+                    'update_wikipedia' => $updatedAtWikipedia,
+                    'update_wikidata' => $data['wikidata']['updatedAt'],
+                    'update_wikicommons' => $updatedAtWikimediaCommons,
+                    'abstract' => [
+                        'it' => $abstract,
+                        'en' => $abstractEn
+                    ],
+                    'description' => [
+                        'it' => $description,
+                        'en' => $descriptionEn
+                    ],
+                    'images' => $imageUrls,
+                ];
+
+                Enrichment::updateOrCreate([
+                    'enrichable_id' => $model->id,
+                ], [
+                    'enrichable_type' => get_class($model),
+                    'data' => json_encode($json),
+                ]);
+            } else {
+                Log::info('Enrichment already up to date');
+                return;
+            }
         } catch (Exception $e) {
             Log::error('Enrichment failed: ' . $e->getMessage());
             throw new \Exception('Failed to enrich model: ' . $e->getMessage());
@@ -98,18 +126,50 @@ class EnrichmentService
     }
 
     /**
+     * Determine if the enrichment should be updated based on updated_at fields.
+     *
+     * @param array $data Fetched data from tags
+     * @param array|null $existingData Existing data in the enrichment
+     * @return bool
+     */
+    protected function shouldUpdateEnrichment(array $data, ?array $existingData): bool
+    {
+        if (!$existingData) {
+            Log::info('Enrichment does not exist, update required');
+            return true;
+        }
+
+        $wikipediaUpdatedAt = new Carbon($data['wikipedia']['updatedAt']);
+        $wikidataUpdatedAt = new Carbon($data['wikidata']['updatedAt']);
+        $existingWikipediaUpdatedAt = new Carbon($existingData['update_wikipedia'] ?? '1970-01-01');
+        $existingWikidataUpdatedAt = new Carbon($existingData['update_wikidata'] ?? '1970-01-01');
+
+        if ($wikipediaUpdatedAt->gt($existingWikipediaUpdatedAt) || $wikidataUpdatedAt->gt($existingWikidataUpdatedAt)) {
+            Log::info('Enrichment outdated, update required');
+            return true;
+        }
+
+        Log::info('Enrichment up to date');
+        return false;
+    }
+
+    /**
      * Generate a description from tags
      *
      * @param array $tags Tags for the model
-     * @return string Generated description
+     * @return array Generated description and updated date
      */
-    protected function generateDescription(array $tags): string
+    protected function generateDescription(array $tags): array
     {
+        Log::info('Fetching data from tags');
         $data = $this->fetchDataFromTags($tags);
+        Log::info('Generating description prompt');
         $prompt = $this->generateDescriptionPrompt($data);
 
+        Log::info('Generating OpenAI response');
         $response = $this->getOpenAIResponse($prompt, 3000);
-        return $response['choices'][0]['message']['content'];
+        Log::info('Successfully generated OpenAI response');
+        return ['response' => $response['choices'][0]['message']['content'], 'updatedAt' => $data['wikipedia']['updatedAt']];
     }
 
     /**
@@ -120,8 +180,11 @@ class EnrichmentService
      */
     protected function generateAbstract(string $description): string
     {
+        Log::info('Generating abstract prompt');
         $prompt = "Crea un abstract che sia lungo fino a 255 caratteri per la seguente descrizione:\n\n$description";
+        Log::info('Generating OpenAI response for abstract');
         $response = $this->getOpenAIResponse($prompt, 300);
+        Log::info('Successfully generated OpenAI response for abstract');
         return $response['choices'][0]['message']['content'];
     }
 
@@ -133,8 +196,11 @@ class EnrichmentService
      */
     protected function translateToEnglish(string $text): string
     {
+        Log::info('Generating translation prompt');
         $prompt = "Traduci il seguente testo in inglese:\n\n$text";
+        Log::info('Generating OpenAI response for translation');
         $response = $this->getOpenAIResponse($prompt, 1500);
+        Log::info('Successfully generated OpenAI response for translation');
         return $response['choices'][0]['message']['content'];
     }
 
@@ -146,8 +212,11 @@ class EnrichmentService
      */
     protected function fetchDataFromTags(array $tags): array
     {
+        Log::info('Fetching Wikipedia data');
         $wikipediaData = $this->fetchWikipediaData($tags['wikipedia'] ?? null);
+        Log::info('Fetching Wikidata data');
         $wikidataData = $this->fetchWikidataData($tags['wikidata'] ?? null);
+        Log::info('Successfully fetched data from tags');
         return ['wikipedia' => $wikipediaData, 'wikidata' => $wikidataData];
     }
 
@@ -176,9 +245,13 @@ class EnrichmentService
         // If the response is successful, extract the title and content from the JSON data.
         if ($response->successful()) {
             $data = $response->json();
+            $updatedAt = $response->header('Last-Modified');
+            //parse updated date string to iso8601
+            $updatedAt = Carbon::parse($updatedAt)->toIso8601String();
             return [
                 'title' => $data['title'],
                 'content' => $data['extract'],
+                'updatedAt' => $updatedAt
             ];
         }
 
@@ -206,6 +279,9 @@ class EnrichmentService
         // If the response is successful, extract the title and content from the JSON data.
         if ($response->successful()) {
             $data = $response->json();
+            $updatedAt = $response->header('Last-Modified');
+            //parse updated date string to iso8601
+            $updatedAt = Carbon::parse($updatedAt)->toIso8601String();
             $entity = $data['entities'][$wikidataTag];
             $descriptions = $entity['descriptions'] ?? [];
             $description = $descriptions['en']['value'] ?? '';
@@ -213,6 +289,7 @@ class EnrichmentService
             return [
                 'title' => $entity['labels']['en']['value'] ?? '',
                 'content' => $description,
+                'updatedAt' => $updatedAt
             ];
         }
 
@@ -250,14 +327,15 @@ class EnrichmentService
      */
     protected function generateDescriptionPrompt(array $data): string
     {
-        // Combine the content of Wikipedia and Wikidata.
+        Log::info('Generating description prompt');
         $combinedContent = $data['wikipedia']['content'] . "\n\n" . $data['wikidata']['content'];
         $title = $data['wikipedia']['title'] ?? $data['wikidata']['title'];
 
-        // Generate the description prompt.
-        return "Crea una descrizione lunga tra 1000 e 1800 caratteri riguardo la feature openstreetmap $title con il contenuto
+        $prompt = "Crea una descrizione lunga tra 1000 e 1800 caratteri riguardo la feature openstreetmap $title con il contenuto
 seguente: $combinedContent. Aggiungi informazioni in base alle tue conoscenze per raggiungere la quota di caratteri
 stabilita.";
+        Log::info('Successfully generated description prompt');
+        return $prompt;
     }
 
     /**
@@ -265,19 +343,19 @@ stabilita.";
      *
      * @param string $prompt The prompt to generate the response for.
      * @param int $maxTokens The maximum number of tokens to generate.
-     * @return array The generated OpenAI response.
+     * @return OpenAI\Responses\Chat\CreateResponse The generated OpenAI response.
      * @throws \Exception If the OpenAI response generation fails.
      */
     protected function getOpenAIResponse(string $prompt, int $maxTokens): OpenAI\Responses\Chat\CreateResponse
     {
         try {
+            Log::info('Generating OpenAI response');
             $response = $this->openai->chat()->create([
                 'model' => $this->openaiModel,
                 'messages' => [
                     [
                         'role' => 'system',
-                        'content' => 'You are an openstreetmap expert that provides accurate abstracts and descriptions for openstreetmap
-                                    features.',
+                        'content' => 'You are an openstreetmap expert that provides accurate abstracts and descriptions for openstreetmap features.',
                     ],
                     [
                         'role' => 'user',
@@ -286,7 +364,7 @@ stabilita.";
                 ],
                 'max_tokens' => $maxTokens,
             ]);
-
+            Log::info('Successfully generated OpenAI response');
             return $response;
         } catch (Exception $e) {
             Log::error('Error generating OpenAI response: ' . $e->getMessage());
