@@ -12,7 +12,10 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class EnrichmentJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
 
     protected $model;

@@ -76,13 +76,13 @@ class EnrichmentService
             $json = [
                 'abstract' => [
                     'it' => $abstract,
-                    'en' => $abstractEn
+                    'en' => $abstractEn,
                 ],
                 'description' => [
                     'it' => $description,
-                    'en' => $descriptionEn
+                    'en' => $descriptionEn,
                 ],
-                'images' => $imageUrls
+                'images' => $imageUrls,
             ];
 
             Enrichment::updateOrCreate([
