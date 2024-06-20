@@ -16,32 +16,10 @@ use Carbon\Carbon;
  */
 class EnrichmentService
 {
-    /**
-     * OpenAI client
-     *
-     * @var \OpenAI
-     */
     protected $openai;
-
-    /**
-     * Wikimedia service
-     *
-     * @var \App\Services\WikimediaService
-     */
     protected $wikimediaService;
-
-    /**
-     * OpenAI model
-     *
-     * @var string
-     */
     protected $openaiModel;
 
-    /**
-     * EnrichmentService constructor.
-     *
-     * @param \App\Services\WikimediaService $wikimediaService Wikimedia service
-     */
     public function __construct(WikimediaService $wikimediaService)
     {
         $this->openai = OpenAI::client(env('OPENAI_API_KEY'));
@@ -49,92 +27,64 @@ class EnrichmentService
         $this->openaiModel = config('openai.model');
     }
 
-    /**
-     * Enrich a model with OpenAI
-     *
-     * @param \Illuminate\Database\Eloquent\Model $model Model to enrich
-     * @return void
-     * @throws \Exception
-     */
     public function enrich(Model $model)
     {
         Log::info('Enriching model: ' . get_class($model) . ' ' . $model->id);
 
         $tags = json_decode($model->tags, true);
         try {
-            // Fetch existing enrichment
             $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
                 ->where('enrichable_type', get_class($model))
                 ->first();
 
             $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
-
-            // Fetch data
-            $data = $this->fetchDataFromTags($tags);
-
-            // Check if we need to update the enrichment by comparing the last revision id from the api response with the existing one
+            $data = $this->fetchDataFromWiki($tags);
             $shouldUpdateDescription = $this->shouldUpdateDescription($data, $existingData);
 
             if ($shouldUpdateDescription) {
                 Log::info('Updating description');
-                // Generate description
                 $openAIdescription = $this->generateDescription($data);
-                // Translate description to English
                 $openAIdescriptionEn = $this->translateToEnglish($openAIdescription);
                 Log::info('Updating abstract');
-
-                // Generate abstract from description
-                $openAIabstract = $this->generateAbstract($description);
-                // Translate abstract to English
-                $openAIabstractEn = $this->translateToEnglish($abstract);
-                //get the last revision id from the wikipedia and wikidata api
-                $wikipediaLastRevisionId = $data['wikipedia']['lastRevisionId'] ?? null;
-                $wikidataLastRevisionId = $data['wikidata']['lastRevisionId'] ?? null;
+                $openAIabstract = $this->generateAbstract($openAIdescription);
+                $openAIabstractEn = $this->translateToEnglish($openAIabstract);
+                $wikipediaLastUpdate = $data['wikipedia']['lastModified'] ?? null;
+                $wikidataLastUpdate = $data['wikidata']['lastModified'] ?? null;
             }
 
-            if ($shouldUpdateDescription) {
-                // Fetch images
-                $imageData = $this->wikimediaService->fetchAndUploadImages($model);
+            // Always update images regardless of whether the description is updated
+            $imageData = $this->wikimediaService->fetchAndUploadImages($model);
 
-                // Construct the final JSON
-                $json = [
-                    'last_revision_wikipedia' => $updatedAtWikipedia,
-                    'last_revision_wikidata' => $data['wikidata']['updatedAt'],
-                    'last_revision_wikicommons' => $updatedAtWikimediaCommons,
-                    'abstract' => [
-                        'it' => $openAIabstract,
-                        'en' => $openAIabstractEn
-                    ],
-                    'description' => [
-                        'it' => $openAIdescription,
-                        'en' => $openAIdescriptionEn
-                    ],
-                    'images' => $imageData['urls'],
-                ];
+            // Construct the final JSON
+            $json = [
+                'last_update_wikipedia' => $wikipediaLastUpdate ?? ($existingData['last_update_wikipedia'] ?? null),
+                'last_update_wikidata' => $wikidataLastUpdate ?? ($existingData['last_update_wikidata'] ?? null),
+                'last_update_wikimedia_commons' => $imageData['lastWikiCommonsUpdate'] ?? null,
+                'abstract' => [
+                    'it' => $shouldUpdateDescription ? $openAIabstract : ($existingData['abstract']['it'] ?? ''),
+                    'en' => $shouldUpdateDescription ? $openAIabstractEn : ($existingData['abstract']['en'] ?? ''),
+                ],
+                'description' => [
+                    'it' => $shouldUpdateDescription ? $openAIdescription : ($existingData['description']['it'] ?? ''),
+                    'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
+                ],
+                'images' => $imageData['urls'],
+            ];
 
-                Enrichment::updateOrCreate([
-                    'enrichable_id' => $model->id,
-                ], [
-                    'enrichable_type' => get_class($model),
-                    'data' => json_encode($json),
-                ]);
-            } else {
-                Log::info('Enrichment already up to date');
-                return;
-            }
+            Enrichment::updateOrCreate([
+                'enrichable_id' => $model->id,
+            ], [
+                'enrichable_type' => get_class($model),
+                'data' => json_encode($json),
+            ]);
         } catch (Exception $e) {
             Log::error('Enrichment failed: ' . $e->getMessage());
             throw new \Exception('Failed to enrich model: ' . $e->getMessage());
         }
+
+        Log::info('Enrichment successful');
     }
 
-    /**
-     * Determine if the description should be updated based on last revision id.
-     *
-     * @param array $data Fetched data from tags
-     * @param array|null $existingData Existing data in the enrichment
-     * @return bool
-     */
     protected function shouldUpdateDescription(array $data, ?array $existingData): bool
     {
         if (!$existingData || !isset($existingData['description'])) {
@@ -142,11 +92,16 @@ class EnrichmentService
             return true;
         }
 
-        $wikipediaLastRevision = $data['wikipedia']['lastRevisionId'] ?? '';
-        $existingWikipediaLastRevision = $existingData['last_revision_wikipedia'] ?? '';
+        $wikipediaLastUpdate = $data['wikipedia']['lastModified'] ?? '';
+        $existingWikipediaLastUpdate = $existingData['last_update_wikipedia'] ?? '';
 
-        if ($wikipediaLastRevision != ($existingWikipediaLastRevision)) {
-            Log::info('Last revision id is different, update required');
+        if ($existingWikipediaLastUpdate == '') {
+            Log::info('No last update found, starting a new update');
+            return true;
+        }
+
+        if (Carbon::parse($wikipediaLastUpdate)->gt(Carbon::parse($existingWikipediaLastUpdate))) {
+            Log::info('Description outdated, update required');
             return true;
         }
 
@@ -154,12 +109,6 @@ class EnrichmentService
         return false;
     }
 
-    /**
-     * Generate a description from tags
-     *
-     * @param array $tags Tags for the model
-     * @return string Generated description 
-     */
     protected function generateDescription(array $data): string
     {
         Log::info('Generating description prompt');
@@ -171,12 +120,6 @@ class EnrichmentService
         return $response['choices'][0]['message']['content'];
     }
 
-    /**
-     * Generate an abstract from a description
-     *
-     * @param string $description Description to generate abstract from
-     * @return string Generated abstract
-     */
     protected function generateAbstract(string $description): string
     {
         Log::info('Generating abstract prompt');
@@ -187,12 +130,6 @@ class EnrichmentService
         return $response['choices'][0]['message']['content'];
     }
 
-    /**
-     * Translate text to English
-     *
-     * @param string $text Text to translate
-     * @return string Translated text
-     */
     protected function translateToEnglish(string $text): string
     {
         Log::info('Generating translation prompt');
@@ -203,13 +140,7 @@ class EnrichmentService
         return $response['choices'][0]['message']['content'];
     }
 
-    /**
-     * Fetch data from tags
-     *
-     * @param array $tags Tags for the model
-     * @return array Data fetched from tags
-     */
-    protected function fetchDataFromTags(array $tags): array
+    protected function fetchDataFromWiki(array $tags): array
     {
         Log::info('Fetching Wikipedia data');
         $wikipediaData = $this->fetchWikipediaData($tags['wikipedia'] ?? null);
@@ -219,30 +150,20 @@ class EnrichmentService
         return ['wikipedia' => $wikipediaData, 'wikidata' => $wikidataData];
     }
 
-    /**
-     * Fetches data from Wikipedia for a given Wikipedia tag.
-     *
-     * @param string|null $wikipediaTag The Wikipedia tag to fetch data for.
-     * @return array The fetched data, including the title and content of the Wikipedia page.
-     */
     protected function fetchWikipediaData(?string $wikipediaTag): array
     {
-        // If no Wikipedia tag is provided, return an empty array.
         if (!$wikipediaTag) {
             Log::info('No Wikipedia tag provided');
             return [];
         }
 
-        // Split the Wikipedia tag into language and title.
         $parts = explode(':', $wikipediaTag);
         $language = $parts[0];
         $title = $parts[1];
 
-        // Build the URL for the Wikipedia API.
         $url = "https://{$language}.wikipedia.org/api/rest_v1/page/summary/" . urlencode($title);
         $response = Http::get($url);
 
-        // If the response is successful, extract data from the JSON.
         if ($response->successful()) {
             $data = $response->json();
             $revisionId = intval($data['revision']);
@@ -255,30 +176,20 @@ class EnrichmentService
             ];
         }
 
-        // If the response is not successful, return an empty array.
         Log::info('Failed to fetch data from Wikipedia, returning empty array');
         return ['title' => '', 'content' => '', 'lastRevision' => '', 'lastModified' => ''];
     }
 
-    /**
-     * Fetches data from Wikidata for a given Wikidata tag.
-     *
-     * @param string|null $wikidataTag The Wikidata tag to fetch data for.
-     * @return array The fetched data, including the title and content of the Wikidata entity.
-     */
     protected function fetchWikidataData(?string $wikidataTag): array
     {
-        // If no Wikidata tag is provided, return an empty array.
         if (!$wikidataTag) {
             Log::info('No Wikidata tag provided');
             return [];
         }
 
-        // Build the URL for the Wikidata API.
         $url = "https://www.wikidata.org/wiki/Special:EntityData/{$wikidataTag}.json";
         $response = Http::get($url);
 
-        // If the response is successful, extract data from the JSON.
         if ($response->successful()) {
             $data = $response->json();
             $entity = $data['entities'][$wikidataTag];
@@ -295,18 +206,10 @@ class EnrichmentService
             ];
         }
 
-        // If the response is not successful, return an empty array.
         Log::info('Failed to fetch Wikidata data, returning empty array');
         return ['title' => '', 'content' => '', 'lastRevision' => '', 'lastModified' => ''];
     }
 
-
-    /**
-     * Generates a description prompt based on the given data.
-     *
-     * @param array $data The data used to generate the prompt.
-     * @return string The generated description prompt.
-     */
     protected function generateDescriptionPrompt(array $data): string
     {
         Log::info('Generating description prompt');
@@ -320,15 +223,7 @@ stabilita.";
         return $prompt;
     }
 
-    /**
-     * Generates an OpenAI response based on the given prompt and maximum tokens.
-     *
-     * @param string $prompt The prompt to generate the response for.
-     * @param int $maxTokens The maximum number of tokens to generate.
-     * @return OpenAI\Responses\Chat\CreateResponse The generated OpenAI response.
-     * @throws \Exception If the OpenAI response generation fails.
-     */
-    protected function getOpenAIResponse(string $prompt, int $maxTokens): OpenAI\Responses\Chat\CreateResponse
+    protected function getOpenAIResponse(string $prompt, int $maxTokens)
     {
         try {
             $response = $this->openai->chat()->create([

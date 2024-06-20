@@ -2,13 +2,11 @@
 
 namespace App\Services;
 
-use Exception;
 use Carbon\Carbon;
-use Illuminate\Http\Client\Response;
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem\Filesystem;
 
 /**
  * Service class for fetching and uploading images from Wikimedia Commons API.
@@ -31,9 +29,9 @@ class WikimediaService
         if (isset($tags['wikimedia_commons'])) {
             $categoryTitle = str_replace('File:', '', $tags['wikimedia_commons']);
             $folderName = $tags['name'] ?? $tags['wikimedia_commons'];
-            \Log::info("message: Fetching images from $categoryTitle");
+            \Log::info("Fetching images from $categoryTitle");
         } else {
-            \Log::info("message: No wikimedia commons in tags");
+            \Log::info("No wikimedia commons in tags");
             return $images;
         }
 
@@ -43,34 +41,66 @@ class WikimediaService
                 'action' => 'query',
                 'list' => 'categorymembers',
                 'format' => 'json',
-                'prop' => 'info',
                 'cmtitle' => $categoryTitle,
                 'cmlimit' => 'max',
-                'iiprop' => 'url',
             ]);
 
             $data = $response->json();
-
+            $commonsImages = [];
             if (isset($data['query']['categorymembers'])) {
                 $pages = $data['query']['categorymembers'];
 
                 foreach ($pages as $page) {
-                    if ($page['ns'] === 6 && isset($page['title'])) { //ns=6 is for images
-                        // Fetch image info
+                    if ($page['ns'] === 6 && isset($page['title'])) { // ns=6 is for images
                         $imageUrl = $this->getImageUrl($page['title']);
                         if ($imageUrl) {
-                            try {
-                                $imagePath = 'images/' . $folderName . '/' . basename($imageUrl);
-                                $imageAWSurl = $this->uploadToAWS($imagePath, $imageUrl);
-                            } catch (Exception $e) {
-                                \Log::error('Error uploading image: ' . $imageUrl);
-                                continue;
-                            }
-                            // Add the URL to the list
-                            $images['urls'] = array_merge($images['urls'], [$imageAWSurl]);
+                            $commonsImages[] = $imageUrl;
                         }
                     }
                 }
+            }
+
+            // Get existing images from S3
+            $s3Images = $this->getS3Images($folderName);
+
+            // Calculate images to add and remove
+            $imagesToAdd = array_diff($commonsImages, $s3Images);
+            $imagesToRemove = array_diff($s3Images, $commonsImages);
+            \Log::info("Images to add: " . count($imagesToAdd));
+            \Log::info("Images to remove: " . count($imagesToRemove));
+
+            // Flag to check if there were changes
+            $hasUpdates = false;
+
+            // Upload new images to AWS S3
+            foreach ($imagesToAdd as $imageUrl) {
+                try {
+                    $imagePath = 'images/' . $folderName . '/' . basename($imageUrl);
+                    $imageAWSurl = $this->uploadToAWS($imagePath, $imageUrl);
+                    $images['urls'][] = $imageAWSurl;
+                    $hasUpdates = true;
+                    \Log::info("Added image: $imageAWSurl");
+                } catch (Exception $e) {
+                    \Log::error('Error uploading image: ' . $imageUrl);
+                }
+            }
+
+            // Remove obsolete images from AWS S3
+            foreach ($imagesToRemove as $imageUrl) {
+                try {
+                    $imagePath = 'images/' . $folderName . '/' . basename($imageUrl);
+                    $this->deleteFromAWS($imagePath);
+                    $hasUpdates = true;
+                    \Log::info("Removed image: $imageUrl");
+                } catch (Exception $e) {
+                    \Log::error('Error deleting image: ' . $imageUrl);
+                }
+            }
+            if ($hasUpdates) {
+                $lastWikiCommonsUpdate = Carbon::now();
+                $images['lastWikiCommonsUpdate'] = $lastWikiCommonsUpdate;
+            } else {
+                \Log::info('No changes in images');
             }
         } catch (Exception $e) {
             // Handle exceptions
@@ -95,8 +125,8 @@ class WikimediaService
                 'action' => 'query',
                 'titles' => $fileName,
                 'format' => 'json',
-                'prop' => 'info|imageinfo',
-                'iiprop' => 'url|descriptionurl|extmetadata',
+                'prop' => 'imageinfo',
+                'iiprop' => 'url',
             ]);
 
             $data = $response->json();
@@ -114,23 +144,53 @@ class WikimediaService
         return null;
     }
 
+    /**
+     * Uploads an image to AWS S3.
+     *
+     * @param string $imagePath The path where the image should be stored in S3.
+     * @param string $imageUrl The URL of the image to upload.
+     * @return string The URL of the uploaded image in S3.
+     * @throws Exception
+     */
     private function uploadToAWS(string $imagePath, string $imageUrl): string
     {
         $s3 = Storage::disk('s3');
-        // Check if image already exists in S3
         if (!$s3->exists($imagePath)) {
-            // Download the image
             $imageResponse = Http::get($imageUrl);
             if ($imageResponse->failed()) {
                 \Log::error('Error downloading image: ' . $imageUrl);
                 throw new Exception('Error downloading image: ' . $imageUrl);
             }
             $imageContent = $imageResponse->body();
-
-            // Upload the image to AWS S3
             $s3->put($imagePath, $imageContent);
-
-            return $s3->url($imagePath);
         }
+        return $s3->url($imagePath);
+    }
+
+    /**
+     * Deletes an image from AWS S3.
+     *
+     * @param string $imagePath The path of the image to delete in S3.
+     * @throws Exception
+     */
+    private function deleteFromAWS(string $imagePath): void
+    {
+        $s3 = Storage::disk('s3');
+        if ($s3->exists($imagePath)) {
+            $s3->delete($imagePath);
+        }
+    }
+
+    /**
+     * Gets the list of image URLs stored in a specific folder on AWS S3.
+     *
+     * @param string $folderName The name of the folder to check.
+     * @return array The list of image URLs.
+     */
+    private function getS3Images(string $folderName): array
+    {
+        $s3 = Storage::disk('s3');
+        $files = $s3->allFiles('images/' . $folderName);
+        return array_map(fn ($file) => $s3->url($file), $files);
     }
 }
