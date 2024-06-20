@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Filesystem\Filesystem;
 
@@ -16,14 +18,24 @@ class WikimediaService
     /**
      * Fetches image URLs for a given category in Wikimedia Commons API and uploads them to AWS S3.
      *
-     * @param string $categoryTitle The title of the category to fetch images from.
-     * @param string $folderName The name of the folder in S3 to store the images.
+     * @param Model $model The model to fetch images for.
      * @return array<string> The list of URLs of the uploaded images.
      * @throws Exception
      */
-    public function fetchAndUploadImages(string $categoryTitle, string $folderName): array
+    public function fetchAndUploadImages(Model $model): array
     {
-        $imageUrls = [];
+        // Decode the JSON tags of the model.
+        $tags = json_decode($model->tags, true);
+        $images = [];
+
+        if (isset($tags['wikimedia_commons'])) {
+            $categoryTitle = str_replace('File:', '', $tags['wikimedia_commons']);
+            $folderName = $tags['name'] ?? $tags['wikimedia_commons'];
+            \Log::info("message: Fetching images from $categoryTitle");
+        } else {
+            \Log::info("message: No wikimedia commons in tags");
+            return $images;
+        }
 
         try {
             // Fetch category members from Wikimedia Commons API
@@ -31,7 +43,7 @@ class WikimediaService
                 'action' => 'query',
                 'list' => 'categorymembers',
                 'format' => 'json',
-                'prop' => 'imageinfo',
+                'prop' => 'info',
                 'cmtitle' => $categoryTitle,
                 'cmlimit' => 'max',
                 'iiprop' => 'url',
@@ -47,24 +59,15 @@ class WikimediaService
                         // Fetch image info
                         $imageUrl = $this->getImageUrl($page['title']);
                         if ($imageUrl) {
-                            // Check if image already exists in S3
-                            $imagePath = 'images/' . $folderName . '/' . basename($imageUrl);
-                            $s3 = Storage::disk('s3');
-                            if (!$s3->exists($imagePath)) {
-                                // Download the image
-                                $imageResponse = Http::get($imageUrl);
-                                if ($imageResponse->failed()) {
-                                    \Log::error('Error downloading image: ' . $imageUrl);
-                                    continue;
-                                }
-                                $imageContent = $imageResponse->body();
-
-                                // Upload the image to AWS S3
-                                $s3->put($imagePath, $imageContent);
+                            try {
+                                $imagePath = 'images/' . $folderName . '/' . basename($imageUrl);
+                                $imageAWSurl = $this->uploadToAWS($imagePath, $imageUrl);
+                            } catch (Exception $e) {
+                                \Log::error('Error uploading image: ' . $imageUrl);
+                                continue;
                             }
-
                             // Add the URL to the list
-                            $imageUrls[] = $s3->url($imagePath);
+                            $images['urls'] = array_merge($images['urls'], [$imageAWSurl]);
                         }
                     }
                 }
@@ -74,7 +77,7 @@ class WikimediaService
             \Log::error('Error fetching or uploading images: ' . $e->getMessage());
         }
 
-        return $imageUrls;
+        return $images;
     }
 
     /**
@@ -92,8 +95,8 @@ class WikimediaService
                 'action' => 'query',
                 'titles' => $fileName,
                 'format' => 'json',
-                'prop' => 'imageinfo',
-                'iiprop' => 'url',
+                'prop' => 'info|imageinfo',
+                'iiprop' => 'url|descriptionurl|extmetadata',
             ]);
 
             $data = $response->json();
@@ -109,5 +112,25 @@ class WikimediaService
         }
 
         return null;
+    }
+
+    private function uploadToAWS(string $imagePath, string $imageUrl): string
+    {
+        $s3 = Storage::disk('s3');
+        // Check if image already exists in S3
+        if (!$s3->exists($imagePath)) {
+            // Download the image
+            $imageResponse = Http::get($imageUrl);
+            if ($imageResponse->failed()) {
+                \Log::error('Error downloading image: ' . $imageUrl);
+                throw new Exception('Error downloading image: ' . $imageUrl);
+            }
+            $imageContent = $imageResponse->body();
+
+            // Upload the image to AWS S3
+            $s3->put($imagePath, $imageContent);
+
+            return $s3->url($imagePath);
+        }
     }
 }
