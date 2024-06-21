@@ -12,10 +12,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 
 class EnrichmentJob implements ShouldQueue
 {
-    use Dispatchable;
-    use InteractsWithQueue;
-    use Queueable;
-    use SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
 
 
     protected $model;
@@ -35,4 +33,6 @@ class EnrichmentJob implements ShouldQueue
     {
         $enrichmentService->enrich($this->model);
     }
+
 }
+
