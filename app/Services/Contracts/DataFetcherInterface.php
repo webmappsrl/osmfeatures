@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 interface DataFetcherInterface
 {
-    public function fetchData(array $tags): ?array;
+    public function fetchData(string $tags): ?array;
 }

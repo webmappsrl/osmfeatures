@@ -2,12 +2,13 @@
 
 namespace App\Services\DataFetchers;
 
-use App\Services\Contracts\DataFetcherInterface;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\Contracts\DataFetcherInterface;
 
 class WikipediaFetcher implements DataFetcherInterface
 {
-    public function fetchData(array $wikipediaTags): ?array
+    public function fetchData(string $wikipediaTag): ?array
     {
         if (!$wikipediaTag) {
             Log::info('No Wikipedia tag provided');

@@ -2,12 +2,13 @@
 
 namespace App\Services\DataFetchers;
 
-use App\Services\Contracts\DataFetcherInterface;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\Contracts\DataFetcherInterface;
 
 class WikidataFetcher implements DataFetcherInterface
 {
-    public function fetchData(array $wikidataTag): ?array
+    public function fetchData(string $wikidataTag): ?array
     {
         if (!$wikidataTag) {
             Log::info('No Wikidata tag provided');
