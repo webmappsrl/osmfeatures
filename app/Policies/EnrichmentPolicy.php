@@ -13,7 +13,7 @@ class EnrichmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +21,7 @@ class EnrichmentPolicy
      */
     public function view(User $user, Enrichment $enrichment): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class EnrichmentPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class EnrichmentPolicy
      */
     public function update(User $user, Enrichment $enrichment): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class EnrichmentPolicy
      */
     public function delete(User $user, Enrichment $enrichment): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class EnrichmentPolicy
      */
     public function restore(User $user, Enrichment $enrichment): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -61,6 +61,6 @@ class EnrichmentPolicy
      */
     public function forceDelete(User $user, Enrichment $enrichment): bool
     {
-        //
+        return true;
     }
 }
