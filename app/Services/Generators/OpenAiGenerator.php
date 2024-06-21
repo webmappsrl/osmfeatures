@@ -3,7 +3,6 @@
 namespace App\Services\Generators;
 
 use Illuminate\Support\Facades\Log;
-use OpenAI\Laravel\Facades\OpenAI;
 
 /**
  * Class OpenAIGenerator
@@ -37,7 +36,7 @@ class OpenAIGenerator
 
     public function __construct()
     {
-        $this->openai = OpenAI::client(env('OPENAI_API_KEY'));
+        $this->openai = \OpenAI::client(config('openai.api_key'));
         $this->openaiModel = config('openai.model');
         $this->logger = Log::channel('openai');
     }
@@ -67,10 +66,10 @@ class OpenAIGenerator
         }
 
         // Prepare the prompt for the GPT model.
-        $prompt = "Crea una descrizione lunga $length caratteri riguardo la feature openstreetmap $featureTitle con il contenuto seguente: $content. Aggiungi informazioni in base alle tue conoscenzen sulla feature per raggiungere la quota di caratteri stabilita.";
+        $prompt = "Crea una descrizione lunga $length caratteri in lingua italiana riguardo la feature openstreetmap $featureTitle con il contenuto seguente: $content. Aggiungi informazioni in base alle tue conoscenzen sulla feature per raggiungere la quota di caratteri stabilita.";
 
         // Send the prompt to the GPT model and get the response.
-        return $this->getOpenAiResponse($prompt, 500);
+        return $this->getOpenAiResponse($prompt, 800);
     }
 
     /**
@@ -87,10 +86,10 @@ class OpenAIGenerator
             throw new \Exception('No description provided');
         }
         // Prepare the prompt for the GPT model.
-        $prompt = "Crea un abstract di $length caratteri a partire dalla descrizione seguente: $description.";
+        $prompt = "Crea un abstract di $length caratteri in lingua italiana a partire dalla descrizione seguente: $description.";
 
         // Send the prompt to the GPT model and get the response.
-        return $this->getOpenAiResponse($prompt, 100);
+        return $this->getOpenAiResponse($prompt, 300);
     }
 
     /**
@@ -125,14 +124,17 @@ class OpenAIGenerator
      *
      * @param string $prompt The prompt to send to the GPT model.
      * @param int $maxTokens The maximum number of tokens to generate in the response. 1 token = 4 characters
-     * @return string|null The response from the GPT model or null if an error occurs.
+     * @return string|null The response from the GPT model
      */
     private function getOpenAiResponse(string $prompt, int $maxTokens): ?string
     {
         try {
             $response = $this->openai->chat()->create([
                 'model' => $this->openaiModel,
-                'prompt' => $prompt,
+                'messages' => [
+                    ['role' => 'user', 'content' => 'You are a geography expert specialized in providing helpful information about the provided localities.'],
+                    ['role' => 'user', 'content' => $prompt]
+                ],
                 'max_tokens' => $maxTokens,
             ]);
             return $response['choices'][0]['message']['content'] ?? null;
