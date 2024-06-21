@@ -69,6 +69,18 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'enrichment' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/enrichment.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'openai' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/openai.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
