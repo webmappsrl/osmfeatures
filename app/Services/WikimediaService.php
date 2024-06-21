@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-
 /**
  * Service class for fetching and uploading images from Wikimedia Commons API.
  */
@@ -196,7 +195,7 @@ class WikimediaService
     {
         $s3 = Storage::disk('s3');
         $files = $s3->allFiles('images/' . $folderName);
-        return array_map(fn ($file) => $s3->url($file), $files);
+        return array_map(fn($file) => $s3->url($file), $files);
     }
 
 

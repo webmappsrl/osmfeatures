@@ -11,4 +11,3 @@ trait Enrichable
         return $this->morphOne(Enrichment::class, 'enrichable');
     }
 }
-
