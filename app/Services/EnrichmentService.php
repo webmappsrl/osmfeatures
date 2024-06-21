@@ -52,6 +52,9 @@ class EnrichmentService
     {
         $this->logger->info('Enriching model: ' . get_class($model) . ' ' . $model->id);
 
+        //initialize json
+        $json = [];
+
         $tags = json_decode($model->tags, true);
         try {
             $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
@@ -75,7 +78,7 @@ class EnrichmentService
                 //update abstract
                 $this->logger->info('Updating abstract');
                 try {
-                    $openAIabstract = $this->OpenAiGenerator->generateAbstractFromDescription($openAIdescription, 1800);
+                    $openAIabstract = $this->OpenAiGenerator->generateAbstractFromDescription($openAIdescription, 255);
                     $openAIabstractEn = $this->OpenAiGenerator->translateTo('english', $openAIabstract);
                 } catch (Exception $e) {
                     $this->logger->error($e->getMessage());
@@ -83,26 +86,34 @@ class EnrichmentService
                 }
                 $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? null;
                 $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'] ?? null;
+
+                $json['last_update_wikipedia'] = $wikipediaLastUpdate;
+                $json['last_update_wikidata'] = $wikidataLastUpdate;
+            } else {
+                $json['last_update_wikipedia'] = $existingData['last_update_wikipedia'] ?? null;
+                $json['last_update_wikidata'] = $existingData['last_update_wikidata'] ?? null;
             }
 
-            $imageData = $this->wikimediaService->fetchAndUploadImages($model);
+            try {
+                $imageData = $this->wikimediaService->fetchAndUploadImages($model);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
+            $lastUpdateWikimediaCommons = $imageData['last_update_wikimedia_commons'] ?? null;
+            unset($imageData['last_update_wikimedia_commons']);
 
             // Construct the final JSON
-            $json = [
-                'last_update_wikipedia' => $wikipediaLastUpdate ?? ($existingData['last_update_wikipedia'] ?? null),
-                'last_update_wikidata' => $wikidataLastUpdate ?? ($existingData['last_update_wikidata'] ?? null),
-                'last_update_wikimedia_commons' => $imageData['lastWikiCommonsUpdate'] ?? null,
-                'abstract' => [
-                    'it' => $shouldUpdateDescription ? $openAIabstract : ($existingData['abstract']['it'] ?? ''),
-                    'en' => $shouldUpdateDescription ? $openAIabstractEn : ($existingData['abstract']['en'] ?? ''),
-                ],
-                'description' => [
-                    'it' => $shouldUpdateDescription ? $openAIdescription : ($existingData['description']['it'] ?? ''),
-                    'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
-                ],
-                'images' => $imageData['urls'],
-
+            $json['last_update_wikimedia_commons'] = $lastUpdateWikimediaCommons;
+            $json['abstract'] = [
+                'it' => $shouldUpdateDescription ? $openAIabstract : ($existingData['abstract']['it'] ?? ''),
+                'en' => $shouldUpdateDescription ? $openAIabstractEn : ($existingData['abstract']['en'] ?? ''),
             ];
+            $json['description'] = [
+                'it' => $shouldUpdateDescription ? $openAIdescription : ($existingData['description']['it'] ?? ''),
+                'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
+            ];
+            $json['images'] = $imageData;
 
             Enrichment::updateOrCreate([
                 'enrichable_id' => $model->id,
@@ -138,7 +149,7 @@ class EnrichmentService
             return true;
         }
 
-        $this->logger->info('Description up to date');
+        $this->logger->info('Description up to date, not sending openAI request');
         return false;
     }
 
