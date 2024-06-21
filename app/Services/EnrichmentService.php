@@ -11,14 +11,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 
+
 /**
  * Service for enriching models with OpenAI
  */
 class EnrichmentService
 {
+
+    /**
+     * OpenAI client
+     *
+     * @var \OpenAI
+     */
     protected $openai;
+
+    /**
+     * Wikimedia service
+     *
+     * @var \App\Services\WikimediaService
+     */
     protected $wikimediaService;
+
+    /**
+     * OpenAI model
+     *
+     * @var string
+     */
     protected $openaiModel;
+
+    /**
+     * EnrichmentService constructor.
+     *
+     * @param \App\Services\WikimediaService $wikimediaService Wikimedia service
+     */
 
     public function __construct(WikimediaService $wikimediaService)
     {
@@ -69,6 +94,7 @@ class EnrichmentService
                     'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
                 ],
                 'images' => $imageData['urls'],
+
             ];
 
             Enrichment::updateOrCreate([
@@ -189,7 +215,7 @@ class EnrichmentService
 
         $url = "https://www.wikidata.org/wiki/Special:EntityData/{$wikidataTag}.json";
         $response = Http::get($url);
-
+ 
         if ($response->successful()) {
             $data = $response->json();
             $entity = $data['entities'][$wikidataTag];
@@ -198,9 +224,6 @@ class EnrichmentService
             $revisionId = $entity['lastrevid'] ?? '';
             $lastModified = $entity['modified'] ?? '';
 
-            return [
-                'title' => $entity['labels']['en']['value'] ?? '',
-                'content' => $description,
                 'lastRevisionId' => $revisionId,
                 'lastModified' => $lastModified,
             ];
@@ -224,6 +247,7 @@ stabilita.";
     }
 
     protected function getOpenAIResponse(string $prompt, int $maxTokens)
+
     {
         try {
             $response = $this->openai->chat()->create([
@@ -232,6 +256,7 @@ stabilita.";
                     [
                         'role' => 'system',
                         'content' => 'You are an openstreetmap expert that provides accurate abstracts and descriptions for openstreetmap features.',
+
                     ],
                     [
                         'role' => 'user',

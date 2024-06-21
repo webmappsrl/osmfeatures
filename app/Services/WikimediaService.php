@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+
 /**
  * Service class for fetching and uploading images from Wikimedia Commons API.
  */
@@ -35,6 +36,7 @@ class WikimediaService
             return $images;
         }
 
+
         try {
             // Fetch category members from Wikimedia Commons API
             $response = Http::get('https://commons.wikimedia.org/w/api.php', [
@@ -47,6 +49,7 @@ class WikimediaService
 
             $data = $response->json();
             $commonsImages = [];
+
             if (isset($data['query']['categorymembers'])) {
                 $pages = $data['query']['categorymembers'];
 
@@ -102,12 +105,14 @@ class WikimediaService
             } else {
                 \Log::info('No changes in images');
             }
+
         } catch (Exception $e) {
             // Handle exceptions
             \Log::error('Error fetching or uploading images: ' . $e->getMessage());
         }
 
         return $images;
+
     }
 
     /**
@@ -193,4 +198,6 @@ class WikimediaService
         $files = $s3->allFiles('images/' . $folderName);
         return array_map(fn ($file) => $s3->url($file), $files);
     }
+
+
 }
