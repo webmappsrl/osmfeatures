@@ -69,7 +69,7 @@ class OpenAIGenerator
         $prompt = "Crea una descrizione lunga $length caratteri in lingua italiana riguardo la feature openstreetmap $featureTitle con il contenuto seguente: $content. Aggiungi informazioni in base alle tue conoscenzen sulla feature per raggiungere la quota di caratteri stabilita.";
 
         // Send the prompt to the GPT model and get the response.
-        return $this->getOpenAiResponse($prompt, 800);
+        return $this->getOpenAiResponse($prompt, 1000);
     }
 
     /**
@@ -89,7 +89,7 @@ class OpenAIGenerator
         $prompt = "Crea un abstract di $length caratteri in lingua italiana a partire dalla descrizione seguente: $description.";
 
         // Send the prompt to the GPT model and get the response.
-        return $this->getOpenAiResponse($prompt, 300);
+        return $this->getOpenAiResponse($prompt, 400);
     }
 
     /**
