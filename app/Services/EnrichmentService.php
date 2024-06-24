@@ -14,7 +14,6 @@ use App\Services\Generators\OpenAiGenerator;
 use App\Services\DataFetchers\WikidataFetcher;
 use App\Services\DataFetchers\WikipediaFetcher;
 
-
 /**
  * Service for enriching models with OpenAI
  */
@@ -33,7 +32,7 @@ class EnrichmentService
 
     /**
      * Logger
-     * 
+     *
      * @var Log
      */
 

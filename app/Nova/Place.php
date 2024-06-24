@@ -67,7 +67,7 @@ class Place extends OsmFeaturesResource
                         return ' ';
                     }
                 }
-            )
+            ),
         ];
 
         if ($this->enrichment) {

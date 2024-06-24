@@ -30,7 +30,7 @@ class WikipediaFetcher implements DataFetcherInterface
                 'title' => $data['title'],
                 'content' => $data['extract'],
                 'lastRevisionId' => $revisionId,
-                'lastModified' => $lastModified
+                'lastModified' => $lastModified,
             ];
         } else {
             Log::info('Failed to fetch data from Wikipedia, from link ' . $url);

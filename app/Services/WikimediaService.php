@@ -13,7 +13,7 @@ class WikimediaService
 {
     /**
      * Logger
-     * 
+     *
      * @var Log
      */
     protected $logger;

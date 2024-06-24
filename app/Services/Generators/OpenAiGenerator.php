@@ -28,7 +28,7 @@ class OpenAIGenerator
 
     /**
      * Logger
-     * 
+     *
      * @var Log
      */
     protected $logger;
@@ -133,7 +133,7 @@ class OpenAIGenerator
                 'model' => $this->openaiModel,
                 'messages' => [
                     ['role' => 'user', 'content' => 'You are a geography expert specialized in providing helpful information about the provided localities.'],
-                    ['role' => 'user', 'content' => $prompt]
+                    ['role' => 'user', 'content' => $prompt],
                 ],
                 'max_tokens' => $maxTokens,
             ]);
