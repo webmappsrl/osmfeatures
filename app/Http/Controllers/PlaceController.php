@@ -125,9 +125,6 @@ class PlaceController extends Controller
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
 
-        $enrichment = json_decode($place->enrichment, true);
-        $enrichment['data'] = json_decode($enrichment['data'], true);
-
         match ($place->osm_type) {
             'R' => $osmType = 'relation',
             'W' => $osmType = 'way',
@@ -139,6 +136,13 @@ class PlaceController extends Controller
         unset($properties['tags']);
         unset($properties['id']);
         unset($properties['enrichment']);
+
+        if ($place->enrichment) {
+            $enrichment = json_decode($place->enrichment, true);
+            $enrichment['data'] = json_decode($enrichment['data'], true);
+        } else {
+            $enrichment = null;
+        }
         $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
