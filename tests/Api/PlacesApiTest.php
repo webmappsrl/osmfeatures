@@ -21,10 +21,15 @@ class PlacesApiTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        if (! Schema::hasTable('places')) {
+        if (!Schema::hasTable('places')) {
             $seeder = new TestDBSeeder('Places');
             $seeder->run();
             $this->usingTestData = true;
+        }
+
+        if (!Schema::hasTable('enrichments')) {
+            $seeder = new TestDBSeeder('Enrichments');
+            $seeder->run();
         }
     }
 
@@ -154,7 +159,8 @@ class PlacesApiTest extends TestCase
                     ->has('properties.osm_tags')
                     ->has('properties.wikidata')
                     ->has('properties.wikipedia')
-                    ->has('properties.wikimedia_commons');
+                    ->has('properties.wikimedia_commons')
+                    ->has('properties.enriched_data');
             }
         );
     }

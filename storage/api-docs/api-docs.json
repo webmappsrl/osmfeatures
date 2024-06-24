@@ -394,7 +394,11 @@
                                                 "wikimedia_commons": {
                                                     "type": "string",
                                                     "description": "Wikimedia Commons link for the place"
-                                                }
+                                                },
+                                                 "enriched_data": {
+                                                     "type": "json",
+                                                     "description": "Enriched data for the place"
+                                                 }
                                             },
                                             "type": "object"
                                         },
@@ -423,7 +427,28 @@
                                             },
                                             "wikidata": "https://www.wikidata.org/wiki/Q123456",
                                             "wikipedia": "https://en.wikipedia.org/wiki/Example",
-                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
+                                            "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example",
+                                            "enriched_data": {
+                                                "id": 1,
+                                                "last_update_wikipedia": "https://en.wikipedia.org/wiki/Example",
+                                                "last_update_wikidata": "https://www.wikidata.org/wiki/Q123456",
+                                                "last_update_wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example",
+                                                "abstract": {
+                                                    "it": "Questo é un abstract",
+                                                    "en": "This is an abstract"
+                                                }, 
+                                                "description": {
+                                                    "it": "Questa é una descrizione",
+                                                    "en": "This is a description"
+                                                },
+                                                "images": {
+                                                   "0": {
+                                                        "source_url": "https://wikicommons.example.com/image.jpg",
+                                                        "dateTime": "2021-01-01T00:00:00Z",
+                                                        "aws_url": "https://aws.example.com/image.jpg"
+                                                    }
+                                                }
+                                            }
                                         },
                                         "geometry": {
                                             "type": "Point",

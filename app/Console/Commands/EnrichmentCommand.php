@@ -8,15 +8,27 @@ use App\Models\Place;
 
 class EnrichmentCommand extends Command
 {
-    protected $signature = 'osmfeatures:enrich';
+    protected $signature = 'osmfeatures:enrich {osmid?*}';
 
-    protected $description = 'Enrich osmfeatures places with data from Wikipedia, Wikidata, and Wikimedia Commons';
+    protected $description = 'Enrich osmfeatures places with data from Wikipedia, Wikidata, and Wikimedia Commons. Optionally provide a list of OSM IDs separated by space.';
 
     public function handle()
     {
+        $osmids = $this->argument('osmid');
         $jobCount = 0;
 
-        Place::chunk(100, function ($places) use (&$jobCount) {
+        $places = Place::all();
+
+        if (!empty($osmids)) {
+            $places = Place::whereIn('osm_id', $osmids);
+
+            if ($places->count() == 0) {
+                $this->info('No places found with the specified OSM IDs.');
+                return Command::FAILURE;
+            }
+        }
+
+        $places->chunk(100, function ($places) use (&$jobCount) {
             foreach ($places as $place) {
                 EnrichmentJob::dispatch($place);
                 $jobCount++;
