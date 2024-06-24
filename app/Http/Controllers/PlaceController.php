@@ -119,6 +119,7 @@ class PlaceController extends Controller
     public function show(string $id)
     {
         $place = Place::getOsmfeaturesByOsmfeaturesID($id);
+        $enrichment = null;
 
         if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
@@ -140,9 +141,8 @@ class PlaceController extends Controller
         if ($place->enrichment) {
             $enrichment = json_decode($place->enrichment, true);
             $enrichment['data'] = json_decode($enrichment['data'], true);
-        } else {
-            $enrichment = null;
         }
+
         $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";

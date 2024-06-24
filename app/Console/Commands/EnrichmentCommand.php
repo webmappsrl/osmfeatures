@@ -17,6 +17,8 @@ class EnrichmentCommand extends Command
         $osmids = $this->argument('osmid');
         $jobCount = 0;
 
+        $places = Place::all();
+
         if (!empty($osmids)) {
             $places = Place::whereIn('osm_id', $osmids);
 
@@ -24,21 +26,14 @@ class EnrichmentCommand extends Command
                 $this->info('No places found with the specified OSM IDs.');
                 return Command::FAILURE;
             }
-
-            $places->chunk(100, function ($places) use (&$jobCount) {
-                foreach ($places as $place) {
-                    EnrichmentJob::dispatch($place);
-                    $jobCount++;
-                }
-            });
-        } else {
-            Place::chunk(100, function ($places) use (&$jobCount) {
-                foreach ($places as $place) {
-                    EnrichmentJob::dispatch($place);
-                    $jobCount++;
-                }
-            });
         }
+
+        $places->chunk(100, function ($places) use (&$jobCount) {
+            foreach ($places as $place) {
+                EnrichmentJob::dispatch($place);
+                $jobCount++;
+            }
+        });
 
         $this->info('Enrichment jobs dispatched successfully.');
         $this->info("Total jobs dispatched: $jobCount");
