@@ -13,7 +13,11 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class ProcessHikingRoutesWayJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, IsMonitored;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use IsMonitored;
 
     protected $hikingRoutesWay;
 
@@ -40,11 +44,11 @@ class ProcessHikingRoutesWayJob implements ShouldQueue
                             ->update(['updated_at' => $hikingRoute->updated_at_osm]);
                     }
 
-                    Log::info('Updated hiking route: '.$hikingRoute->id.' with updated_at: '.$this->hikingRoutesWay->updated_at);
+                    Log::info('Updated hiking route: ' . $hikingRoute->id . ' with updated_at: ' . $this->hikingRoutesWay->updated_at);
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Error processing hiking route way: '.$e->getMessage());
+            Log::error('Error processing hiking route way: ' . $e->getMessage());
         }
     }
 }

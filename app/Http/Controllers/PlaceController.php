@@ -119,8 +119,9 @@ class PlaceController extends Controller
     public function show(string $id)
     {
         $place = Place::getOsmfeaturesByOsmfeaturesID($id);
+        $enrichment = null;
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'place non trovato'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
@@ -135,6 +136,13 @@ class PlaceController extends Controller
         unset($properties['geom']);
         unset($properties['tags']);
         unset($properties['id']);
+        unset($properties['enrichment']);
+
+        if ($place->enrichment) {
+            $enrichment = json_decode($place->enrichment, true);
+            $enrichment['data'] = json_decode($enrichment['data'], true);
+        }
+
         $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
@@ -142,6 +150,7 @@ class PlaceController extends Controller
         $properties['wikidata'] = $place->getWikidataUrl();
         $properties['wikipedia'] = $place->getWikipediaUrl();
         $properties['wikimedia_commons'] = $place->getWikimediaCommonsUrl();
+        $properties['enriched_data'] = $enrichment;
 
         $geojsonFeature = [
             'type' => 'Feature',
@@ -187,13 +196,13 @@ class PlaceController extends Controller
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
 
-        if (! in_array($osmType, $acceptedOsmtypes)) {
+        if (!in_array($osmType, $acceptedOsmtypes)) {
             return response()->json(['message' => 'Bad Request'], 404);
         }
 
         $place = Place::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmid)->first();
 
-        if (! $place) {
+        if (!$place) {
             return response()->json(['message' => 'Place not found'], 404);
         }
 

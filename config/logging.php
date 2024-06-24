@@ -63,6 +63,30 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'osmfeatures' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/osmfeatures.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'enrichment' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/enrichment.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'openai' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/openai.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'wikimediaService' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/wikimediaService.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
@@ -85,7 +109,7 @@ return [
             'handler_with' => [
                 'host' => env('PAPERTRAIL_URL'),
                 'port' => env('PAPERTRAIL_PORT'),
-                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://' . env('PAPERTRAIL_URL') . ':' . env('PAPERTRAIL_PORT'),
             ],
         ],
 

@@ -13,7 +13,7 @@ trait OsmFeaturesIdProcessor
      */
     public function getOsmFeaturesId(): string
     {
-        return $this->osm_type.$this->osm_id;
+        return $this->osm_type . $this->osm_id;
     }
 
     /**

@@ -28,6 +28,6 @@ class PolesCount extends HtmlCard
     {
         $polesCount = \App\Models\Pole::count();
 
-        return '<h1 class="text-4xl shadow">Poles</h1><p class="text-lg pt-3 text-center">'.$polesCount.'</p>';
+        return '<h1 class="text-4xl shadow">Poles</h1><p class="text-lg pt-3 text-center">' . $polesCount . '</p>';
     }
 }

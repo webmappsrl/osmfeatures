@@ -46,8 +46,8 @@ class HikingRoutesCorrectTimestamp extends Command
             $this->info(''); // Add a new line after the progress bar (for better readability
             $this->info('Jobs dispatched successfully!');
         } catch (\Exception $e) {
-            $this->error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
-            Log::error('Error in HikingRoutesCorrectTimestamp command: '.$e->getMessage());
+            $this->error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
+            Log::error('Error in HikingRoutesCorrectTimestamp command: ' . $e->getMessage());
         }
     }
 }

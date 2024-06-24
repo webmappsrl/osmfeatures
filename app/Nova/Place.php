@@ -2,9 +2,13 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\ElevationFilter;
-use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\MorphTo;
+use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Fields\DateTime;
+use App\Nova\Filters\ElevationFilter;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Place extends OsmFeaturesResource
@@ -58,13 +62,18 @@ class Place extends OsmFeaturesResource
             Text::make('Elevation')->sortable()->displayUsing(
                 function ($value) {
                     if ($value) {
-                        return $value.' m';
+                        return $value . ' m';
                     } else {
                         return ' ';
                     }
                 }
             ),
         ];
+
+        if ($this->enrichment) {
+            $specificFields[] = Panel::make('Enrichments', $this->enrichmentsFields($request));
+        }
+
 
         return array_merge($osmfeaturesFields, $specificFields);
     }
@@ -124,5 +133,52 @@ class Place extends OsmFeaturesResource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+
+    protected function enrichmentsFields(NovaRequest $request)
+    {
+        $enrichment = $this->enrichment;
+        if ($enrichment) {
+            $data = json_decode($enrichment->data, true);
+        }
+
+        $fields = [];
+
+        if ($data) {
+            $fields[] = DateTime::make('Last Update Wikipedia', function () use ($data) {
+                return $data['last_update_wikipedia'];
+            });
+
+            $fields[] = DateTime::make('Last Update Wikidata', function () use ($data) {
+                return $data['last_update_wikidata'];
+            });
+
+            $fields[] = DateTime::make('Last Update Wikimedia Commons', function () use ($data) {
+                return $data['last_update_wikimedia_commons'];
+            });
+            $fields[] = Textarea::make('Abstract', function () use ($data) {
+                $abstractIt = $data['abstract']['it'] ?? '';
+                $abstractEn = $data['abstract']['en'] ?? '';
+                return "IT: $abstractIt\n\nEN: $abstractEn";
+            });
+
+            $fields[] = Textarea::make('Description', function () use ($data) {
+                $descriptionIt = $data['description']['it'] ?? '';
+                $descriptionEn = $data['description']['en'] ?? '';
+                return "IT: $descriptionIt\n\nEN: $descriptionEn";
+            });
+
+            $fields[] = Text::make('Images', function () use ($data) {
+                $images = $data['images'];
+                $thumbnails = array_map(function ($image) {
+                    return "<a href=\"{$image['aws_url']}\" target=\"_blank\"><img src=\"{$image['aws_url']}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
+                }, $images);
+
+                return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
+            })->asHtml();
+        }
+
+        return $fields;
     }
 }

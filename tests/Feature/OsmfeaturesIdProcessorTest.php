@@ -11,7 +11,8 @@ use Tests\TestCase;
 
 class OsmfeaturesIdProcessorTest extends TestCase
 {
-    use RefreshDatabase, OsmFeaturesIdProcessor;
+    use RefreshDatabase;
+    use OsmFeaturesIdProcessor;
 
     protected $usingTestData = false;
 
@@ -52,9 +53,9 @@ class OsmfeaturesIdProcessorTest extends TestCase
         //first character of relation model osmfeatures id should be R
         $this->assertSame('R', substr($relationModel->getOsmFeaturesId(), 0, 1));
 
-        $this->assertSame($nodeModel->osm_type.$nodeModel->osm_id, $nodeModel->getOsmFeaturesId());
-        $this->assertSame($wayModel->osm_type.$wayModel->osm_id, $wayModel->getOsmFeaturesId());
-        $this->assertSame($relationModel->osm_type.$relationModel->osm_id, $relationModel->getOsmFeaturesId());
+        $this->assertSame($nodeModel->osm_type . $nodeModel->osm_id, $nodeModel->getOsmFeaturesId());
+        $this->assertSame($wayModel->osm_type . $wayModel->osm_id, $wayModel->getOsmFeaturesId());
+        $this->assertSame($relationModel->osm_type . $relationModel->osm_id, $relationModel->getOsmFeaturesId());
     }
 
     /**

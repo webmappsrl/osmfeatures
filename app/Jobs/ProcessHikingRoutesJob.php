@@ -12,11 +12,11 @@ use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class ProcessHikingRoutesJob implements ShouldQueue
 {
-    use Dispatchable,
-        InteractsWithQueue,
-        Queueable,
-        SerializesModels,
-        IsMonitored;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use IsMonitored;
 
     protected $hikingRoute;
 

@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pole extends Model
 {
-    use HasFactory, OsmTagsProcessor, OsmFeaturesIdProcessor;
+    use HasFactory;
+    use OsmTagsProcessor;
+    use OsmFeaturesIdProcessor;
 
     protected $table = 'poles';
 

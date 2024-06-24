@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class AdminArea extends Pivot
 {
-    use HasFactory, OsmTagsProcessor, OsmFeaturesIdProcessor;
+    use HasFactory;
+    use OsmTagsProcessor;
+    use OsmFeaturesIdProcessor;
 
     protected $table = 'admin_areas';
 
