@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\Generators\OpenAiGenerator;
-use App\Services\DataFetchers\WikidataFetcher;
+use App\Services\DataFetchers\WikiDataFetcher;
 use App\Services\DataFetchers\WikipediaFetcher;
 
 /**
@@ -62,7 +62,12 @@ class EnrichmentService
 
             $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
             $fetchedData = $this->fetchDataFromWiki($tags);
-            $shouldUpdateDescription = $this->shouldUpdateDescription($fetchedData, $existingData);
+            try {
+                $shouldUpdateDescription = $this->shouldUpdateDescription($fetchedData, $existingData);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
 
             if ($shouldUpdateDescription) {
                 //update description
@@ -102,12 +107,16 @@ class EnrichmentService
                 $imageData = $this->wikimediaService->fetchAndUploadImages($model);
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
-                throw $e;
+                $imageData = null;
             }
             $this->logger->info('Images fetched');
 
-            $lastUpdateWikimediaCommons = $imageData['last_update_wikimedia_commons'] ?? null;
-            unset($imageData['last_update_wikimedia_commons']);
+            if (isset($imageData['last_update_wikimedia_commons'])) {
+                $lastUpdateWikimediaCommons = $imageData['last_update_wikimedia_commons'];
+                unset($imageData['last_update_wikimedia_commons']);
+            } else {
+                $lastUpdateWikimediaCommons = null;
+            }
 
             // Construct the final JSON
             $json['last_update_wikimedia_commons'] = $lastUpdateWikimediaCommons;
@@ -142,6 +151,11 @@ class EnrichmentService
             return true;
         }
 
+        if (!$fetchedData) {
+            $this->logger->info('No fetched data, cant perform openAi enrichment');
+            throw new \Exception('No fetched data, cant perform openAi enrichment');
+        }
+
         $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? '';
         $existingWikipediaLastUpdate = $existingData['last_update_wikipedia'] ?? '';
 
@@ -167,7 +181,7 @@ class EnrichmentService
                 $wikipediaData = $this->wikipediaFetcher->fetchData($tags['wikipedia'] ?? null);
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
-                throw $e;
+                $wikipediaData = null;
             }
         } else {
             throw new \Exception('wikipedia tag not found');
@@ -179,7 +193,7 @@ class EnrichmentService
                 $wikidataData = $this->wikidataFetcher->fetchData($tags['wikidata'] ?? null);
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
-                throw $e;
+                $wikidataData = null;
             }
         } else {
             throw new \Exception('wikidata tag not found');
