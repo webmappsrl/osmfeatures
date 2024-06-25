@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Services\Contracts\DataFetcherInterface;
 
-class WikidataFetcher implements DataFetcherInterface
+class WikiDataFetcher implements DataFetcherInterface
 {
     public function fetchData(string $wikidataTag): ?array
     {
