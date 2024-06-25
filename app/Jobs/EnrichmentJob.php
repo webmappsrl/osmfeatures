@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use romanzipp\QueueMonitor\Traits\IsMonitored;
 
 class EnrichmentJob implements ShouldQueue
 {
@@ -16,6 +17,7 @@ class EnrichmentJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+    use IsMonitored;
 
 
 
@@ -36,5 +38,4 @@ class EnrichmentJob implements ShouldQueue
     {
         $enrichmentService->enrich($this->model);
     }
-
 }
