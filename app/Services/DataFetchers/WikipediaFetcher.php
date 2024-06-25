@@ -19,7 +19,7 @@ class WikipediaFetcher implements DataFetcherInterface
         $language = $parts[0];
         $title = $parts[1];
 
-        $url = "https://{$language}.wikipedia.org/api/rest_v1/page/summary/" . urlencode($title);
+        $url = "https://{$language}.wikipedia.org/api/rest_v1/page/summary/" . rawurlencode($title);
         $response = Http::get($url);
 
         if ($response->successful()) {
