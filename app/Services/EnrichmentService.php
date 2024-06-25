@@ -92,8 +92,15 @@ class EnrichmentService
                 }
                 $this->logger->info('Abstract generated');
 
-                $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? null;
-                $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'] ?? null;
+                $wikipediaLastUpdate = null;
+                $wikidataLastUpdate = null;
+
+                if (isset($fetchedData['wikipedia']['lastModified'])) {
+                    $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'];
+                }
+                if (isset($fetchedData['wikidata']['lastModified'])) {
+                    $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'];
+                }
 
                 $json['last_update_wikipedia'] = $wikipediaLastUpdate;
                 $json['last_update_wikidata'] = $wikidataLastUpdate;
@@ -184,7 +191,8 @@ class EnrichmentService
                 $wikipediaData = null;
             }
         } else {
-            throw new \Exception('wikipedia tag not found');
+            $this->logger->error('wikipedia tag not found');
+            $wikipediaData = null;
         }
 
         $this->logger->info('Fetching Wikidata data');
@@ -196,7 +204,8 @@ class EnrichmentService
                 $wikidataData = null;
             }
         } else {
-            throw new \Exception('wikidata tag not found');
+            $this->logger->error('wikidata tag not found');
+            $wikidataData = null;
         }
 
         return [

@@ -50,6 +50,10 @@ class OpenAIGenerator
      */
     public function generateDescription(array $data, int $length): ?string
     {
+        if (!$data) {
+            $this->logger->error('No data fetched from wikis provided to generate description');
+            return null;
+        }
         $featureTitle = $data['wikipedia']['title'] ?? $data['wikidata']['title'] ?? '';
         $content = $data['wikipedia']['content'] . "\n\n" . $data['wikidata']['content']  ?? '';
 
@@ -83,7 +87,7 @@ class OpenAIGenerator
     {
         if (!$description) {
             $this->logger->error('No description provided');
-            throw new \Exception('No description provided');
+            return null;
         }
         // Prepare the prompt for the GPT model.
         $prompt = "Crea un riassunto di $length caratteri massimo in lingua italiana della descrizione seguente: $description.";
@@ -105,7 +109,7 @@ class OpenAIGenerator
         if (!$text) {
             // Log an error and throw an exception if no text is provided.
             $this->logger->error('No text provided for translation');
-            throw new \Exception('No text provided for translation');
+            return null;
         }
 
         $this->logger->info('Generating translation prompt');
