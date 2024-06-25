@@ -86,7 +86,7 @@ class OpenAIGenerator
             throw new \Exception('No description provided');
         }
         // Prepare the prompt for the GPT model.
-        $prompt = "Crea un abstract di $length caratteri in lingua italiana a partire dalla descrizione seguente: $description.";
+        $prompt = "Crea un riassunto di $length caratteri massimo in lingua italiana della descrizione seguente: $description.";
 
         // Send the prompt to the GPT model and get the response.
         return $this->getOpenAiResponse($prompt, 400);

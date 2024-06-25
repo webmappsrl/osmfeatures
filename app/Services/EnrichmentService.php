@@ -66,7 +66,7 @@ class EnrichmentService
 
             if ($shouldUpdateDescription) {
                 //update description
-                $this->logger->info('Updating description');
+                $this->logger->info('Updating description...');
                 try {
                     $openAIdescription = $this->OpenAiGenerator->generateDescription($fetchedData, 1800);
                     $openAIdescriptionEn = $this->OpenAiGenerator->translateTo('english', $openAIdescription);
@@ -74,8 +74,10 @@ class EnrichmentService
                     $this->logger->error($e->getMessage());
                     throw $e;
                 }
+                $this->logger->info('Description generated');
+
                 //update abstract
-                $this->logger->info('Updating abstract');
+                $this->logger->info('Updating abstract...');
                 try {
                     $openAIabstract = $this->OpenAiGenerator->generateAbstractFromDescription($openAIdescription, 255);
                     $openAIabstractEn = $this->OpenAiGenerator->translateTo('english', $openAIabstract);
@@ -83,6 +85,8 @@ class EnrichmentService
                     $this->logger->error($e->getMessage());
                     throw $e;
                 }
+                $this->logger->info('Abstract generated');
+
                 $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? null;
                 $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'] ?? null;
 
@@ -93,12 +97,15 @@ class EnrichmentService
                 $json['last_update_wikidata'] = $existingData['last_update_wikidata'] ?? null;
             }
 
+            $this->logger->info('Fetching images...');
             try {
                 $imageData = $this->wikimediaService->fetchAndUploadImages($model);
             } catch (Exception $e) {
                 $this->logger->error($e->getMessage());
                 throw $e;
             }
+            $this->logger->info('Images fetched');
+
             $lastUpdateWikimediaCommons = $imageData['last_update_wikimedia_commons'] ?? null;
             unset($imageData['last_update_wikimedia_commons']);
 
@@ -122,7 +129,7 @@ class EnrichmentService
             ]);
         } catch (Exception $e) {
             $this->logger->error('Enrichment failed: ' . $e->getMessage());
-            throw new \Exception('Failed to enrich model: ' . $e->getMessage());
+            throw new \Exception('Failed to enrich model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
         }
 
         $this->logger->info('Enrichment successful');
@@ -155,18 +162,27 @@ class EnrichmentService
     protected function fetchDataFromWiki(array $tags): array
     {
         $this->logger->info('Fetching Wikipedia data');
-        try {
-            $wikipediaData = $this->wikipediaFetcher->fetchData($tags['wikipedia'] ?? null);
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-            throw $e;
+        if (isset($tags['wikipedia'])) {
+            try {
+                $wikipediaData = $this->wikipediaFetcher->fetchData($tags['wikipedia'] ?? null);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
+        } else {
+            throw new \Exception('wikipedia tag not found');
         }
+
         $this->logger->info('Fetching Wikidata data');
-        try {
-            $wikidataData = $this->wikidataFetcher->fetchData($tags['wikidata'] ?? null);
-        } catch (Exception $e) {
-            $this->logger->error($e->getMessage());
-            throw $e;
+        if (isset($tags['wikidata'])) {
+            try {
+                $wikidataData = $this->wikidataFetcher->fetchData($tags['wikidata'] ?? null);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
+        } else {
+            throw new \Exception('wikidata tag not found');
         }
 
         return [

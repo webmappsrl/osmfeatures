@@ -4,6 +4,7 @@ namespace App\Nova\Cards;
 
 use Abordage\HtmlCard\HtmlCard;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LastLuaUpdate extends HtmlCard
 {
@@ -28,12 +29,14 @@ class LastLuaUpdate extends HtmlCard
     public function content(): string
     {
         //get the record from osm2pgsql_crontab_updates table with the latest imported_at date
-        $lastLuaUpdate = \App\Models\Osm2pgsqlCrontabUpdate::where('success', true)->orderBy('imported_at', 'desc')->first();
+        $lastLuaUpdate = DB::select(DB::raw("SELECT MAX(importdate) AS importdate FROM planet_osm_replication_status"))[0];
+
+        $lastLuaUpdate = Carbon::parse($lastLuaUpdate->importdate);
 
         if ($lastLuaUpdate) {
             return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">Imported at: ' . $lastLuaUpdate->imported_at . '</p>';
         } else {
-            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">No imports performed</p>';
+            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">No data found</p>';
         }
     }
 }

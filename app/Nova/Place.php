@@ -148,26 +148,26 @@ class Place extends OsmFeaturesResource
         if ($data) {
             $fields[] = DateTime::make('Last Update Wikipedia', function () use ($data) {
                 return $data['last_update_wikipedia'];
-            });
+            })->onlyOnDetail();
 
             $fields[] = DateTime::make('Last Update Wikidata', function () use ($data) {
                 return $data['last_update_wikidata'];
-            });
+            })->onlyOnDetail();
 
             $fields[] = DateTime::make('Last Update Wikimedia Commons', function () use ($data) {
                 return $data['last_update_wikimedia_commons'];
-            });
+            })->onlyOnDetail();
             $fields[] = Textarea::make('Abstract', function () use ($data) {
                 $abstractIt = $data['abstract']['it'] ?? '';
                 $abstractEn = $data['abstract']['en'] ?? '';
                 return "IT: $abstractIt\n\nEN: $abstractEn";
-            });
+            })->onlyOnDetail();
 
             $fields[] = Textarea::make('Description', function () use ($data) {
                 $descriptionIt = $data['description']['it'] ?? '';
                 $descriptionEn = $data['description']['en'] ?? '';
                 return "IT: $descriptionIt\n\nEN: $descriptionEn";
-            });
+            })->onlyOnDetail();
 
             $fields[] = Text::make('Images', function () use ($data) {
                 $images = $data['images'];
@@ -176,7 +176,7 @@ class Place extends OsmFeaturesResource
                 }, $images);
 
                 return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
-            })->asHtml();
+            })->asHtml()->onlyOnDetail();
         }
 
         return $fields;
