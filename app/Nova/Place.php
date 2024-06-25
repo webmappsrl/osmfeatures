@@ -171,11 +171,15 @@ class Place extends OsmFeaturesResource
 
             $fields[] = Text::make('Images', function () use ($data) {
                 $images = $data['images'];
-                $thumbnails = array_map(function ($image) {
-                    return "<a href=\"{$image['aws_url']}\" target=\"_blank\"><img src=\"{$image['aws_url']}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
-                }, $images);
+                if ($images) {
+                    $thumbnails = array_map(function ($image) {
+                        return "<a href=\"{$image['aws_url']}\" target=\"_blank\"><img src=\"{$image['aws_url']}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
+                    }, $images);
 
-                return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
+                    return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
+                } else {
+                    return '-';
+                }
             })->asHtml()->onlyOnDetail();
         }
 

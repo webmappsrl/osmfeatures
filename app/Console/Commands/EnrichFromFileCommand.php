@@ -39,6 +39,7 @@ class EnrichFromFileCommand extends Command
     {
         $model = $this->argument('model');
         $path = $this->argument('path');
+        $logger = Log::channel('enrichment');
 
         // Validate the path
         if (!file_exists($path) || !is_readable($path)) {
@@ -48,7 +49,7 @@ class EnrichFromFileCommand extends Command
 
         // Read the .txt file at the given path
         $this->info("Reading file $path");
-        Log::info("Reading file $path");
+        $logger->info("Reading file $path");
         $file = file_get_contents($path);
 
         $this->info("Getting ids from file $path");
@@ -65,7 +66,7 @@ class EnrichFromFileCommand extends Command
         }, $ids);
 
         $this->info("Found " . count($ids) . " ids in file $path");
-        Log::info("Found " . count($ids) . " ids in file $path");
+        $logger->info("Found " . count($ids) . " ids in file $path");
 
         // Get the model class
         try {
@@ -81,7 +82,9 @@ class EnrichFromFileCommand extends Command
         }
 
         $this->info("Dispatching enrichment jobs...");
-        Log::info("Dispatching enrichment jobs...");
+        $logger->info("Dispatching enrichment jobs...");
+
+        $notFoundIds = [];
 
         // Get the model by ids and dispatch the jobs
         foreach ($ids as $id) {
@@ -90,15 +93,53 @@ class EnrichFromFileCommand extends Command
                 dispatch(new EnrichmentJob($modelInstance));
                 $this->info("Enrichment job dispatched for id $id");
             } else {
-                Log::info("Model not found for id $id");
-                $this->error("Model not found for id $id");
+                $osmUrl = $this->generateOsmUrl($id);
+                $notFoundIds[] = ['id' => $id, 'url' => $osmUrl];
+                $logger->info("Model not found for id $id ($osmUrl)");
+                $this->error("Model not found for id $id ($osmUrl)");
                 continue;
+            }
+        }
+
+        if (!empty($notFoundIds)) {
+            $this->info("OSM features not found:");
+            $logger->info("OSM features not found:");
+            foreach ($notFoundIds as $notFound) {
+                $this->info($notFound['id'] . ": " . $notFound['url']);
+                $logger->info($notFound['id'] . ": " . $notFound['url']);
             }
         }
 
         return 0;
     }
 
+    /**
+     * Generate OpenStreetMap URL for the given OSM feature ID.
+     *
+     * @param string $id
+     * @return string
+     */
+    protected function generateOsmUrl(string $id): string
+    {
+        $type = substr($id, 0, 1);
+        $osmId = substr($id, 1);
+
+        switch ($type) {
+            case 'W':
+                $osmType = 'way';
+                break;
+            case 'N':
+                $osmType = 'node';
+                break;
+            case 'R':
+                $osmType = 'relation';
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid OSM feature type: $type");
+        }
+
+        return "https://www.openstreetmap.org/$osmType/$osmId";
+    }
 
     /**
      * Get the console command usage examples.
