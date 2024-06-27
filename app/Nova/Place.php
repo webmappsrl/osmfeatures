@@ -149,16 +149,13 @@ class Place extends OsmFeaturesResource
 
         if ($data) {
             $fields[] = DateTime::make('Last Update Wikipedia', function () use ($data) {
-                return $data['last_update_wikipedia'];
+                return $data['last_update_wikipedia'] ?? '';
             })->onlyOnDetail();
 
             $fields[] = DateTime::make('Last Update Wikidata', function () use ($data) {
-                return $data['last_update_wikidata'];
+                return $data['last_update_wikidata'] ?? '';
             })->onlyOnDetail();
 
-            $fields[] = DateTime::make('Last Update Wikimedia Commons', function () use ($data) {
-                return $data['last_update_wikimedia_commons'];
-            })->onlyOnDetail();
             $fields[] = Textarea::make('Abstract', function () use ($data) {
                 $abstractIt = $data['abstract']['it'] ?? '';
                 $abstractEn = $data['abstract']['en'] ?? '';
