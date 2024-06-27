@@ -57,7 +57,6 @@ class WikimediaService
             $data = $response->json();
         } catch (Exception $e) {
             $this->logger->error('Error fetching category members: ' . $e->getMessage());
-            throw new Exception('Error fetching category members: ' . $e->getMessage());
         }
 
         if (isset($data['query']['categorymembers'])) {
