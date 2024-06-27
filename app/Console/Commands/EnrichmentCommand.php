@@ -14,30 +14,35 @@ class EnrichmentCommand extends Command
 
     public function handle()
     {
-        $osmids = $this->argument('osmid');
-        $jobCount = 0;
+        try {
+            $osmids = $this->argument('osmid');
+            $jobCount = 0;
 
-        $places = Place::all();
+            $places = Place::all();
 
-        if (!empty($osmids)) {
-            $places = Place::whereIn('osm_id', $osmids);
+            if (!empty($osmids)) {
+                $places = Place::whereIn('osm_id', $osmids);
 
-            if ($places->count() == 0) {
-                $this->info('No places found with the specified OSM IDs.');
-                return Command::FAILURE;
+                if ($places->count() == 0) {
+                    $this->info('No places found with the specified OSM IDs.');
+                    return Command::FAILURE;
+                }
             }
+
+            $places->chunk(100, function ($places) use (&$jobCount) {
+                foreach ($places as $place) {
+                    EnrichmentJob::dispatch($place);
+                    $jobCount++;
+                }
+            });
+
+            $this->info('Enrichment jobs dispatched successfully.');
+            $this->info("Total jobs dispatched: $jobCount");
+
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+            return Command::FAILURE;
         }
-
-        $places->chunk(100, function ($places) use (&$jobCount) {
-            foreach ($places as $place) {
-                EnrichmentJob::dispatch($place);
-                $jobCount++;
-            }
-        });
-
-        $this->info('Enrichment jobs dispatched successfully.');
-        $this->info("Total jobs dispatched: $jobCount");
-
-        return Command::SUCCESS;
     }
 }
