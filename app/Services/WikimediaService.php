@@ -93,7 +93,7 @@ class WikimediaService
                 'format' => 'json',
                 'prop' => 'imageinfo',
                 'iiprop' => 'url|extmetadata',
-                'iiurlwidth' => 250, // Specifica la larghezza desiderata
+                'iiurlwidth' => 500, // Specifica la larghezza desiderata
             ]);
 
 
