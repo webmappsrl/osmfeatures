@@ -19,7 +19,7 @@ class EnrichmentFilter extends BooleanFilter
     {
         if ($value['Enriched']) {
             return $query->whereHas('enrichment');
-        } else if ($value['Not enriched']) {
+        } elseif ($value['Not enriched']) {
             return $query->whereDoesntHave('enrichment');
         } else {
             return $query;
@@ -36,7 +36,7 @@ class EnrichmentFilter extends BooleanFilter
     {
         return [
             'Enriched',
-            'Not enriched'
+            'Not enriched',
         ];
     }
 }
