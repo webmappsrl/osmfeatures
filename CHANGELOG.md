@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.28.0](https://github.com/webmappsrl/osmfeatures/compare/v1.27.0...v1.28.0) (2024-06-27)
+
+
+### Features
+
+* Add optional height specification to Wikimedia image data retrieval ([f5d3b0e](https://github.com/webmappsrl/osmfeatures/commit/f5d3b0eebd6ac21c7d3c2091cd818c50bc9574a2))
+* Improve image handling in Place and WikimediaService ([e15d100](https://github.com/webmappsrl/osmfeatures/commit/e15d10073c0ba4c4b157418c41572d2f2dd0fdb9))
+
 ## [1.27.0](https://github.com/webmappsrl/osmfeatures/compare/v1.26.0...v1.27.0) (2024-06-27)
 
 
