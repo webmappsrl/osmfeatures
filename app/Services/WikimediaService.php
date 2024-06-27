@@ -42,7 +42,6 @@ class WikimediaService
             $this->logger->info("Fetching images from $categoryTitle");
         } else {
             $this->logger->info("No wikimedia commons in tags");
-            throw new Exception('No wikimedia commons in tags');
         }
         try {
             // Fetch category members from Wikimedia Commons API
