@@ -49,105 +49,26 @@ class EnrichmentService
 
     public function enrich(Model $model)
     {
+        $json = [];
         $this->logger->info('Enriching model: ' . get_class($model) . ' ' . $model->id);
 
-        //initialize json
-        $json = [];
-
-        $tags = json_decode($model->tags, true);
         try {
-            $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
-                ->where('enrichable_type', get_class($model))
-                ->first();
-
-            $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
-            $fetchedData = $this->fetchDataFromWiki($tags);
-            try {
-                $shouldUpdateDescription = $this->shouldUpdateDescription($fetchedData, $existingData);
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage());
-                throw $e;
-            }
-
-            if ($shouldUpdateDescription) {
-                //update description
-                $this->logger->info('Updating description...');
-                try {
-                    $openAIdescription = $this->OpenAiGenerator->generateDescription($fetchedData, 1800);
-                    $openAIdescriptionEn = $this->OpenAiGenerator->translateTo('english', $openAIdescription);
-                } catch (Exception $e) {
-                    $this->logger->error($e->getMessage());
-                    throw $e;
-                }
-                $this->logger->info('Description generated');
-
-                //update abstract
-                $this->logger->info('Updating abstract...');
-                try {
-                    $openAIabstract = $this->OpenAiGenerator->generateAbstractFromDescription($openAIdescription, 255);
-                    $openAIabstractEn = $this->OpenAiGenerator->translateTo('english', $openAIabstract);
-                } catch (Exception $e) {
-                    $this->logger->error($e->getMessage());
-                    throw $e;
-                }
-                $this->logger->info('Abstract generated');
-
-                $wikipediaLastUpdate = null;
-                $wikidataLastUpdate = null;
-
-                if (isset($fetchedData['wikipedia']['lastModified'])) {
-                    $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'];
-                }
-                if (isset($fetchedData['wikidata']['lastModified'])) {
-                    $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'];
-                }
-
-                $json['last_update_wikipedia'] = $wikipediaLastUpdate;
-                $json['last_update_wikidata'] = $wikidataLastUpdate;
-            } else {
-                $json['last_update_wikipedia'] = $existingData['last_update_wikipedia'] ?? null;
-                $json['last_update_wikidata'] = $existingData['last_update_wikidata'] ?? null;
-            }
-
-            $this->logger->info('Fetching images...');
-            try {
-                $imageData = $this->wikimediaService->fetchAndUploadImages($model);
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage());
-                $imageData = null;
-            }
-            $this->logger->info('Images fetched');
-
-            if (isset($imageData['last_update_wikimedia_commons'])) {
-                $lastUpdateWikimediaCommons = $imageData['last_update_wikimedia_commons'];
-                unset($imageData['last_update_wikimedia_commons']);
-            } else {
-                $lastUpdateWikimediaCommons = null;
-            }
-
-            // Construct the final JSON
-            $json['last_update_wikimedia_commons'] = $lastUpdateWikimediaCommons;
-            $json['abstract'] = [
-                'it' => $shouldUpdateDescription ? $openAIabstract : ($existingData['abstract']['it'] ?? ''),
-                'en' => $shouldUpdateDescription ? $openAIabstractEn : ($existingData['abstract']['en'] ?? ''),
-            ];
-            $json['description'] = [
-                'it' => $shouldUpdateDescription ? $openAIdescription : ($existingData['description']['it'] ?? ''),
-                'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
-            ];
-            $json['images'] = $imageData;
-
-            Enrichment::updateOrCreate([
-                'enrichable_id' => $model->id,
-            ], [
-                'enrichable_type' => get_class($model),
-                'data' => json_encode($json),
-            ]);
+            $json = array_merge($json, $this->enrichText($model));
         } catch (Exception $e) {
-            $this->logger->error('Enrichment failed: ' . $e->getMessage());
-            throw new \Exception('Failed to enrich model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+            $this->logger->error('Failed to enrich Text model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+        }
+        try {
+            $json = array_merge($json, $this->enrichMedia($model));
+        } catch (Exception $e) {
+            $this->logger->error('Failed to enrich media model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
         }
 
+        Enrichment::updateOrCreate([
+            'enrichable_id' => $model->id,
+        ], [
+            'enrichable_type' => get_class($model),
+            'data' => json_encode($json),
+        ]);
         $this->logger->info('Enrichment successful');
     }
 
@@ -160,7 +81,7 @@ class EnrichmentService
 
         if (!$fetchedData) {
             $this->logger->info('No fetched data, cant perform openAi enrichment');
-            throw new \Exception('No fetched data, cant perform openAi enrichment');
+            throw new Exception('No fetched data, cant perform openAi enrichment');
         }
 
         $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? '';
@@ -180,37 +101,118 @@ class EnrichmentService
         return false;
     }
 
+    protected function enrichText($model)
+    {
+        $json = [];
+        $wikipediaLastUpdate = null;
+        $wikidataLastUpdate = null;
+
+        $tags = json_decode($model->tags, true);
+        if (!isset($tags['wikipedia']) && !isset($tags['wikidata'])) {
+            $this->logger->info('No wikipedia or wikidata tag found, skipping text enrichment.');
+            return [];
+        }
+
+        $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
+            ->where('enrichable_type', get_class($model))
+            ->first();
+
+        $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
+        $fetchedData = $this->fetchDataFromWiki($tags);
+        try {
+            $shouldUpdateDescription = $this->shouldUpdateDescription($fetchedData, $existingData);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+            throw $e;
+        }
+
+        if ($shouldUpdateDescription) {
+            try {
+                $openAIdescription = $this->OpenAiGenerator->generateDescription($fetchedData, 1800);
+                $openAIdescriptionEn = $this->OpenAiGenerator->translateTo('english', $openAIdescription);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
+            $this->logger->info('Description generated');
+            try {
+                $openAIabstract = $this->OpenAiGenerator->generateAbstractFromDescription($openAIdescription, 255);
+                $openAIabstractEn = $this->OpenAiGenerator->translateTo('english', $openAIabstract);
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+                throw $e;
+            }
+            $this->logger->info('Abstract generated');
+
+
+            if (isset($fetchedData['wikipedia']['lastModified'])) {
+                $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'];
+            }
+            if (isset($fetchedData['wikidata']['lastModified'])) {
+                $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'];
+            }
+
+            $json['last_update_wikipedia'] = $wikipediaLastUpdate;
+            $json['last_update_wikidata'] = $wikidataLastUpdate;
+        } else {
+            $json['last_update_wikipedia'] = $existingData['last_update_wikipedia'] ?? null;
+            $json['last_update_wikidata'] = $existingData['last_update_wikidata'] ?? null;
+        }
+
+        $json['abstract'] = [
+            'it' => $shouldUpdateDescription ? $openAIabstract : ($existingData['abstract']['it'] ?? ''),
+            'en' => $shouldUpdateDescription ? $openAIabstractEn : ($existingData['abstract']['en'] ?? ''),
+        ];
+        $json['description'] = [
+            'it' => $shouldUpdateDescription ? $openAIdescription : ($existingData['description']['it'] ?? ''),
+            'en' => $shouldUpdateDescription ? $openAIdescriptionEn : ($existingData['description']['en'] ?? ''),
+        ];
+
+        return $json;
+    }
+
+    protected function enrichMedia($model)
+    {
+        $json = [];
+        $this->logger->info('Fetching images...');
+        try {
+            $imageData = $this->wikimediaService->fetchImages($model);
+        } catch (Exception $e) {
+            $this->logger->error($e->getMessage());
+            $imageData = null;
+        }
+        $this->logger->info('Images fetched');
+
+        $json['images'] = $imageData;
+        return $json;
+    }
     protected function fetchDataFromWiki(array $tags): array
     {
+        $json = [];
         $this->logger->info('Fetching Wikipedia data');
+
         if (isset($tags['wikipedia'])) {
-            try {
-                $wikipediaData = $this->wikipediaFetcher->fetchData($tags['wikipedia'] ?? null);
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage());
-                $wikipediaData = null;
-            }
-        } else {
-            $this->logger->error('wikipedia tag not found');
-            $wikipediaData = null;
+            $json = array_merge($json, $this->fetchData('wikipedia', $tags['wikipedia']));
         }
-
-        $this->logger->info('Fetching Wikidata data');
         if (isset($tags['wikidata'])) {
-            try {
-                $wikidataData = $this->wikidataFetcher->fetchData($tags['wikidata'] ?? null);
-            } catch (Exception $e) {
-                $this->logger->error($e->getMessage());
-                $wikidataData = null;
-            }
-        } else {
-            $this->logger->error('wikidata tag not found');
-            $wikidataData = null;
+            $json = array_merge($json, $this->fetchData('wikidata', $tags['wikidata']));
         }
 
-        return [
-            'wikipedia' => $wikipediaData,
-            'wikidata' => $wikidataData,
-        ];
+        return $json;
+    }
+
+    protected function fetchData($tag, $value)
+    {
+        $json = [];
+        if (isset($tag)) {
+            try {
+                $data = $this->{$tag . 'Fetcher'}->fetchData($value);
+                $json[$tag] = $data;
+                $this->logger->info('Fetching ' . $tag . ' data');
+            } catch (Exception $e) {
+                $this->logger->error($e->getMessage());
+            }
+        }
+        return $json;
     }
 }
