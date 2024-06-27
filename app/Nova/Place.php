@@ -173,7 +173,7 @@ class Place extends OsmFeaturesResource
                 $images = $data['images'];
                 if ($images) {
                     $thumbnails = array_map(function ($image) {
-                        return "<a href=\"{$image['aws_url']}\" target=\"_blank\"><img src=\"{$image['aws_url']}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
+                        return "<a href=\"{$image['source_url']}\" target=\"_blank\"><img src=\"{$image['thumb_url']}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
                     }, $images);
 
                     return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';

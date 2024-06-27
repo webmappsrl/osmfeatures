@@ -32,26 +32,18 @@ class WikimediaService
      * @return array<string> The list of URLs of the uploaded images.
      * @throws Exception
      */
-    public function fetchAndUploadImages(Model $model): array
+    public function fetchImages(Model $model): array
     {
         $result = [];
         $tags = json_decode($model->tags, true);
 
         if (isset($tags['wikimedia_commons'])) {
             $categoryTitle = str_replace('File:', '', $tags['wikimedia_commons']);
-            $folderName = $tags['name'] ?? $tags['wikimedia_commons'];
             $this->logger->info("Fetching images from $categoryTitle");
         } else {
             $this->logger->info("No wikimedia commons in tags");
             throw new Exception('No wikimedia commons in tags');
         }
-
-        // Check if the model has an enrichment
-        $firstUpdate = !$model->enrichment;
-        $localData = $firstUpdate ? [] : json_decode($model->enrichment->data, true);
-        $localImages = $firstUpdate ? [] : $localData['images'];
-        $localLastUpdate = $firstUpdate ? null : Carbon::parse($localData['last_update_wikimedia_commons']);
-
         try {
             // Fetch category members from Wikimedia Commons API
             $response = Http::get('https://commons.wikimedia.org/w/api.php', [
@@ -71,42 +63,9 @@ class WikimediaService
 
         if (isset($data['query']['categorymembers'])) {
             $pages = $data['query']['categorymembers'];
-            $newestDateTime = $localLastUpdate;
-
             foreach ($pages as $page) {
                 $imageData = $this->getImageData($page['title']);
-                if ($imageData) {
-                    $sourceUrl = $imageData['source_url'];
-                    $dateTime = Carbon::parse($imageData['dateTime']);
-
-                    if ($firstUpdate) {
-                        $awsUrl = $this->uploadToAWS('images/' . $folderName . '/' . basename($sourceUrl), $sourceUrl);
-                        $result[] = ['source_url' => $sourceUrl, 'dateTime' => $imageData['dateTime'], 'aws_url' => $awsUrl];
-                    } else {
-                        $localImage = $this->findLocalImageByUrl($localImages, $sourceUrl);
-                        if ($localImage) {
-                            if ($dateTime->gt($localLastUpdate)) {
-                                $awsUrl = $this->uploadToAWS('images/' . $folderName . '/' . basename($sourceUrl), $sourceUrl);
-                                $localImage['aws_url'] = $awsUrl;
-                                $localImage['dateTime'] = $imageData['dateTime'];
-                                $result[] = $localImage;
-                                $newestDateTime = $newestDateTime->lt($dateTime) ? $dateTime : $newestDateTime;
-                            } else {
-                                $result[] = $localImage;
-                            }
-                        } else {
-                            $awsUrl = $this->uploadToAWS('images/' . $folderName . '/' . basename($sourceUrl), $sourceUrl);
-                            $result[] = ['source_url' => $sourceUrl, 'dateTime' => $imageData['dateTime'], 'aws_url' => $awsUrl];
-                        }
-                    }
-                }
-            }
-
-            if ($firstUpdate) {
-                $result['last_update_wikimedia_commons'] = Carbon::now()->toIso8601String();
-            }
-            if (!$firstUpdate && $newestDateTime) {
-                $result['last_update_wikimedia_commons'] = $newestDateTime->toIso8601String();
+                $result[] = $imageData;
             }
         } else {
             $this->logger->info("No images found in $categoryTitle");
@@ -134,7 +93,10 @@ class WikimediaService
                 'format' => 'json',
                 'prop' => 'imageinfo',
                 'iiprop' => 'url|extmetadata',
+                'iiurlwidth' => 100, // Specifica la larghezza desiderata
+                'iiurlheight' => 100 // Specifica l'altezza desiderata (opzionale, solo se necessario)
             ]);
+
 
             $data = $response->json();
 
@@ -142,8 +104,8 @@ class WikimediaService
             foreach ($pages as $page) {
                 if (isset($page['imageinfo'][0]['url'])) {
                     $sourceUrl = $page['imageinfo'][0]['url'];
-                    $dateTime = $page['imageinfo'][0]['extmetadata']['DateTime']['value'];
-                    $res = ['source_url' => $sourceUrl, 'dateTime' => $dateTime];
+                    $thumbUrl = $page['imageinfo'][0]['thumburl'];
+                    $res = ['source_url' => $sourceUrl, 'thumb_url' =>  $thumbUrl];
                     return $res;
                 }
             }
