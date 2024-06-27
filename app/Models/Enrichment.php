@@ -13,6 +13,7 @@ class Enrichment extends Model
         'data',
         'enrichable_id',
         'enrichable_type',
+        'enrichable_osmfeatures_id',
     ];
 
     public function enrichable()

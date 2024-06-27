@@ -64,8 +64,9 @@ class EnrichmentService
         }
 
         Enrichment::updateOrCreate([
-            'enrichable_id' => $model->id,
+            'enrichable_osmfeatures_id' => $model::getOsmfeaturesId(),
         ], [
+            'enrichable_id' => $model->id,
             'enrichable_type' => get_class($model),
             'data' => json_encode($json),
         ]);
