@@ -41,7 +41,7 @@ class OsmFeaturesResource extends Resource
     {
         return [
             Text::make('Details')->displayUsing(function () {
-                if (! $this->name) {
+                if (!$this->name) {
                     $name = '-';
                 } else {
                     $name = wordwrap($this->name, 50, '<br>', true);
@@ -68,10 +68,8 @@ class OsmFeaturesResource extends Resource
                     $osmType<br>
                     <span style='font-weight: bold;'>Name:</span> $name
                     HTML;
-            })->asHtml()->onlyOnIndex(),
+            })->asHtml()->hideWhenCreating()->hideWhenUpdating(),
 
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
             DateTime::make('Updated_at')
                 ->displayUsing(
                     function ($value) {

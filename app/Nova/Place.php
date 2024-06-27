@@ -8,6 +8,7 @@ use Laravel\Nova\Fields\MorphTo;
 use App\Nova\OsmFeaturesResource;
 use Laravel\Nova\Fields\DateTime;
 use App\Nova\Filters\ElevationFilter;
+use App\Nova\Filters\EnrichmentFilter;
 use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -108,6 +109,7 @@ class Place extends OsmFeaturesResource
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
+            new EnrichmentFilter(),
         ];
 
         return array_merge($osmfeaturesFilters, $specificFilters);
