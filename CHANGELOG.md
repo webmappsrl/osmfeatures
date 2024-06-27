@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.1](https://github.com/webmappsrl/osmfeatures/compare/v1.28.0...v1.28.1) (2024-06-27)
+
+
+### Bug Fixes
+
+* update method call in EnrichmentService ([1a4a354](https://github.com/webmappsrl/osmfeatures/commit/1a4a354cd8bdbae1a9a3f78a3931fc12273aaf60))
+
 ## [1.28.0](https://github.com/webmappsrl/osmfeatures/compare/v1.27.0...v1.28.0) (2024-06-27)
 
 
