@@ -94,7 +94,7 @@ class WikimediaService
                 'prop' => 'imageinfo',
                 'iiprop' => 'url|extmetadata',
                 'iiurlwidth' => 100, // Specifica la larghezza desiderata
-                'iiurlheight' => 100 // Specifica l'altezza desiderata (opzionale, solo se necessario)
+                'iiurlheight' => 100, // Specifica l'altezza desiderata (opzionale, solo se necessario)
             ]);
 
 
