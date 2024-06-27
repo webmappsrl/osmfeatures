@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/webmappsrl/osmfeatures/compare/v1.26.0...v1.27.0) (2024-06-27)
+
+
+### Features
+
+* added enrichments filter to place nova ([4473c52](https://github.com/webmappsrl/osmfeatures/commit/4473c528148f80258e8f9cd691852a47de5374c6))
+
 ## [1.26.0](https://github.com/webmappsrl/osmfeatures/compare/v1.25.0...v1.26.0) (2024-05-09)
 
 
