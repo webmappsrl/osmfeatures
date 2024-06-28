@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.29.0](https://github.com/webmappsrl/osmfeatures/compare/v1.28.1...v1.29.0) (2024-06-28)
+
+
+### Features
+
+* added enrichment job action ([9337039](https://github.com/webmappsrl/osmfeatures/commit/93370393241f948833c58a174506378da22d0f73))
+* improved tags field in nova places ([1f9ed7b](https://github.com/webmappsrl/osmfeatures/commit/1f9ed7bfaf281b45a252f2b7bdcb32e38013302f))
+
+
+### Bug Fixes
+
+* fixed bug in wikimedia service ([ce8ac96](https://github.com/webmappsrl/osmfeatures/commit/ce8ac9692b6460651ced4f75a8ea8b5c0009928a))
+* fixed content generation based on wikis data ([ee44e03](https://github.com/webmappsrl/osmfeatures/commit/ee44e03cfa79449ec97518064ea0a6bd39c0dc13))
+
+
+### Miscellaneous Chores
+
+* error handling ([e515ed3](https://github.com/webmappsrl/osmfeatures/commit/e515ed3157c5adb22c932e95cc793fb22c8fb731))
+* refactored enrichment command ([31b1e83](https://github.com/webmappsrl/osmfeatures/commit/31b1e83ab1de6d60da6a08bc7e208f88f0d4ef72))
+
 ## [1.28.1](https://github.com/webmappsrl/osmfeatures/compare/v1.28.0...v1.28.1) (2024-06-27)
 
 
