@@ -142,7 +142,7 @@ class AdminAreaController extends Controller
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
 
         if ($adminArea->enrichment) {
-            $enrichment = json_decode($place->enrichment, true);
+            $enrichment = json_decode($adminArea->enrichment, true);
             $enrichment['data'] = json_decode($enrichment['data'], true);
         } else {
             $enrichment = null;
