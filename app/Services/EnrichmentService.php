@@ -112,7 +112,7 @@ class EnrichmentService
         //if there are no wikipedia and wikidata tags means that we do not have any data to use for the openAi enrichment thus we skip the enrichment and return null.
         if (!isset($tags['wikipedia']) && !isset($tags['wikidata'])) {
             $this->logger->info('No wikipedia or wikidata tag found, skipping text enrichment.');
-            return null;
+            return [];
         }
 
         $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
