@@ -54,7 +54,7 @@ class HikingRoute extends OsmFeaturesResource
     public function fields(NovaRequest $request)
     {
         $osmfeaturesFields = parent::fields($request);
-        unset($osmfeaturesFields[1]); //remove datetime 
+        unset($osmfeaturesFields[1]); //remove datetime
 
         $specificFields = [
             DateTime::make('Updated_at')
