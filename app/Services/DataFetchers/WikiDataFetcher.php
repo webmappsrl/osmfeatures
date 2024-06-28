@@ -11,8 +11,8 @@ class WikiDataFetcher implements DataFetcherInterface
     public function fetchData(string $wikidataTag): ?array
     {
         if (!$wikidataTag) {
-            Log::info('No Wikidata tag provided');
-            throw new \Exception('No Wikidata tag provided');
+            Log::info('Wikidata tag is empty');
+            return null;
         }
 
         $url = "https://www.wikidata.org/wiki/Special:EntityData/{$wikidataTag}.json";
