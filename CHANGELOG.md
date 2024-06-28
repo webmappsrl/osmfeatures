@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/webmappsrl/osmfeatures/compare/v1.29.0...v1.30.0) (2024-06-28)
+
+
+### Features
+
+* extended osmfeatures nova resource to admin areas, poles and hiking routes ([08b93bd](https://github.com/webmappsrl/osmfeatures/commit/08b93bdd98cbe07462ec4511cd85f2e0a1951d10))
+
 ## [1.29.0](https://github.com/webmappsrl/osmfeatures/compare/v1.28.1...v1.29.0) (2024-06-28)
 
 
