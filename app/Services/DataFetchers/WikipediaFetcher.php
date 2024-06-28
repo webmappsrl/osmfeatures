@@ -11,8 +11,8 @@ class WikipediaFetcher implements DataFetcherInterface
     public function fetchData(string $wikipediaTag): ?array
     {
         if (!$wikipediaTag) {
-            Log::info('No Wikipedia tag provided');
-            throw new \Exception('No Wikipedia tag provided');
+            Log::info('Wikipedia tag is empty, returning null');
+            return null;
         }
 
         $parts = explode(':', $wikipediaTag);

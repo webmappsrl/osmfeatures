@@ -82,7 +82,7 @@ class EnrichmentService
 
         if (!$fetchedData) {
             $this->logger->info('No fetched data, cant perform openAi enrichment');
-            throw new Exception('No fetched data, cant perform openAi enrichment');
+            return false;
         }
 
         $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? '';
@@ -109,6 +109,7 @@ class EnrichmentService
         $wikidataLastUpdate = null;
 
         $tags = json_decode($model->tags, true);
+        //if there are no wikipedia and wikidata tags means that we do not have any data to use for the openAi enrichment thus we skip the enrichment and return null.
         if (!isset($tags['wikipedia']) && !isset($tags['wikidata'])) {
             $this->logger->info('No wikipedia or wikidata tag found, skipping text enrichment.');
             return [];

@@ -17,12 +17,10 @@ class WikimediaService
      * @var Log
      */
     protected $logger;
-    protected $aws;
 
     public function __construct()
     {
         $this->logger = Log::channel('wikimediaService');
-        $this->aws = Storage::disk('s3');
     }
 
     /**
@@ -32,7 +30,7 @@ class WikimediaService
      * @return array<string> The list of URLs of the uploaded images.
      * @throws Exception
      */
-    public function fetchImages(Model $model): array
+    public function fetchImages(Model $model): ?array
     {
         $result = [];
         $tags = json_decode($model->tags, true);
@@ -41,7 +39,8 @@ class WikimediaService
             $categoryTitle = str_replace('File:', '', $tags['wikimedia_commons']);
             $this->logger->info("Fetching images from $categoryTitle");
         } else {
-            $this->logger->info("No wikimedia commons in tags");
+            $this->logger->info("No wikimedia commons in tags, returning empty array");
+            return null;
         }
         try {
             // Fetch category members from Wikimedia Commons API
