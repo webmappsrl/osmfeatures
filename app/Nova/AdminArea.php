@@ -2,8 +2,9 @@
 
 namespace App\Nova;
 
-use App\Nova\OsmFeaturesResource;
+use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Text;
+use App\Nova\OsmFeaturesResource;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AdminArea extends OsmFeaturesResource
@@ -85,17 +86,6 @@ class AdminArea extends OsmFeaturesResource
      * @return array
      */
     public function lenses(NovaRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  NovaRequest  $request
-     * @return array
-     */
-    public function actions(NovaRequest $request)
     {
         return [];
     }

@@ -15,7 +15,7 @@ use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\DateHelper;
 use Rpj\Daterangepicker\Daterangepicker;
 
-class Pole extends Resource
+class Pole extends OsmFeaturesResource
 {
     /**
      * The model the resource corresponds to.
@@ -63,67 +63,20 @@ class Pole extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                    switch ($this->osm_type) {
-                        case 'N':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/node/$value' target='_blank'>$value</a>";
-                        case 'W':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/way/$value' target='_blank'>$value</a>";
-                        case 'R':
-                            return "<a style='color:green;' href='https://www.openstreetmap.org/relation/$value' target='_blank'>$value</a>";
-                    }
-                }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->sortable()
-                ->onlyOnIndex(),
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
-            DateTime::make('Updated_at')
-                ->displayUsing(
-                    function ($value) {
-                        return Carbon::parse($value)->toIso8601String();
-                    }
-                )->sortable(),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
-                    })->implode('<br>')
-                )
-                ->allowTooltipHTML()
-                ->onlyOnIndex(),
-            Code::make('Tags')->json()->hideFromIndex(),
-            Text::make('Wiki', function () {
-                return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
+        $osmfeaturesFields = parent::fields($request);
+
+        $specificFields = [
+
             Text::make('Name'),
             Text::make('Ref'),
             Text::make('Destination', function () {
                 return wordwrap($this->destination, 50, '<br>', true);
             })->asHtml(),
-            Number::make('Score', 'score')
-                ->displayUsing(function ($value) {
-                    //return a star rating
-                    $stars = '';
-
-                    if ($value == 0 || $value == null) {
-                        return 'No rating';
-                    }
-                    for ($i = 0; $i < $value; $i++) {
-                        $stars .= '⭐';
-                    }
-
-                    return $stars;
-                })->sortable()->filterable(),
         ];
+
+        $finalFields = array_merge($osmfeaturesFields, $specificFields);
+
+        return $finalFields;
     }
 
     /**
@@ -145,20 +98,17 @@ class Pole extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [
-            new Filters\WikiDataFilter(),
-            new Filters\WikiMediaFilter(),
-            new Filters\WikiPediaFilter(),
-            new Filters\OsmTypeFilter(),
+        $osmfeaturesFilters = parent::filters($request);
+        $specifiFilters =  [
             PolesElevationFilter::make()
                 ->dividerLabel('<>')
                 ->inputType('number')
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => DB::table('poles')->min('ele')])
                 ->toAttributes(['max' => DB::table('poles')->max('ele')]),
-            new Daterangepicker('updated_at', DateHelper::ALL),
-
         ];
+
+        return array_merge($osmfeaturesFilters, $specifiFilters);
     }
 
     /**
@@ -168,17 +118,6 @@ class Pole extends Resource
      * @return array
      */
     public function lenses(NovaRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  NovaRequest  $request
-     * @return array
-     */
-    public function actions(NovaRequest $request)
     {
         return [];
     }

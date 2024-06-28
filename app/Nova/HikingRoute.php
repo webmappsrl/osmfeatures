@@ -2,17 +2,18 @@
 
 namespace App\Nova;
 
-use Illuminate\Support\Carbon;
+use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\DateTime;
 use Rpj\Daterangepicker\DateHelper;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class HikingRoute extends Resource
+class HikingRoute extends OsmFeaturesResource
 {
     /**
      * The model the resource corresponds to.
@@ -52,26 +53,10 @@ class HikingRoute extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
-            Text::make('OSM ID', 'osm_id')->sortable()->displayUsing(
-                function ($value) {
-                    $link = $this->getOsmUrl();
-                    $html = <<< HTML
-                            <a style="color:green"href="$link" target="_blank">$value</a>
-                        HTML;
+        $osmfeaturesFields = parent::fields($request);
+        unset($osmfeaturesFields[1]); //remove datetime 
 
-                    return $html;
-                }
-            )->asHtml(),
-            Text::make('OSM Type', 'osm_type')->displayUsing(
-                function ($value) {
-                    return "<div style='font-size: 1.2em; border: 1px solid black; font-weight: bold; text-align:center;'>$value</div>";
-                }
-            )->asHtml()
-                ->sortable()
-                ->onlyOnIndex(),
-            Text::make('OSM Type')
-                ->onlyOnDetail(),
+        $specificFields = [
             DateTime::make('Updated_at')
                 ->displayUsing(
                     function ($value) {
@@ -85,19 +70,6 @@ class HikingRoute extends Resource
                         return Carbon::parse($value)->toIso8601String();
                     }
                 ),
-            Tooltip::make('Tags', 'tags')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
-                    })->implode('<br>')
-                )
-                ->allowTooltipHTML()
-                ->onlyOnIndex(),
-            Code::make('Tags')->json()->hideFromIndex(),
-            Text::make('Wiki', function () {
-                return $this->getWikiLinksAsHtml();
-            })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center')->fullWidth(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);
                 $ref = $tags['ref'] ?? 'N/A';
@@ -119,21 +91,11 @@ class HikingRoute extends Resource
                 ->asHtml(),
             Text::make('Osm2cai Status')
                 ->sortable(),
-            Number::make('Score', 'score')
-                ->displayUsing(function ($value) {
-                    //return a star rating
-                    $stars = '';
-
-                    if ($value == 0 || $value == null) {
-                        return 'No rating';
-                    }
-                    for ($i = 0; $i < $value; $i++) {
-                        $stars .= '⭐';
-                    }
-
-                    return $stars;
-                })->sortable()->filterable(),
         ];
+
+        $finalFields = array_merge($osmfeaturesFields, $specificFields);
+
+        return $finalFields;
     }
 
     /**
@@ -155,16 +117,13 @@ class HikingRoute extends Resource
      */
     public function filters(NovaRequest $request)
     {
-        return [
-            new Filters\WikiDataFilter(),
-            new Filters\WikiMediaFilter(),
-            new Filters\WikiPediaFilter(),
-            new Filters\OsmTypeFilter(),
-            new Daterangepicker('updated_at', DateHelper::ALL),
+        $osmfeaturesFilters = parent::filters($request);
+        $specifiFilters = [
             new Filters\CaiScaleFilter(),
             new Filters\Osm2caiStatusFilter(),
-
         ];
+
+        return array_merge($osmfeaturesFilters, $specifiFilters);
     }
 
     /**
@@ -174,17 +133,6 @@ class HikingRoute extends Resource
      * @return array
      */
     public function lenses(NovaRequest $request)
-    {
-        return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  NovaRequest  $request
-     * @return array
-     */
-    public function actions(NovaRequest $request)
     {
         return [];
     }

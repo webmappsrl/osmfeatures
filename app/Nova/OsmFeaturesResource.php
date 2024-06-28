@@ -2,17 +2,21 @@
 
 namespace App\Nova;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Number;
+use Illuminate\Http\Request;
+use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Textarea;
 use Rpj\Daterangepicker\DateHelper;
+use Outl1ne\NovaTooltipField\Tooltip;
+use App\Nova\Actions\EnrichmentAction;
+use App\Nova\Filters\EnrichmentFilter;
 use Rpj\Daterangepicker\Daterangepicker;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class OsmFeaturesResource extends Resource
 {
@@ -39,7 +43,7 @@ class OsmFeaturesResource extends Resource
      */
     public function fields(NovaRequest $request)
     {
-        return [
+        $fields = [
             Text::make('Details')->displayUsing(function () {
                 if (!$this->name) {
                     $name = '-';
@@ -104,6 +108,12 @@ class OsmFeaturesResource extends Resource
                     return $stars;
                 })->sortable()->filterable(),
         ];
+
+        if ($this->enrichment) {
+            $fields[] = Panel::make('Enrichments', $this->enrichmentsFields($request));
+        }
+
+        return $fields;
     }
 
     /**
@@ -131,6 +141,7 @@ class OsmFeaturesResource extends Resource
             new Filters\WikiPediaFilter(),
             new Filters\OsmTypeFilter(),
             new Daterangepicker('updated_at', DateHelper::ALL),
+            new EnrichmentFilter(),
         ];
     }
 
@@ -153,6 +164,57 @@ class OsmFeaturesResource extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [(new EnrichmentAction())->canRun(function () {
+            return true;
+        }),];
+    }
+
+    protected function enrichmentsFields(NovaRequest $request)
+    {
+        $enrichment = $this->enrichment;
+        if ($enrichment) {
+            $data = json_decode($enrichment->data, true);
+        }
+
+        $fields = [];
+
+        if ($data) {
+            $fields[] = DateTime::make('Last Update Wikipedia', function () use ($data) {
+                return $data['last_update_wikipedia'] ?? '';
+            })->onlyOnDetail();
+
+            $fields[] = DateTime::make('Last Update Wikidata', function () use ($data) {
+                return $data['last_update_wikidata'] ?? '';
+            })->onlyOnDetail();
+
+            $fields[] = Textarea::make('Abstract', function () use ($data) {
+                $abstractIt = $data['abstract']['it'] ?? '';
+                $abstractEn = $data['abstract']['en'] ?? '';
+                return "IT: $abstractIt\n\nEN: $abstractEn";
+            })->onlyOnDetail();
+
+            $fields[] = Textarea::make('Description', function () use ($data) {
+                $descriptionIt = $data['description']['it'] ?? '';
+                $descriptionEn = $data['description']['en'] ?? '';
+                return "IT: $descriptionIt\n\nEN: $descriptionEn";
+            })->onlyOnDetail();
+
+            $fields[] = Text::make('Images', function () use ($data) {
+                $images = $data['images'];
+                if ($images) {
+                    $thumbnails = array_map(function ($image) {
+                        $sourceUrl = $image['source_url'] ?? '';
+                        $thumbUrl = $image['thumb_url'] ?? $image['source_url'] ?? '';
+                        return "<a href=\"{$sourceUrl}\" target=\"_blank\"><img src=\"{$thumbUrl}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
+                    }, $images);
+
+                    return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
+                } else {
+                    return '-';
+                }
+            })->asHtml()->onlyOnDetail();
+        }
+
+        return $fields;
     }
 }
