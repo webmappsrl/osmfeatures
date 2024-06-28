@@ -57,8 +57,8 @@ class OpenAIGenerator
         $featureTitle = $data['wikipedia']['title'] ?? $data['wikidata']['title'] ?? '';
         $content = '';
 
-        $wikipediaContent = isset($data['wikipedia']['content']) ? $data['wikipedia']['content'] : '';
-        $wikidataContent = isset($data['wikidata']['content']) ? $data['wikidata']['content'] : '';
+        $wikipediaContent = $data['wikipedia']['content'] ?? '';
+        $wikidataContent = $data['wikidata']['content'] ?? '';
 
         if (!empty($wikipediaContent) && !empty($wikidataContent)) {
             $content = $wikipediaContent . ' ' . $wikidataContent;
