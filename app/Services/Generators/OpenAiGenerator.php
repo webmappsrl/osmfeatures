@@ -55,22 +55,45 @@ class OpenAIGenerator
             return null;
         }
         $featureTitle = $data['wikipedia']['title'] ?? $data['wikidata']['title'] ?? '';
-        $content = $data['wikipedia']['content'] . "\n\n" . $data['wikidata']['content']  ?? '';
+        $content = '';
+
+        $wikipediaContent = isset($data['wikipedia']['content']) ? $data['wikipedia']['content'] : '';
+        $wikidataContent = isset($data['wikidata']['content']) ? $data['wikidata']['content'] : '';
+
+        if (!empty($wikipediaContent) && !empty($wikidataContent)) {
+            $content = $wikipediaContent . ' ' . $wikidataContent;
+        } elseif (!empty($wikipediaContent)) {
+            $content = $wikipediaContent;
+        } elseif (!empty($wikidataContent)) {
+            $content = $wikidataContent;
+        }
 
         if (!$featureTitle && !$content) {
-            $this->logger->error('No feature title and content provided');
-            throw new \Exception('No feature title and content from wikipedia and wikidata provided');
+            $this->logger->error('No feature title and content provided. Not enough elements to generate openAI prompt. Returning null');
+            return null;
         }
         if (!$featureTitle) {
-            $this->logger->info('No feature title provided');
+            $this->logger->info('No feature title provided, using only content for the openAI prompt');
         }
 
         if (!$content) {
-            $this->logger->info('No content provided');
+            $this->logger->info('No content provided, using only feature title for the openAI prompt');
         }
 
-        // Prepare the prompt for the GPT model.
-        $prompt = "Crea una descrizione lunga $length caratteri in lingua italiana riguardo la feature openstreetmap $featureTitle con il contenuto seguente: $content. Aggiungi informazioni in base alle tue conoscenzen sulla feature per raggiungere la quota di caratteri stabilita.";
+        // Prepare the prompt for the GPT model dynamically.
+        $promptParts = ["Crea una descrizione lunga $length caratteri in lingua italiana riguardo la feature openstreetmap"];
+
+        if ($featureTitle) {
+            $promptParts[] = $featureTitle;
+        }
+
+        if ($content) {
+            $promptParts[] = "con il contenuto seguente: $content.";
+        }
+
+        $promptParts[] = "Aggiungi informazioni in base alle tue conoscenze sulla feature per raggiungere la quota di caratteri stabilita.";
+
+        $prompt = implode(' ', $promptParts);
 
         // Send the prompt to the GPT model and get the response.
         return $this->getOpenAiResponse($prompt, 1000);
@@ -108,7 +131,7 @@ class OpenAIGenerator
         // Check if the text to be translated is provided.
         if (!$text) {
             // Log an error and throw an exception if no text is provided.
-            $this->logger->error('No text provided for translation');
+            $this->logger->error('No text provided for translation, returning null');
             return null;
         }
 
