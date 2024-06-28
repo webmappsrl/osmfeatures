@@ -80,12 +80,12 @@ class OsmFeaturesResource extends Resource
                 ->iconFromPath(public_path('images/pricetags-outline.svg'))
                 ->content(
                     collect(json_decode($this->tags, true))->map(function ($value, $key) {
-                        return "{$key}: {$value}";
+                        return "<span style='font-weight: bold; color: #3b82f6';>{$key}:</span> : {$value}";
                     })->implode('<br>')
                 )
-                ->onlyOnIndex()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
                 ->allowTooltipHTML(),
-            Code::make('Tags')->json()->hideFromIndex(),
             Text::make('Wiki', function () {
                 return $this->getWikiLinksAsHtml();
             })->asHtml()->hideWhenCreating()->hideWhenUpdating()->textAlign('center'),
