@@ -136,9 +136,9 @@ class Place extends OsmFeaturesResource
     public function actions(NovaRequest $request)
     {
         return [
-            (new EnrichmentAction)->canRun(function () {
+            (new EnrichmentAction())->canRun(function () {
                 return true;
-            })
+            }),
         ];
     }
 
