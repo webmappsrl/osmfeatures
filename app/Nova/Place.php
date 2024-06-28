@@ -7,9 +7,10 @@ use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\MorphTo;
 use App\Nova\OsmFeaturesResource;
 use Laravel\Nova\Fields\DateTime;
-use App\Nova\Filters\ElevationFilter;
-use App\Nova\Filters\EnrichmentFilter;
 use Laravel\Nova\Fields\Textarea;
+use App\Nova\Filters\ElevationFilter;
+use App\Nova\Actions\EnrichmentAction;
+use App\Nova\Filters\EnrichmentFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Place extends OsmFeaturesResource
@@ -134,7 +135,11 @@ class Place extends OsmFeaturesResource
      */
     public function actions(NovaRequest $request)
     {
-        return [];
+        return [
+            (new EnrichmentAction)->canRun(function () {
+                return true;
+            })
+        ];
     }
 
 
