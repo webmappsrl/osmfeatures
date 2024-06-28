@@ -4,12 +4,10 @@ namespace App\Nova;
 
 use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\MorphTo;
 use App\Nova\OsmFeaturesResource;
 use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\Textarea;
 use App\Nova\Filters\ElevationFilter;
-use App\Nova\Actions\EnrichmentAction;
 use App\Nova\Filters\EnrichmentFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -72,11 +70,6 @@ class Place extends OsmFeaturesResource
             ),
         ];
 
-        if ($this->enrichment) {
-            $specificFields[] = Panel::make('Enrichments', $this->enrichmentsFields($request));
-        }
-
-
         return array_merge($osmfeaturesFields, $specificFields);
     }
 
@@ -110,7 +103,6 @@ class Place extends OsmFeaturesResource
                 ->placeholder('From', 'To')
                 ->fromAttributes(['min' => 0])
                 ->toAttributes(['max' => 10000]),
-            new EnrichmentFilter(),
         ];
 
         return array_merge($osmfeaturesFilters, $specificFilters);
@@ -125,21 +117,6 @@ class Place extends OsmFeaturesResource
     public function lenses(NovaRequest $request)
     {
         return [];
-    }
-
-    /**
-     * Get the actions available for the resource.
-     *
-     * @param  NovaRequest  $request
-     * @return array
-     */
-    public function actions(NovaRequest $request)
-    {
-        return [
-            (new EnrichmentAction())->canRun(function () {
-                return true;
-            }),
-        ];
     }
 
 
