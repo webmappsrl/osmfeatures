@@ -141,6 +141,8 @@ class PlaceController extends Controller
         if ($place->enrichment) {
             $enrichment = json_decode($place->enrichment, true);
             $enrichment['data'] = json_decode($enrichment['data'], true);
+        } else {
+            $enrichment = null;
         }
 
         $properties['osmfeatures_id'] = $id;

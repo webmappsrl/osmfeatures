@@ -136,10 +136,17 @@ class AdminAreaController extends Controller
     {
         $adminArea = AdminArea::getOsmfeaturesByOsmfeaturesID($id);
 
-        if (! $adminArea) {
+        if (!$adminArea) {
             return response()->json(['message' => 'Admin Area not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
+
+        if ($adminArea->enrichment) {
+            $enrichment = json_decode($place->enrichment, true);
+            $enrichment['data'] = json_decode($enrichment['data'], true);
+        } else {
+            $enrichment = null;
+        }
 
         match ($adminArea->osm_type) {
             'R' => $osmType = 'relation',
@@ -158,6 +165,7 @@ class AdminAreaController extends Controller
         $properties['wikipedia'] = $adminArea->getWikipediaUrl();
         $properties['wikidata'] = $adminArea->getWikidataUrl();
         $properties['wikimedia_commons'] = $adminArea->getWikimediaCommonsUrl();
+        $properties['enrichments'] = $enrichment;
         $geojsonFeature = [
             'type' => 'Feature',
             'properties' => $properties,
@@ -203,7 +211,7 @@ class AdminAreaController extends Controller
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
 
-        if (! in_array($osmType, $acceptedOsmtypes)) {
+        if (!in_array($osmType, $acceptedOsmtypes)) {
             return response()->json(['message' => 'Bad Request'], 404);
         }
 
@@ -211,7 +219,7 @@ class AdminAreaController extends Controller
             ->where('osm_id', $osmid)
             ->first();
 
-        if (! $adminArea) {
+        if (!$adminArea) {
             return response()->json(['message' => 'Admin Area not found'], 404);
         }
 
