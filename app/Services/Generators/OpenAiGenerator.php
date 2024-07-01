@@ -44,11 +44,11 @@ class OpenAIGenerator
     /**
      * Generate a description about a given content.
      *
-     * @param array $data data to use for the prompt
+     * @param array|null $data data to use for the prompt
      * @param int $length The length of the description.
      * @return string|null The generated description or null if an error occurs.
      */
-    public function generateDescription(array $data, int $length): ?string
+    public function generateDescription(?array $data, int $length): ?string
     {
         if (!$data) {
             $this->logger->error('No data fetched from wikis provided to generate description');
@@ -123,10 +123,10 @@ class OpenAIGenerator
      * Translate a given text to a specified language.
      *
      * @param string $language The language to translate the text to.
-     * @param string $text The text to be translated.
+     * @param string|null $text The text to be translated.
      * @return string|null The translated text or null if an error occurs.
      */
-    public function translateTo(string $language, string $text): ?string
+    public function translateTo(string $language, ?string $text): ?string
     {
         // Check if the text to be translated is provided.
         if (!$text) {
