@@ -102,11 +102,11 @@ class OpenAIGenerator
     /**
      * Generate an abstract from a given description.
      *
-     * @param string $description The description to base the abstract on.
+     * @param ?string $description The description to base the abstract on.
      * @param int $length The length of the abstract.
      * @return string|null The generated abstract or null if an error occurs.
      */
-    public function generateAbstractFromDescription(string $description, int $length): ?string
+    public function generateAbstractFromDescription(?string $description, int $length): ?string
     {
         if (!$description) {
             $this->logger->error('No description provided');
@@ -123,7 +123,7 @@ class OpenAIGenerator
      * Translate a given text to a specified language.
      *
      * @param string $language The language to translate the text to.
-     * @param string|null $text The text to be translated.
+     * @param ?string $text The text to be translated.
      * @return string|null The translated text or null if an error occurs.
      */
     public function translateTo(string $language, ?string $text): ?string
