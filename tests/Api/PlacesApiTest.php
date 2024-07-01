@@ -160,7 +160,7 @@ class PlacesApiTest extends TestCase
                     ->has('properties.wikidata')
                     ->has('properties.wikipedia')
                     ->has('properties.wikimedia_commons')
-                    ->has('properties.enriched_data');
+                    ->has('properties.enrichments');
             }
         );
     }
