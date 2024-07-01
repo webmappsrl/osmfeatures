@@ -16,12 +16,12 @@ class FilterServiceProvider extends ServiceProvider
     public function boot()
     {
         Nova::serving(function (ServingNova $event) {
-            Nova::script('jquery', __DIR__.'/../dist/js/jquery.min.js');
-            Nova::script('moment', __DIR__.'/../dist/js/moment.min.js');
-            Nova::script('daterangepicker', __DIR__.'/../dist/js/daterangepicker.min.js');
-            Nova::style('daterangepicker', __DIR__.'/../dist/css/daterangepicker.css');
-            Nova::script('daterangepicker_', __DIR__.'/../dist/js/filter.js');
-            Nova::style('daterangepicker_', __DIR__.'/../dist/css/filter.css');
+            Nova::script('jquery', __DIR__ . '/../dist/js/jquery.min.js');
+            Nova::script('moment', __DIR__ . '/../dist/js/moment.min.js');
+            Nova::script('daterangepicker', __DIR__ . '/../dist/js/daterangepicker.min.js');
+            Nova::style('daterangepicker', __DIR__ . '/../dist/css/daterangepicker.css');
+            Nova::script('daterangepicker_', __DIR__ . '/../dist/js/filter.js');
+            Nova::style('daterangepicker_', __DIR__ . '/../dist/css/filter.css');
         });
     }
 

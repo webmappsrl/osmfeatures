@@ -28,7 +28,7 @@ class Daterangepicker extends Filter
 
     /**
      * Get the key for the filter.
-     * 
+     *
      * @return string
      */
     public function key(): string
@@ -38,7 +38,7 @@ class Daterangepicker extends Filter
 
     /**
      * Set the filter name.
-     * 
+     *
      * @param string $name
      * @return $this
      */

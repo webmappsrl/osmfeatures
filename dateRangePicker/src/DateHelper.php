@@ -7,31 +7,31 @@ use Illuminate\Support\Carbon;
 
 class DateHelper
 {
-    const TODAY = 'Today';
+    public const TODAY = 'Today';
 
-    const YESTERDAY = 'Yesterday';
+    public const YESTERDAY = 'Yesterday';
 
-    const LAST_2_DAYS = 'Last 2 days';
+    public const LAST_2_DAYS = 'Last 2 days';
 
-    const LAST_7_DAYS = 'Last 7 days';
+    public const LAST_7_DAYS = 'Last 7 days';
 
-    const THIS_WEEK = 'This week';
+    public const THIS_WEEK = 'This week';
 
-    const LAST_WEEK = 'Last week';
+    public const LAST_WEEK = 'Last week';
 
-    const LAST_30_DAYS = 'Last 30 days';
+    public const LAST_30_DAYS = 'Last 30 days';
 
-    const THIS_MONTH = 'This month';
+    public const THIS_MONTH = 'This month';
 
-    const LAST_MONTH = 'Last month';
+    public const LAST_MONTH = 'Last month';
 
-    const LAST_6_MONTHS = 'Last 6 months';
+    public const LAST_6_MONTHS = 'Last 6 months';
 
-    const THIS_YEAR = 'This year';
+    public const THIS_YEAR = 'This year';
 
-    const LAST_YEAR = 'Last year';
+    public const LAST_YEAR = 'Last year';
 
-    const ALL = 'All';
+    public const ALL = 'All';
 
     public static function defaultRanges(): array
     {
