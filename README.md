@@ -40,11 +40,13 @@ _Important NOTE_:
 composer update wm/wp-package
 ```
 
-Finally to import a fresh copy of database use Geobox restore command:
+To import a fresh copy of database use Geobox restore command:
 
 ```bash
 geobox_dump_restore osmfeatures
 ```
+
+Finally, if you are using Laravel nova interface, replace the files in the `vendor/rpj/daterangepicker/src` folder with the ones in `dateRangePicker/src` folder.
 
 ## Run web server from shell outside docker
 
