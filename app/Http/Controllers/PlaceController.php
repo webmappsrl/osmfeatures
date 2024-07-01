@@ -152,7 +152,7 @@ class PlaceController extends Controller
         $properties['wikidata'] = $place->getWikidataUrl();
         $properties['wikipedia'] = $place->getWikipediaUrl();
         $properties['wikimedia_commons'] = $place->getWikimediaCommonsUrl();
-        $properties['enriched_data'] = $enrichment;
+        $properties['enrichments'] = $enrichment;
 
         $geojsonFeature = [
             'type' => 'Feature',
