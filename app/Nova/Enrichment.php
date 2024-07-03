@@ -67,7 +67,7 @@ class Enrichment extends Resource
                 )
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
-                ->allowTooltipHTML()
+                ->allowTooltipHTML(),
 
         ];
     }
