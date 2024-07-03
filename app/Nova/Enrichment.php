@@ -49,25 +49,7 @@ class Enrichment extends Resource
             DateTime::make('Created at'),
             DateTime::make('Updated at'),
             Text::make('Enrichable Osmfeatures ID', 'enrichable_osmfeatures_id'),
-            Tooltip::make('Data', 'data')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
-                ->content(
-                    collect(json_decode($this->data, true))->map(function ($value, $key) {
-                        // Check if $value is an array
-                        if (is_array($value)) {
-                            // If $value is an array, format it properly
-                            $subContent = collect($value)->map(function ($subValue, $subKey) {
-                                return "<span style='font-weight: bold; color: #3b82f6';>{$subKey}:</span> {$subValue}";
-                            })->implode('<br>');
-                            return "<span style='font-weight: bold; color: #3b82f6';>{$key}:</span><br>{$subContent}";
-                        }
-                        // If $value is not an array, handle it as a string
-                        return "<span style='font-weight: bold; color: #3b82f6';>{$key}:</span> {$value}";
-                    })->implode('<br>')
-                )
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->allowTooltipHTML(),
+            Code::make('Enrichment data', 'data')->hideFromIndex()->onlyOnDetail(),
 
         ];
     }
