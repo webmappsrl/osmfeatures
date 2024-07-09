@@ -154,6 +154,23 @@ class EnrichmentService
                 $wikidataLastUpdate = $fetchedData['wikidata']['lastModified'];
             }
 
+            //add control for null values in openai Abstract and description (can occur if openai response is not succesfully generated. In that case, we will get the value from the existing data to avoid data loss)
+            if ($openAIabstract == null) {
+                isset($existingData['abstract']['it']) ? $openAIabstract = $existingData['abstract']['it'] : null;
+            }
+
+            if ($openAIabstractEn == null) {
+                isset($existingData['abstract']['en']) ? $openAIabstractEn = $existingData['abstract']['en'] : null;
+            }
+
+            if ($openAIdescription == null) {
+                isset($existingData['description']['it']) ? $openAIdescription = $existingData['description']['it'] : null;
+            }
+
+            if ($openAIdescriptionEn == null) {
+                isset($existingData['description']['en']) ? $openAIdescriptionEn = $existingData['description']['en'] : null;
+            }
+
             $json['last_update_wikipedia'] = $wikipediaLastUpdate;
             $json['last_update_wikidata'] = $wikidataLastUpdate;
         } else {
