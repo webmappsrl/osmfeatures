@@ -24,7 +24,7 @@ class WikimediaService
     }
 
     /**
-     * Fetches image URLs for a given category in Wikimedia Commons API and uploads them to AWS S3.
+     * Fetches image URLs for a given category or file in Wikimedia Commons API and uploads them to AWS S3.
      *
      * @param Model $model The model to fetch images for.
      * @return array<string> The list of URLs of the uploaded images.
@@ -36,52 +36,74 @@ class WikimediaService
         $tags = json_decode($model->tags, true);
 
         if (isset($tags['wikimedia_commons'])) {
-            $categoryTitle = str_replace('File:', '', $tags['wikimedia_commons']);
-            $this->logger->info("Fetching images from $categoryTitle");
+            $wikimediaValue = $tags['wikimedia_commons'];
+            $this->logger->info("Fetching images from $wikimediaValue");
+
+            if (strpos($wikimediaValue, 'File:') === 0) {
+                // Handle single file case
+                $imageData = $this->getImageData($wikimediaValue);
+                if ($imageData) {
+                    $result[] = $imageData;
+                }
+            } else {
+                // Handle category case
+                $categoryTitle = str_replace('Category:', '', $wikimediaValue);
+                $this->fetchCategoryImages($categoryTitle, $result);
+            }
         } else {
             $this->logger->info("No wikimedia commons in tags, returning empty array");
             return null;
-        }
-        try {
-            // Fetch category members from Wikimedia Commons API
-            $response = Http::get('https://commons.wikimedia.org/w/api.php', [
-                'action' => 'query',
-                'list' => 'categorymembers',
-                'format' => 'json',
-                'cmtitle' => $categoryTitle,
-                'cmlimit' => 'max',
-                'cmnamespace' => '6', // ns=6 is for images
-            ]);
-
-            $data = $response->json();
-        } catch (Exception $e) {
-            $this->logger->error('Error fetching category members: ' . $e->getMessage());
-        }
-
-        if (isset($data['query']['categorymembers'])) {
-            $pages = $data['query']['categorymembers'];
-            foreach ($pages as $page) {
-                $imageData = $this->getImageData($page['title']);
-                $result[] = $imageData;
-            }
-        } else {
-            $this->logger->info("No images found in $categoryTitle");
-            return $result;
         }
 
         return $result;
     }
 
     /**
+     * Fetches image URLs for a given category from Wikimedia Commons API and adds them to the result array.
+     *
+     * @param string $categoryTitle The title of the category.
+     * @param array $result The array to add the fetched image URLs to.
+     */
+    private function fetchCategoryImages(string $categoryTitle, array &$result)
+    {
+        try {
+            // Fetch category members from Wikimedia Commons API
+            $response = Http::get('https://commons.wikimedia.org/w/api.php', [
+                'action' => 'query',
+                'list' => 'categorymembers',
+                'format' => 'json',
+                'cmtitle' => "Category:$categoryTitle",
+                'cmlimit' => 'max',
+                'cmnamespace' => '6', // ns=6 is for images
+            ]);
+
+            $data = $response->json();
+
+            if (isset($data['query']['categorymembers'])) {
+                $pages = $data['query']['categorymembers'];
+                foreach ($pages as $page) {
+                    $imageData = $this->getImageData($page['title']);
+                    if ($imageData) {
+                        $result[] = $imageData;
+                    }
+                }
+            } else {
+                $this->logger->info("No images found in $categoryTitle");
+            }
+        } catch (Exception $e) {
+            $this->logger->error('Error fetching category members: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Fetches the URL of an image from Wikimedia Commons API.
      *
      * @param string $fileName The name of the image file.
-     * @return string|null The URL of the image, or null if not found.
+     * @return array|null The URL of the image, or null if not found.
      * @throws Exception
      */
     private function getImageData(string $fileName): ?array
     {
-        $res = [];
         try {
             // Fetch image URL from Wikimedia Commons API
             $response = Http::get('https://commons.wikimedia.org/w/api.php', [
@@ -91,9 +113,8 @@ class WikimediaService
                 'prop' => 'imageinfo',
                 'iiprop' => 'url|extmetadata',
                 'iiurlwidth' => 100, // Specifica la larghezza desiderata
-                //     'iiurlheight' => 500, // Specifica l'altezza desiderata (opzionale, solo se necessario)
+                // 'iiurlheight' => 500, // Specifica l'altezza desiderata (opzionale, solo se necessario)
             ]);
-
 
             $data = $response->json();
 
@@ -102,8 +123,7 @@ class WikimediaService
                 if (isset($page['imageinfo'][0]['url'])) {
                     $sourceUrl = $page['imageinfo'][0]['url'];
                     $thumbUrl = $page['imageinfo'][0]['thumburl'];
-                    $res = ['source_url' => $sourceUrl, 'thumb_url' =>  $thumbUrl];
-                    return $res;
+                    return ['source_url' => $sourceUrl, 'thumb_url' =>  $thumbUrl];
                 }
             }
         } catch (Exception $e) {
@@ -123,16 +143,16 @@ class WikimediaService
      */
     private function uploadToAWS(string $imagePath, string $imageUrl): string
     {
-        if (!$this->aws->exists($imagePath)) {
+        if (!Storage::exists($imagePath)) {
             $imageResponse = Http::get($imageUrl);
             if ($imageResponse->failed()) {
                 $this->logger->error('Error downloading image: ' . $imageUrl);
                 throw new Exception('Error downloading image: ' . $imageUrl);
             }
             $imageContent = $imageResponse->body();
-            $this->aws->put($imagePath, $imageContent);
+            Storage::put($imagePath, $imageContent);
         }
-        return $this->aws->url($imagePath);
+        return Storage::url($imagePath);
     }
 
     /**

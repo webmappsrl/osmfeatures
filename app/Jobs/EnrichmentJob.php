@@ -22,13 +22,16 @@ class EnrichmentJob implements ShouldQueue
 
 
     protected $model;
+    protected $onlyMedia;
 
     /**
      * Create a new job instance.
      */
-    public function __construct(Model $model)
+    public function __construct(Model $model, bool $onlyMedia = false)
     {
         $this->model = $model;
+
+        $this->onlyMedia = $onlyMedia;
     }
 
     /**
@@ -36,6 +39,6 @@ class EnrichmentJob implements ShouldQueue
      */
     public function handle(EnrichmentService $enrichmentService): void
     {
-        $enrichmentService->enrich($this->model);
+        $enrichmentService->enrich($this->model, $this->onlyMedia);
     }
 }
