@@ -4,12 +4,11 @@ namespace App\Console\Commands;
 
 use App\Jobs\EnrichmentJob;
 use Illuminate\Console\Command;
-use App\Models\Place;
 use Illuminate\Support\Facades\App;
 
 class EnrichmentCommand extends Command
 {
-    protected $signature = 'osmfeatures:enrich {model=Place: The model to enrich}{osmid?* : List of OSM IDs to enrich}';
+    protected $signature = 'osmfeatures:enrich {--only-media : Enrich only media} {model=Place: The model to enrich}{osmid?* : List of OSM IDs to enrich}';
 
     protected $description = 'Enrich provided osmfeatures model with data from Wikipedia, Wikidata, and Wikimedia Commons. Optionally provide a list of OSM IDs separated by space.';
 
@@ -17,26 +16,27 @@ class EnrichmentCommand extends Command
 
     public function handle()
     {
+        $onlyMedia = $this->option('only-media');
         try {
             $osmids = $this->argument('osmid');
             $jobCount = 0;
             $model = App::make('App\\Models\\' . $this->argument('model'));
 
-
             if (!empty($osmids)) {
-                $models = $model::whereIn('osm_id', $osmids);
+                $modelsQuery = $model::whereIn('osm_id', $osmids);
 
-                if ($models->count() == 0) {
+                if ($modelsQuery->count() == 0) {
                     $this->info('No models found with the specified OSM IDs.');
                     return Command::FAILURE;
                 }
             } else {
-                $models = $model::all();
+                $modelsQuery = $model::query();
             }
 
-            $models->chunk(100, function ($models) use (&$jobCount) {
+            // Process models in chunks
+            $modelsQuery->chunk(100, function ($models) use ($onlyMedia, &$jobCount) {
                 foreach ($models as $model) {
-                    EnrichmentJob::dispatch($model);
+                    EnrichmentJob::dispatch($model, $onlyMedia);
                     $jobCount++;
                 }
             });
