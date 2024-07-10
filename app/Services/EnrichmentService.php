@@ -47,59 +47,69 @@ class EnrichmentService
         $this->logger = Log::channel('enrichment');
     }
 
-    public function enrich(Model $model)
+    public function enrich(Model $model, bool $onlyMedia = false)
     {
         $json = [];
         $this->logger->info('Enriching model: ' . get_class($model) . ' ' . $model->id);
 
-        try {
-            $json = array_merge($json, $this->enrichText($model));
-        } catch (Exception $e) {
-            $this->logger->error('Failed to enrich Text model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+        if ($onlyMedia) {
+            //to separate the media enrichment and update only the media part of the json we need to extract the existing data
+            $existingEnrichment = Enrichment::where('enrichable_id', $model->id)
+                ->where('enrichable_type', get_class($model))
+                ->first();
+            $existingData = $existingEnrichment ? json_decode($existingEnrichment->data, true) : null;
+
+            //perform the enrich media part and save data in the json variable
+            try {
+                $json = array_merge($json, $this->enrichMedia($model));
+            } catch (Exception $e) {
+                $this->logger->error('Failed to enrich media model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+            }
+
+            //if the model has no existing data (meaning that no enriched text will be overwritten) we insert the image data in the database
+            if (!$existingData) {
+                Enrichment::updateOrCreate([
+                    'enrichable_osmfeatures_id' => $model->getOsmfeaturesId(),
+                ], [
+                    'enrichable_id' => $model->id,
+                    'enrichable_type' => get_class($model),
+                    'data' => json_encode($json),
+                ]);
+                $this->logger->info('Enrichment successful');
+            } else {
+                //if the model has existing data, we update the image key in the json and update the value in the database with the new json data.
+                $existingData['images'] = $json['images'];
+                Enrichment::updateOrCreate([
+                    'enrichable_osmfeatures_id' => $model->getOsmfeaturesId(),
+                ], [
+                    'enrichable_id' => $model->id,
+                    'enrichable_type' => get_class($model),
+                    'data' => json_encode($existingData),
+                ]);
+                $this->logger->info('Enrichment successful');
+            }
+        } else {
+            try {
+                $json = array_merge($json, $this->enrichText($model));
+            } catch (Exception $e) {
+                $this->logger->error('Failed to enrich Text model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+            }
+
+            try {
+                $json = array_merge($json, $this->enrichMedia($model));
+            } catch (Exception $e) {
+                $this->logger->error('Failed to enrich media model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
+            }
+
+            Enrichment::updateOrCreate([
+                'enrichable_osmfeatures_id' => $model->getOsmfeaturesId(),
+            ], [
+                'enrichable_id' => $model->id,
+                'enrichable_type' => get_class($model),
+                'data' => json_encode($json),
+            ]);
+            $this->logger->info('Enrichment successful');
         }
-        try {
-            $json = array_merge($json, $this->enrichMedia($model));
-        } catch (Exception $e) {
-            $this->logger->error('Failed to enrich media model ' . get_class($model) . ' with osmid ' . $model->osm_id . ': ' . $e->getMessage());
-        }
-
-        Enrichment::updateOrCreate([
-            'enrichable_osmfeatures_id' => $model->getOsmfeaturesId(),
-        ], [
-            'enrichable_id' => $model->id,
-            'enrichable_type' => get_class($model),
-            'data' => json_encode($json),
-        ]);
-        $this->logger->info('Enrichment successful');
-    }
-
-    protected function shouldUpdateDescription(array $fetchedData, ?array $existingData): bool
-    {
-        if (!$existingData || !isset($existingData['description'])) {
-            $this->logger->info('Description does not exist, update required');
-            return true;
-        }
-
-        if (!$fetchedData) {
-            $this->logger->info('No fetched data, cant perform openAi enrichment');
-            return false;
-        }
-
-        $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? '';
-        $existingWikipediaLastUpdate = $existingData['last_update_wikipedia'] ?? '';
-
-        if ($existingWikipediaLastUpdate == '') {
-            $this->logger->info('No last update found, update required');
-            return true;
-        }
-
-        if (Carbon::parse($wikipediaLastUpdate)->gt(Carbon::parse($existingWikipediaLastUpdate))) {
-            $this->logger->info('Description outdated, update required');
-            return true;
-        }
-
-        $this->logger->info('Description up to date, not sending openAI request');
-        return false;
     }
 
     protected function enrichText($model)
@@ -188,6 +198,35 @@ class EnrichmentService
         ];
 
         return $json;
+    }
+
+    protected function shouldUpdateDescription(array $fetchedData, ?array $existingData): bool
+    {
+        if (!$existingData || !isset($existingData['description'])) {
+            $this->logger->info('Description does not exist, update required');
+            return true;
+        }
+
+        if (!$fetchedData) {
+            $this->logger->info('No fetched data, cant perform openAi enrichment');
+            return false;
+        }
+
+        $wikipediaLastUpdate = $fetchedData['wikipedia']['lastModified'] ?? '';
+        $existingWikipediaLastUpdate = $existingData['last_update_wikipedia'] ?? '';
+
+        if ($existingWikipediaLastUpdate == '') {
+            $this->logger->info('No last update found, update required');
+            return true;
+        }
+
+        if (Carbon::parse($wikipediaLastUpdate)->gt(Carbon::parse($existingWikipediaLastUpdate))) {
+            $this->logger->info('Description outdated, update required');
+            return true;
+        }
+
+        $this->logger->info('Description up to date, not sending openAI request');
+        return false;
     }
 
     protected function enrichMedia($model)
