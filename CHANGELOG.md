@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.2](https://github.com/webmappsrl/osmfeatures/compare/v1.30.1...v1.30.2) (2024-07-10)
+
+
+### Bug Fixes
+
+* fixed openai enrichment to get existing abstract and description if response is not valid OC:3583 ([bc1d7b9](https://github.com/webmappsrl/osmfeatures/commit/bc1d7b9330d69bc8a5a6ac15b6b72c360fc8124d))
+
 ## [1.30.1](https://github.com/webmappsrl/osmfeatures/compare/v1.30.0...v1.30.1) (2024-07-01)
 
 
