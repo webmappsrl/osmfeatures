@@ -18,23 +18,56 @@ class WikiDataFetcher implements DataFetcherInterface
         $url = "https://www.wikidata.org/wiki/Special:EntityData/{$wikidataTag}.json";
         $response = Http::get($url);
 
-        if ($response->successful()) {
+        if ($response->status() === 200) {
             $data = $response->json();
-            $entity = $data['entities'][$wikidataTag];
-            $descriptions = $entity['descriptions'] ?? [];
-            $description = $descriptions['en']['value'] ?? '';
-            $revisionId = $entity['lastrevid'] ?? '';
-            $lastModified = $entity['modified'] ?? '';
 
-            return [
-                'title' => $entity['labels']['en']['value'] ?? '',
-                'content' => $description,
-                'lastRevisionId' => $revisionId,
-                'lastModified' => $lastModified,
-            ];
-        } else {
-            Log::info('Failed to fetch Wikidata data from link: ' . $url);
-            throw new \Exception('Failed to fetch Wikidata data from link: ' . $url);
+            // Check if the response contains a different entity ID
+            $newWikidataTag = array_keys($data['entities'])[0];
+            if ($newWikidataTag !== $wikidataTag) {
+                Log::info('Wikidata tag changed from ' . $wikidataTag . ' to ' . $newWikidataTag);
+                $wikidataTag = $newWikidataTag;
+            }
+
+            return $this->extractData($data, $wikidataTag);
+        } elseif ($response->status() === 301 || $response->status() === 302) {
+            // Handle redirect
+            $newUrl = $response->header('Location');
+            Log::info('Redirected to ' . $newUrl);
+            if ($newUrl) {
+                $response = Http::get($newUrl);
+                if ($response->successful()) {
+                    $newWikidataTag = $this->extractWikidataTagFromUrl($newUrl);
+                    return $this->extractData($response->json(), $newWikidataTag);
+                }
+            } else {
+                Log::info('No new URL found in redirect');
+                throw new \Exception('Failed to fetch Wikidata data from link: ' . $newUrl);
+            }
         }
+
+        Log::info('Failed to fetch Wikidata data from link: ' . $url);
+        throw new \Exception('Failed to fetch Wikidata data from link: ' . $url);
+    }
+
+    private function extractData(array $data, string $wikidataTag): array
+    {
+        $entity = $data['entities'][$wikidataTag];
+        $descriptions = $entity['descriptions'] ?? [];
+        $description = $descriptions['en']['value'] ?? '';
+        $revisionId = $entity['lastrevid'] ?? '';
+        $lastModified = $entity['modified'] ?? '';
+
+        return [
+            'title' => $entity['labels']['en']['value'] ?? '',
+            'content' => $description,
+            'lastRevisionId' => $revisionId,
+            'lastModified' => $lastModified,
+        ];
+    }
+
+    public function extractWikidataTagFromUrl(string $url): string
+    {
+        preg_match('/Q\d+/', $url, $matches);
+        return $matches[0] ?? '';
     }
 }
