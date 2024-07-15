@@ -5,6 +5,7 @@ namespace Tests\Api;
 use App\Models\Place;
 use Database\Seeders\TestDBSeeder;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +15,7 @@ use Tests\TestCase;
 
 class PlacesApiTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $usingTestData = false;
 
@@ -163,6 +164,68 @@ class PlacesApiTest extends TestCase
                     ->has('properties.enrichments');
             }
         );
+    }
+
+    /**
+     * Test if the http call with correct parameter returns the correct results
+     * @test
+     */
+    public function distance_places_api_returns_correct_response_with_correct_parameters()
+    {
+        // Test if the Places API returns the correct response when given the correct parameters
+        $response = $this->get('/api/v1/features/places/10.494953/46.179482/1234567');
+
+        // Assert that the response has a status code of 200
+        $response->assertStatus(200);
+        // Assert that the response JSON array is not empty
+        $this->assertNotEquals(0, count($response->json()));
+    }
+
+    /**
+     * Test if the http call with missing parameter return a bad request
+     * @test
+     */
+    public function distance_places_api_returns_404_with_missing_parameter()
+    {
+        // Test if the Places API returns a bad request when missing the distance parameter
+        $response = $this->get('/api/v1/features/places/10.494953/46.179482');
+
+        // Assert that the response has a status code of 400
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Test if the http call with wrong latitude parameter return a bad request
+     * @test
+     */
+    public function distance_places_api_returns_bad_request_with_wrong_parameter()
+    {
+        // Test if the Places API returns a bad request when given a wrong latitude parameter
+        $response = $this->get('/api/v1/features/places/10.494953/failing_parameter/1000');
+
+        // Assert that the response has a status code of 400
+        $response->assertStatus(400);
+        // Assert that the response JSON contains the expected error message
+        $response->assertJson([
+            'message' => 'Invalid latitude parameter',
+        ]);
+    }
+
+    /**
+     * Test if the http call with correct parameters return correct json structure
+     * @test
+     */
+    public function distance_places_api_returns_correct_json_structure()
+    {
+        // Test if the Places API returns the correct JSON structure when given the correct parameters
+        $response = $this->get('/api/v1/features/places/10.494953/46.179482/1234567');
+        $json = $response->json();
+
+        // Assert that the response JSON array has the expected keys
+        $keys = ['osmfeatures_id', 'name', 'class', 'subclass', 'elevation', 'distance'];
+        foreach ($keys as $key) {
+            $this->assertArrayHasKey($key, $json[0]);
+        }
     }
 
     public function tearDown(): void
