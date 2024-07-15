@@ -171,7 +171,7 @@ class PlacesApiTest extends TestCase
     public function distance_places_api_returns_correct_response_with_correct_parameters()
     {
         // Test if the Places API returns the correct response when given the correct parameters
-        $response = $this->get('/api/v1/features/places/10.494953/46.179482/1234567');
+        $response = $this->get('/api/v1/features/places/10.494953/46.179482/123456789');
 
         // Assert that the response has a status code of 200
         $response->assertStatus(200);
@@ -216,7 +216,7 @@ class PlacesApiTest extends TestCase
     public function distance_places_api_returns_correct_json_structure()
     {
         // Test if the Places API returns the correct JSON structure when given the correct parameters
-        $response = $this->get('/api/v1/features/places/10.494953/46.179482/1234567');
+        $response = $this->get('/api/v1/features/places/10.494953/46.179482/123456789');
         $json = $response->json();
 
         // Assert that the response JSON array has the expected keys
