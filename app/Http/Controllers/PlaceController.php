@@ -228,4 +228,38 @@ class PlaceController extends Controller
 
         return response()->json($geojsonFeature);
     }
+
+    public function getPlacesByDistance(string $lon, string $lat, int $distance)
+    {
+        $places = DB::table('places')
+            ->select(DB::raw("
+                osm_type || osm_id AS osmfeatures_id,
+                name,
+                class,
+                subclass,
+                elevation,
+                ROUND(
+                    ST_Distance(
+                        ST_Transform(geom, 3857),
+                        ST_Transform(
+                            ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                            3857
+                        )
+                    )
+                ) AS distance
+            "))
+            ->whereRaw("
+                ST_Distance(
+                    ST_Transform(geom, 3857),
+                    ST_Transform(
+                        ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                        3857
+                    )
+                ) < ?
+            ", [$lon, $lat, $lon, $lat, $distance])
+            ->orderBy('distance')
+            ->get();
+
+        return response()->json($places);
+    }
 }
