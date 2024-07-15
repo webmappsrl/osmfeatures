@@ -6,6 +6,7 @@ use App\Models\Place;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlaceController extends Controller
 {
@@ -229,10 +230,57 @@ class PlaceController extends Controller
         return response()->json($geojsonFeature);
     }
 
+    /** 
+     * @OA\Get(
+     *     path="/api/v1/features/places/distance/{lon}/{lat}/{distance}",
+     *     operationId="getPlacesByDistance",
+     *     tags={"Places"},
+     *     summary="Get Places by distance",
+     *     description="Returns a list of Places within the specified distance from the given coordinates.",
+     *     @OA\Parameter(
+     *         name="lon",
+     *         description="Longitude",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lat",
+     *         description="Latitude",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="distance",
+     *         description="Distance in meters",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     )
+     * )   
+     */
+    /**
+     * Get Places by distance
+     *
+     * Returns a list of Places within the specified distance from the given coordinates.
+     *
+     * @param string $lon Longitude
+     * @param string $lat Latitude
+     * @param int    $distance Distance in meters
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getPlacesByDistance(string $lon, string $lat, int $distance)
     {
-        $places = DB::table('places')
-            ->select(DB::raw("
+        try {
+            // Build the SQL query
+            $places = DB::table('places')
+                ->select(DB::raw("
                 osm_type || osm_id AS osmfeatures_id,
                 name,
                 class,
@@ -246,9 +294,9 @@ class PlaceController extends Controller
                             3857
                         )
                     )
-                ) AS distance
+                )::integer AS distance
             "))
-            ->whereRaw("
+                ->whereRaw("
                 ST_Distance(
                     ST_Transform(geom, 3857),
                     ST_Transform(
@@ -257,9 +305,15 @@ class PlaceController extends Controller
                     )
                 ) < ?
             ", [$lon, $lat, $lon, $lat, $distance])
-            ->orderBy('distance')
-            ->get();
+                ->orderBy('distance')
+                ->get();
+        } catch (\Exception $e) {
+            // Log and return error response on exception
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'Bad Request'], 404);
+        }
 
+        // Return success response
         return response()->json($places);
     }
 }
