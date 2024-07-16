@@ -123,7 +123,7 @@ class PlaceController extends Controller
         $enrichment = null;
 
         if (!$place) {
-            return response()->json(['message' => 'place non trovato'], 404);
+            return response()->json(['message' => 'Not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
 
@@ -206,7 +206,7 @@ class PlaceController extends Controller
         $place = Place::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmid)->first();
 
         if (!$place) {
-            return response()->json(['message' => 'Place not found'], 404);
+            return response()->json(['message' => 'Not found'], 404);
         }
 
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;

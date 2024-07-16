@@ -137,7 +137,7 @@ class AdminAreaController extends Controller
         $adminArea = AdminArea::getOsmfeaturesByOsmfeaturesID($id);
 
         if (!$adminArea) {
-            return response()->json(['message' => 'Admin Area not found'], 404);
+            return response()->json(['message' => 'Not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
 
@@ -220,7 +220,7 @@ class AdminAreaController extends Controller
             ->first();
 
         if (!$adminArea) {
-            return response()->json(['message' => 'Admin Area not found'], 404);
+            return response()->json(['message' => 'Not found'], 404);
         }
 
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
