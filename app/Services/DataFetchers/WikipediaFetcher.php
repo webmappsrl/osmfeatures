@@ -26,11 +26,14 @@ class WikipediaFetcher implements DataFetcherInterface
             $data = $response->json();
             $revisionId = intval($data['revision']);
             $lastModified = $data['timestamp'];
+            $image['source_url'] = $data['originalimage']['source'] ?? null;
+            $image['thumb_url'] = $data['thumbnail']['source'] ?? null;
             return [
                 'title' => $data['title'],
                 'content' => $data['extract'],
                 'lastRevisionId' => $revisionId,
                 'lastModified' => $lastModified,
+                'image' => $image
             ];
         } else {
             Log::info('Failed to fetch data from Wikipedia, from link ' . $url);
