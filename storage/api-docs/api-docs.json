@@ -465,6 +465,93 @@
                 }
             }
         },
+        "/api/v1/features/places/{lon}/{lat}/{distance}": {
+            "get": {
+                "tags": ["API V1"],
+                "summary": "Get nearby places",
+                "description": "Get places within a specified distance from the given coordinates.",
+                "operationId": "getPlacesByDistance",
+                "parameters": [
+                    {
+                        "name": "lon",
+                        "in": "path",
+                        "description": "Longitude of the location",
+                        "example": "10.494953",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "path",
+                        "description": "Latitude of the location",
+                        "example": "46.179482",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "distance",
+                        "in": "path",
+                        "description": "Distance in meters",
+                        "example":1000,
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        
+                                    },
+                                     "type": "object",
+                                    "example": {
+                                            "osmfeatures_id": "W195710674",
+                                            "name": "Rifugio Giuseppe Garibaldi",
+                                            "class":"tourism",
+                                            "subclass":"alpine_hut",
+                                            "elevation":2548,
+                                            "distance":9                           
+                                    },
+                                   "osmfeatures_id": {
+                                       "type": "string",
+                                       "description": "Osmfeatures ID of the place"
+                                   },
+                                   "name": {
+                                       "type": "string",
+                                       "description": "Name of the place"
+                                   },
+                                   "class": {
+                                       "type": "string",
+                                       "description": "Class of the place"
+                                   },
+                                    "subclass": {
+                                       "type": "string",
+                                       "description": "Subclass of the place"
+                                   },
+                                  "elevation": {
+                                       "type": "number",
+                                       "description": "Elevation of the place in meters"
+                                  },
+                                  "distance": {
+                                       "type": "number",
+                                       "description": "Distance in meters"
+                                  }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/features/hiking-routes/list": {
             "get": {
                 "tags": ["API V1"],

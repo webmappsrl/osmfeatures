@@ -6,6 +6,7 @@ use App\Models\Place;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PlaceController extends Controller
 {
@@ -227,5 +228,105 @@ class PlaceController extends Controller
         ];
 
         return response()->json($geojsonFeature);
+    }
+
+    /** 
+     * @OA\Get(
+     *     path="/api/v1/features/places/distance/{lon}/{lat}/{distance}",
+     *     operationId="getPlacesByDistance",
+     *     tags={"Places"},
+     *     summary="Get Places by distance",
+     *     description="Returns a list of Places within the specified distance from the given coordinates.",
+     *     @OA\Parameter(
+     *         name="lon",
+     *         description="Longitude",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="lat",
+     *         description="Latitude",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="distance",
+     *         description="Distance in meters",
+     *         required=true,
+     *         in="path",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *     )
+     * )   
+     */
+    /**
+     * Get Places by distance
+     *
+     * Returns a list of Places within the specified distance from the given coordinates.
+     *
+     * @param string $lon Longitude
+     * @param string $lat Latitude
+     * @param int    $distance Distance in meters
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPlacesByDistance(string $lon, string $lat, int $distance)
+    {
+        // Validate parameters
+        if (!is_numeric($lon)) {
+            return response()->json(['message' => 'Invalid longitude parameter'], 400);
+        }
+
+        if (!is_numeric($lat)) {
+            return response()->json(['message' => 'Invalid latitude parameter'], 400);
+        }
+
+        if (!is_numeric($distance)) {
+            return response()->json(['message' => 'Invalid distance parameter'], 400);
+        }
+
+        try {
+            // Build the SQL query
+            $places = DB::table('places')
+                ->select(DB::raw("
+        osm_type || osm_id AS osmfeatures_id,
+        name,
+        class,
+        subclass,
+        elevation,
+        ROUND(
+            ST_Distance(
+                ST_Transform(geom::geometry, 3857),
+                ST_Transform(
+                    ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                    3857
+                )
+            )
+        )::integer AS distance
+    "))
+                ->whereRaw("
+        ST_Distance(
+            ST_Transform(geom::geometry, 3857),
+            ST_Transform(
+                ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                3857
+            )
+        ) < ?
+    ", [$lon, $lat, $lon, $lat, $distance])
+                ->orderBy('distance')
+                ->get();
+        } catch (\Exception $e) {
+            // Log and return error response on exception
+            Log::error($e->getMessage());
+            return response()->json(['message' => 'Bad Request'], 400);
+        }
+
+        // Return success response
+        return response()->json($places);
     }
 }
