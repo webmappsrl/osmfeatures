@@ -230,7 +230,7 @@ class PlaceController extends Controller
         return response()->json($geojsonFeature);
     }
 
-    /** 
+    /**
      * @OA\Get(
      *     path="/api/v1/features/places/distance/{lon}/{lat}/{distance}",
      *     operationId="getPlacesByDistance",
@@ -262,7 +262,7 @@ class PlaceController extends Controller
      *         response=200,
      *         description="Successful operation",
      *     )
-     * )   
+     * )
      */
     /**
      * Get Places by distance
