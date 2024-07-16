@@ -33,7 +33,7 @@ class WikipediaFetcher implements DataFetcherInterface
                 'content' => $data['extract'],
                 'lastRevisionId' => $revisionId,
                 'lastModified' => $lastModified,
-                'image' => $image
+                'image' => $image,
             ];
         } else {
             Log::info('Failed to fetch data from Wikipedia, from link ' . $url);
