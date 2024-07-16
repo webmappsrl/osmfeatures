@@ -278,46 +278,46 @@ class PlaceController extends Controller
     public function getPlacesByDistance(string $lon, string $lat, int $distance)
     {
         // Validate parameters
-        // if (!is_numeric($lon)) {
-        //     return response()->json(['message' => 'Invalid longitude parameter'], 400);
-        // }
+        if (!is_numeric($lon)) {
+            return response()->json(['message' => 'Invalid longitude parameter'], 400);
+        }
 
-        // if (!is_numeric($lat)) {
-        //     return response()->json(['message' => 'Invalid latitude parameter'], 400);
-        // }
+        if (!is_numeric($lat)) {
+            return response()->json(['message' => 'Invalid latitude parameter'], 400);
+        }
 
-        // if (!is_numeric($distance)) {
-        //     return response()->json(['message' => 'Invalid distance parameter'], 400);
-        // }
+        if (!is_numeric($distance)) {
+            return response()->json(['message' => 'Invalid distance parameter'], 400);
+        }
 
         try {
             // Build the SQL query
             $places = DB::table('places')
                 ->select(DB::raw("
-                osm_type || osm_id AS osmfeatures_id,
-                name,
-                class,
-                subclass,
-                elevation,
-                ROUND(
-                    ST_Distance(
-                        ST_Transform(geom, 3857),
-                        ST_Transform(
-                            ST_SetSRID(ST_MakePoint(?, ?), 4326),
-                            3857
-                        )
-                    )
-                )::integer AS distance
-            "))
+        osm_type || osm_id AS osmfeatures_id,
+        name,
+        class,
+        subclass,
+        elevation,
+        ROUND(
+            ST_Distance(
+                ST_Transform(geom::geometry, 3857),
+                ST_Transform(
+                    ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                    3857
+                )
+            )
+        )::integer AS distance
+    "))
                 ->whereRaw("
-                ST_Distance(
-                    ST_Transform(geom, 3857),
-                    ST_Transform(
-                        ST_SetSRID(ST_MakePoint(?, ?), 4326),
-                        3857
-                    )
-                ) < ?
-            ", [$lon, $lat, $lon, $lat, $distance])
+        ST_Distance(
+            ST_Transform(geom::geometry, 3857),
+            ST_Transform(
+                ST_SetSRID(ST_MakePoint(?, ?), 4326),
+                3857
+            )
+        ) < ?
+    ", [$lon, $lat, $lon, $lat, $distance])
                 ->orderBy('distance')
                 ->get();
         } catch (\Exception $e) {
