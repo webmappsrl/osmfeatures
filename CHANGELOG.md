@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.31.0](https://github.com/webmappsrl/osmfeatures/compare/v1.30.1...v1.31.0) (2024-07-16)
+
+
+### Features
+
+* Api Places distance from coordinates OC:3628 ([#121](https://github.com/webmappsrl/osmfeatures/issues/121)) ([c8a26ea](https://github.com/webmappsrl/osmfeatures/commit/c8a26eaf9daa668528ca0024b427a0d71f768359))
+* Images from wikipedia and wikidata OC: 3630 ([#122](https://github.com/webmappsrl/osmfeatures/issues/122)) ([d3d7dff](https://github.com/webmappsrl/osmfeatures/commit/d3d7dffd1e441fa5f97ab0c83b4e7024df1110b0))
+
+
+### Bug Fixes
+
+* fixed openai enrichment to get existing abstract and description if response is not valid OC:3583 ([bc1d7b9](https://github.com/webmappsrl/osmfeatures/commit/bc1d7b9330d69bc8a5a6ac15b6b72c360fc8124d))
+* wikidata redirect OC:3563 ([#120](https://github.com/webmappsrl/osmfeatures/issues/120)) ([9633ac6](https://github.com/webmappsrl/osmfeatures/commit/9633ac6bd479e3b52c6da34560a15cca1d9ad77f))
+
 ## [1.30.1](https://github.com/webmappsrl/osmfeatures/compare/v1.30.0...v1.30.1) (2024-07-01)
 
 
