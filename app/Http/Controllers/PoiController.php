@@ -127,8 +127,8 @@ class PoiController extends Controller
     {
         $poi = Poi::where('id', $id)->first();
 
-        if (! $poi) {
-            return response()->json(['message' => 'POI non trovato'], 404);
+        if (!$poi) {
+            return response()->json(['message' => 'Not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$poi->geom])[0]->geojson;
         $geojsonFeature = [

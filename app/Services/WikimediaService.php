@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use App\Services\DataFetchers\WikiDataFetcher;
+use App\Services\DataFetchers\WikipediaFetcher;
 
 class WikimediaService
 {
@@ -17,10 +19,14 @@ class WikimediaService
      * @var Log
      */
     protected $logger;
+    protected $wikidataFetcher;
+    protected $wikipediaFetcher;
 
     public function __construct()
     {
         $this->logger = Log::channel('wikimediaService');
+        $this->wikidataFetcher = new WikiDataFetcher();
+        $this->wikipediaFetcher = new WikipediaFetcher();
     }
 
     /**
@@ -43,7 +49,7 @@ class WikimediaService
                 // Handle single file case
                 $imageData = $this->getImageData($wikimediaValue);
                 if ($imageData) {
-                    $result[] = $imageData;
+                    $result['wikimedia_images'] = $imageData;
                 }
             } else {
                 // Handle category case
@@ -51,8 +57,32 @@ class WikimediaService
                 $this->fetchCategoryImages($categoryTitle, $result);
             }
         } else {
-            $this->logger->info("No wikimedia commons in tags, returning empty array");
-            return null;
+            $this->logger->info("No wikimedia commons in tags, looking for images in wikidata or wikipedia...");
+
+            $result = $this->enrichWithWikidataOrWikipedia($tags);
+        }
+
+        return $result;
+    }
+
+    private function enrichWithWikidataOrWikipedia(array $tags): array
+    {
+        $result = [];
+        if (isset($tags['wikipedia'])) {
+            $wikipediaValue = $tags['wikipedia'];
+            $this->logger->info("Fetching images from $wikipediaValue");
+            $wikipediaData = $this->wikipediaFetcher->fetchData($wikipediaValue);
+            if ($wikipediaData) {
+                $result['wikipedia_images'] = $wikipediaData['image'];
+            }
+        }
+        if (isset($tags['wikidata'])) {
+            $wikidataValue = $tags['wikidata'];
+            $this->logger->info("Fetching images from $wikidataValue");
+            $wikidataData = $this->wikidataFetcher->fetchData($wikidataValue);
+            if ($wikidataData) {
+                $result['wikidata_images'] = $wikidataData['image'];
+            }
         }
 
         return $result;
@@ -66,6 +96,7 @@ class WikimediaService
      */
     private function fetchCategoryImages(string $categoryTitle, array &$result)
     {
+        $result = [];
         try {
             // Fetch category members from Wikimedia Commons API
             $response = Http::get('https://commons.wikimedia.org/w/api.php', [
@@ -84,7 +115,7 @@ class WikimediaService
                 foreach ($pages as $page) {
                     $imageData = $this->getImageData($page['title']);
                     if ($imageData) {
-                        $result[] = $imageData;
+                        $result['wikimedia_images'][] = $imageData;
                     }
                 }
             } else {

@@ -127,8 +127,8 @@ class PoleController extends Controller
     {
         $pole = Pole::getOsmfeaturesByOsmfeaturesID($id);
 
-        if (! $pole) {
-            return response()->json(['message' => 'Pole not found'], 404);
+        if (!$pole) {
+            return response()->json(['message' => 'Not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
         match ($pole->osm_type) {
@@ -194,7 +194,7 @@ class PoleController extends Controller
     {
         $acceptedTypes = ['relation', 'way', 'node'];
 
-        if (! in_array($osmType, $acceptedTypes)) {
+        if (!in_array($osmType, $acceptedTypes)) {
             return response()->json(['message' => 'Bad request'], 404);
         }
 
@@ -202,8 +202,8 @@ class PoleController extends Controller
             ->where('osm_id', $osmid)
             ->first();
 
-        if (! $pole) {
-            return response()->json(['message' => 'Pole not found'], 404);
+        if (!$pole) {
+            return response()->json(['message' => 'Not found'], 404);
         }
 
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
