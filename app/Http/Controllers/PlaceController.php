@@ -278,17 +278,17 @@ class PlaceController extends Controller
     public function getPlacesByDistance(string $lon, string $lat, int $distance)
     {
         // Validate parameters
-        if (!is_numeric($lon)) {
-            return response()->json(['message' => 'Invalid longitude parameter'], 400);
-        }
+        // if (!is_numeric($lon)) {
+        //     return response()->json(['message' => 'Invalid longitude parameter'], 400);
+        // }
 
-        if (!is_numeric($lat)) {
-            return response()->json(['message' => 'Invalid latitude parameter'], 400);
-        }
+        // if (!is_numeric($lat)) {
+        //     return response()->json(['message' => 'Invalid latitude parameter'], 400);
+        // }
 
-        if (!is_numeric($distance)) {
-            return response()->json(['message' => 'Invalid distance parameter'], 400);
-        }
+        // if (!is_numeric($distance)) {
+        //     return response()->json(['message' => 'Invalid distance parameter'], 400);
+        // }
 
         try {
             // Build the SQL query
