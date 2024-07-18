@@ -21,3 +21,16 @@ jobs:
           port: ${{ secrets.PORTPROD }}
           key: ${{ secrets.SSHKEYPROD }}
           script: "cd /root/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_prod.sh"
+  launch-horizon:
+    name: Launch Horizon
+    needs: [deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH connection and run scripts/launch_horizon.sh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTPROD }}
+          username: ${{ secrets.USERNAMEPROD }}
+          port: ${{ secrets.PORTPROD }}
+          key: ${{ secrets.SSHKEYPROD }}
+          script: "cd /root/html/osmfeatures && docker exec php81_osmfeatures bash scripts/launch_horizon.sh"
