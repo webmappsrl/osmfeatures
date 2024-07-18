@@ -46,7 +46,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuItem::make('API', url('/api/documentation'))->external()->openInNewTab(),
                 ])->icon('users')->collapsable(),
                 MenuSection::make('Tools', [
-                    MenuItem::externalLink('Display Jobs', url('/jobs'))->withBadgeIf(Badge::make('Some jobs failed', 'warning'), 'warning', fn() => DB::table('queue_monitor')->where('status', 2)->count() > 0)->openInNewTab(),
+                    MenuItem::externalLink('Horizon Dashboard', url('/horizon'))->openInNewTab(),
 
                 ])->icon('briefcase'),
             ];
