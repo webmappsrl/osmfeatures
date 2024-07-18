@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\TagController;
+use App\Jobs\TestHorizonJob;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,3 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/tags-details/{resource}/{resourceId}', [TagController::class, 'details'])->name('tags-details');
+
+Route::get('/test-horizon', function () {
+    for ($i = 0; $i < 1000; $i++) {
+        TestHorizonJob::dispatch();
+    }
+
+    return 'Dispatched 1000 jobs';
+});

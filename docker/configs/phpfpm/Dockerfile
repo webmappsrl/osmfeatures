@@ -58,6 +58,8 @@ RUN chown -R www-data:www-data /var/www \
         pgsql \
         pdo_pgsql \
         exif \
+        && docker-php-ext-install pcntl \
+    && pecl install redis \
     && pecl install imagick \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
