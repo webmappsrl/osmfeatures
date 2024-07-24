@@ -15,7 +15,7 @@ class EnrichFromFileCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:enrich-from-file {model=Place : The name of the model} {path=storage/ec_pois.txt : The path to the .txt file containing osmfeatures IDs} {--only-media=false : Start enrichment only for the media, skipping AI text enrichment}';
+    protected $signature = 'osmfeatures:enrich-from-file {model=Place : The name of the model} {path=storage/ec_pois.txt : The path to the .txt file containing osmfeatures IDs} {--only-media : Start enrichment only for the media, skipping AI text enrichment}';
 
     /**
      * The console command description.

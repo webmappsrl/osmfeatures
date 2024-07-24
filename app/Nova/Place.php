@@ -151,14 +151,19 @@ class Place extends OsmFeaturesResource
             })->onlyOnDetail();
 
             $fields[] = Text::make('Images', function () use ($data) {
-                $images = $data['images'];
-                if ($images) {
-                    $thumbnails = array_map(function ($image) {
-                        $sourceUrl = $image['source_url'] ?? '';
-                        $thumbUrl = $image['thumb_url'] ?? $image['source_url'] ?? '';
-                        return "<a href=\"{$sourceUrl}\" target=\"_blank\"><img src=\"{$thumbUrl}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
-                    }, $images);
+                $imageKeys = ['wikimedia_images', 'wikidata_images', 'wikipedia_images'];
+                $thumbnails = [];
 
+                foreach ($imageKeys as $key) {
+                    if (isset($data['images'][$key]) && is_array($data['images'][$key])) {
+                        foreach ($data['images'][$key] as $image) {
+                            $sourceUrl = $image['source_url'] ?? '';
+                            $thumbUrl = $image['thumb_url'] ?? $image['source_url'] ?? '';
+                            $thumbnails[] = "<a href=\"{$sourceUrl}\" target=\"_blank\"><img src=\"{$thumbUrl}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
+                        }
+                    }
+                }
+                if (!empty($thumbnails)) {
                     return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
                 } else {
                     return '-';
