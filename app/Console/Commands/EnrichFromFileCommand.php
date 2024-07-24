@@ -15,7 +15,7 @@ class EnrichFromFileCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:enrich-from-file {model=Place : The name of the model} {path=storage/ec_pois.txt : The path to the .txt file containing osmfeatures IDs}';
+    protected $signature = 'osmfeatures:enrich-from-file {model=Place : The name of the model} {path=storage/ec_pois.txt : The path to the .txt file containing osmfeatures IDs} {--only-media=false : Start enrichment only for the media, skipping AI text enrichment}';
 
     /**
      * The console command description.
@@ -90,7 +90,7 @@ class EnrichFromFileCommand extends Command
         foreach ($ids as $id) {
             $modelInstance = $modelClass::getOsmfeaturesByOsmfeaturesID($id);
             if ($modelInstance) {
-                dispatch(new EnrichmentJob($modelInstance));
+                dispatch(new EnrichmentJob($modelInstance, $this->option('only-media')));
                 $this->info("Enrichment job dispatched for id $id");
             } else {
                 $osmUrl = $this->generateOsmUrl($id);
