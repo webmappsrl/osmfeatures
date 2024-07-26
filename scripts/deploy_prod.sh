@@ -20,6 +20,9 @@ php artisan clear-compiled
 
 php artisan migrate --force
 
+# gracefully terminate laravel horizon
+php artisan horizon:terminate
+
 php artisan up
 
 echo "Deployment finished!"
