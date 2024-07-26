@@ -54,7 +54,26 @@ services:
       - redis
     networks:
       - laravel
-
+  supervisor:
+    build:
+      context: ./docker
+      dockerfile: configs/supervisor/Dockerfile
+      args:
+        APP_ROOT: /var/www/html/${DOCKER_PROJECT_DIR_NAME}
+        COMMAND: "horizon"
+        OPTIONS: ""
+    container_name: "supervisor_${APP_NAME}"
+    volumes:
+      - ".:/var/www/html/${DOCKER_PROJECT_DIR_NAME}"
+      - "./docker/configs/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf"
+      - "./docker/configs/supervisor/logs:/var/log/supervisor"
+    entrypoint: ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
+    depends_on:
+      - phpfpm
+      - redis
+    networks:
+      - laravel
+  
 networks:
   laravel:
     driver: bridge

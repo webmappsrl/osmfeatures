@@ -15,10 +15,9 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions pcntl
 
 RUN mkdir -p "/etc/supervisor/logs"
+RUN mkdir -p "${APP_ROOT}/storage/logs"
+RUN chmod -R 777 "${APP_ROOT}/storage/logs"
 
-COPY configs/supervisor/supervisord.conf /etc/supervisord.conf 
+COPY configs/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 
-# Make sure supervisord is installed in the correct location
-RUN which supervisord
-
-ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
