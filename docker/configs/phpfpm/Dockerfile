@@ -46,6 +46,7 @@ RUN chown -R www-data:www-data /var/www \
         protobuf-compiler \
         libosmium2-dev \
         libprotozero-dev \
+        supervisor \
     && docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
