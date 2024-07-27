@@ -20,4 +20,4 @@ RUN chmod -R 777 "${APP_ROOT}/storage/logs"
 
 COPY configs/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf 
 
-ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["/usr/bin/supervisord", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]

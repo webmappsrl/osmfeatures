@@ -1,28 +1,30 @@
 #!/bin/bash
 set -e
 
-echo "Production deployment started ..."
+source ./.env.example
 
-php artisan down
+# echo "Production deployment started ..."
 
-composer install
-composer dump-autoload
+# php artisan down
 
-# Clear and cache config
-php artisan config:cache
-php artisan config:clear
+# composer install
+# composer dump-autoload
 
-# Clear the old cache
-php artisan clear-compiled
+# # Clear and cache config
+# php artisan config:cache
+# php artisan config:clear
 
-# TODO: Uncomment when api.favorite issue will be resolved
-# php artisan optimize
+# # Clear the old cache
+# php artisan clear-compiled
 
-php artisan migrate --force
+# # TODO: Uncomment when api.favorite issue will be resolved
+# # php artisan optimize
 
-# gracefully terminate laravel horizon
-php artisan horizon:terminate
+# php artisan migrate --force
 
-php artisan up
+# gracefully terminate laravel horizon in supervisor container
+docker exec -it supervisor_$APP_NAME bash -c "cd /var/www/html/$APP_NAME && php artisan horizon:terminate"
+
+#  php artisan up
 
 echo "Deployment finished!"

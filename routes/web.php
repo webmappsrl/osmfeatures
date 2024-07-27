@@ -18,8 +18,9 @@ use App\Http\Controllers\TagController;
 Route::get('/tags-details/{resource}/{resourceId}', [TagController::class, 'details'])->name('tags-details');
 
 Route::get('/test-horizon', function () {
-    for ($i = 0; $i < 1000; $i++) {
+    for ($i = 0; $i < 10000; $i++) {
         TestHorizonJob::dispatch();
+        sleep(1);
     }
 
     return 'Dispatched 1000 jobs';
