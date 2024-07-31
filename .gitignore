@@ -16,3 +16,4 @@ yarn-error.log
 docker-compose.yml
 /storage/osm/pbf/
 .php-cs-fixer.cache
+docker/configs/supervisor/logs
