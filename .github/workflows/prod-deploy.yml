@@ -20,5 +20,15 @@ jobs:
           username: ${{ secrets.USERNAMEPROD }}
           port: ${{ secrets.PORTPROD }}
           key: ${{ secrets.SSHKEYPROD }}
-          script: "cd /var/www/html/osmfeatures && git pull && docker exec php81_osmfeatures bash -c 'cd /var/www/html/osmfeatures && bash scripts/deploy_prod.sh'"
-
+          script: |
+            echo "Current user:"
+            whoami
+            echo "User ID and Group ID:"
+            id
+            echo "Listing files in /var/www/html/osmfeatures:"
+            ls -la /var/www/html/osmfeatures
+            echo "Docker processes:"
+            docker ps
+            cd /var/www/html/osmfeatures
+            git pull
+            docker exec php81_osmfeatures bash -c "cd /var/www/html/osmfeatures && bash scripts/deploy_prod.sh"
