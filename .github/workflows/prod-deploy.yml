@@ -20,4 +20,4 @@ jobs:
           username: ${{ secrets.USERNAMEPROD }}
           port: ${{ secrets.PORTPROD }}
           key: ${{ secrets.SSHKEYPROD }}
-          script: "cd /var/www/html/osmfeatures && git pull && docker exec -it php81_osmfeatures bash scripts/deploy_prod.sh"
+          script: "cd /var/www/html/osmfeatures && git pull && docker exec php81_osmfeatures bash scripts/deploy_prod.sh"
