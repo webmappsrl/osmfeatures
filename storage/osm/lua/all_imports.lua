@@ -385,9 +385,6 @@ function osm2pgsql.process_node(object)
 end
 
 function osm2pgsql.process_way(object)
-    if object.tags.boundary == 'administrative' then
-        process_admin_area(object, object:as_polygon())
-    end
     if object.is_closed then
         process_place(object, object:as_polygon():centroid())
     end

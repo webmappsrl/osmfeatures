@@ -41,7 +41,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                     MenuGroup::make('Admin', [])->collapsable(),
                 ])->icon('globe')->collapsable(),
                 MenuSection::make('Admin', [
-                    MenuItem::make('Users', 'users'),
+                    MenuItem::make('Users', 'resources/users'),
                     //create a link menu item
                     MenuItem::make('API', url('/api/documentation'))->external()->openInNewTab(),
                 ])->icon('users')->collapsable(),
