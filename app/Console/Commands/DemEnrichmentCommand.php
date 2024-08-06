@@ -12,7 +12,7 @@ class DemEnrichmentCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:dem-enrichment {model : The model class} {id? : The Osmfeatures ID}';
+    protected $signature = 'osmfeatures:dem-enrichment {model : The model class eg: HikingRoute} {id? : The Osmfeatures ID eg: R9758811}';
 
     /**
      * The console command description.
