@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\DemEnrichmentAction;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
@@ -55,6 +56,8 @@ class HikingRoute extends OsmFeaturesResource
     {
         $osmfeaturesFields = parent::fields($request);
         unset($osmfeaturesFields[1]); //remove datetime
+        //get dem enrichment associated
+        $demEnrichment = $this->demEnrichment ? json_decode($this->demEnrichment->data, true)['properties'] ?? null : null;
 
         $specificFields = [
             DateTime::make('Updated_at')
@@ -93,9 +96,42 @@ class HikingRoute extends OsmFeaturesResource
                 ->sortable(),
         ];
 
+        if ($demEnrichment) {
+            $specificFields = array_merge($specificFields, [
+                Tooltip::make('DEM Data')
+                    ->iconFromPath(public_path('images/pricetags-outline.svg'))
+                    ->content(
+                        collect($demEnrichment)->map(function ($value, $key) {
+                            //check if $value is a boolean and translate it to a string
+                            if (is_bool($value)) {
+                                $value =  $value ? 'True' : 'False';
+                            }
+                            return "<span style='font-weight: bold; color: #7b4896';>{$key}:</span> : {$value}";
+                        })->implode('<br>')
+                    )
+                    ->hideWhenCreating()
+                    ->hideWhenUpdating()
+                    ->allowTooltipHTML(),
+            ]);
+        }
+
         $finalFields = array_merge($osmfeaturesFields, $specificFields);
 
         return $finalFields;
+    }
+
+    public function actions(NovaRequest $request)
+    {
+        //remove parent actions
+        $defaultActions = parent::actions($request);
+        $specificActions = [
+            (new DemEnrichmentAction())->canRun(function () {
+                return true;
+            })
+        ];
+        $actions = array_merge($defaultActions, $specificActions);
+        unset($actions[0]);
+        return $actions;
     }
 
     /**
