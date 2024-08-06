@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\DemEnrichmentJob;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class DemEnrichmentCommand extends Command
 {
@@ -38,6 +39,11 @@ class DemEnrichmentCommand extends Command
             }
 
             $relatedModel = $modelClass::getOsmfeaturesByOsmfeaturesID($osmfeaturesId);
+            if (!$relatedModel) {
+                $this->error("The Osmfeatures ID $osmfeaturesId does not exist.");
+                Log::info("The Osmfeatures ID $osmfeaturesId does not exist.");
+                return;
+            }
             DemEnrichmentJob::dispatch($relatedModel);
         } else {
             $relatedModels = $model::all();
