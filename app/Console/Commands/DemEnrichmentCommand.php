@@ -29,6 +29,7 @@ class DemEnrichmentCommand extends Command
     {
         $osmfeaturesId = $this->argument('id');
         $model = $this->argument('model');
+        $modelClass = 'App\\Models\\' . $model;
 
         if ($osmfeaturesId) {
             $modelClass = 'App\\Models\\' . $model;
@@ -46,10 +47,15 @@ class DemEnrichmentCommand extends Command
             }
             DemEnrichmentJob::dispatch($relatedModel);
         } else {
-            $relatedModels = $model::all();
+            $relatedModels = $modelClass::all();
+            //create progress bar
+            $bar = $this->output->createProgressBar(count($relatedModels));
             foreach ($relatedModels as $model) {
                 DemEnrichmentJob::dispatch($model);
+                $bar->advance();
             }
+            $bar->finish();
+            $this->newLine();
         }
     }
 }
