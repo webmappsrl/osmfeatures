@@ -127,6 +127,8 @@ class HikingRouteController extends Controller
             return response()->json(['error' => 'Hiking Route not found'], 404);
         }
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$hikingRoute->geom])[0]->geojson;
+        // get dem enrichment
+        $demEnrichment = $hikingRoute->demEnrichment ? json_decode($hikingRoute->demEnrichment->data, true) : null;
 
         match ($hikingRoute->osm_type) {
             'R' => $osmType = 'relation',
@@ -146,6 +148,10 @@ class HikingRouteController extends Controller
         $properties['wikidata'] = $hikingRoute->getWikidataUrl();
         $properties['wikipedia'] = $hikingRoute->getWikipediaUrl();
         $properties['wikimedia_commons'] = $hikingRoute->getWikimediaCommonsUrl();
+
+        //get only the properties (ascent, ele_to, descent, ele_max, ele_min, distance, ele_from, round_trip etc..)
+        $demProperties = $demEnrichment ? $demEnrichment['properties'] : null;
+        $properties['dem_enrichment'] = $demProperties;
 
         $geojsonFeature = [
             'type' => 'Feature',
@@ -191,13 +197,13 @@ class HikingRouteController extends Controller
     {
         $acceptedTypes = ['relation', 'way', 'node'];
 
-        if (! in_array($osmType, $acceptedTypes)) {
+        if (!in_array($osmType, $acceptedTypes)) {
             return response()->json(['error' => 'Bad Request'], 404);
         }
 
         $hikingRoute = HikingRoute::where('osm_type', strtoupper(substr($osmType, 0, 1)))->where('osm_id', $osmId)->first();
 
-        if (! $hikingRoute) {
+        if (!$hikingRoute) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
         }
 
