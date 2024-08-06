@@ -74,6 +74,11 @@ return [
             'path' => storage_path('logs/enrichment.log'),
             'level' => env('LOG_LEVEL', 'debug'),
         ],
+        'dem-enrichment' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/dem-enrichment.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
 
         'openai' => [
             'driver' => 'single',
