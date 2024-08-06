@@ -817,6 +817,10 @@
                                                     "type": "string",
                                                     "description": "Comma separated list of member ids."
                                                 },
+                                                "dem_enrichments": {
+                                                    "type": "array",
+                                                    "description": "Data about trail dem enrichments."
+                                                },
                                                 "osmfeatures_id": {
                                                     "type": "string",
                                                     "description": "Osmfeatures ID of the route"
@@ -1064,6 +1068,20 @@
                                                 }
                                             ],
                                             "members_ids": "298650101,298650055,40645775,44794326,298650053,298650020,44794803,44795636,44795635,731262847,386398987,386398978,44795637,114377830,75783540,171545782,386397195,386397193,75783548,386397194,386397192,171545784,386397197,78167697,78167696,78167681,386395970,1272470178,386395966,78167679,44796563,396656551,295638931,128624368",
+                                            "dem_enrichments": {
+                                                "ascent": 1428,
+                                                "ele_to": 1356,
+                                                "descent": 958,
+                                                "ele_max": 2223,
+                                                "ele_min": 887,
+                                                "distance": 11.9,
+                                                "ele_from": 887,
+                                                "round_trip": false,
+                                                "duration_forward_bike": 315,
+                                                "duration_backward_bike": 240,
+                                                "duration_forward_hiking": 315,
+                                                "duration_backward_hiking": 270
+                                            },
                                             "osmfeatures_id": "R4099576",
                                             "osm_url": "https://www.openstreetmap.org/relation/4099576",
                                             "osm_api": "https://www.openstreetmap.org/api/0.6/relation/4099576.json",
