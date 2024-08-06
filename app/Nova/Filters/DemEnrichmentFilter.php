@@ -8,7 +8,6 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class DemEnrichmentFilter extends EnrichmentFilter
 {
-
     /**
      * Apply the filter to the given query.
      *

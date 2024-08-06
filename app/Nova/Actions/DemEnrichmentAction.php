@@ -13,7 +13,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class DemEnrichmentAction extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue;
+    use Queueable;
 
     public $name = 'Dem Enrichment';
 

@@ -131,7 +131,7 @@ class HikingRoute extends OsmFeaturesResource
         $specificActions = [
             (new DemEnrichmentAction())->canRun(function () {
                 return true;
-            })
+            }),
         ];
         $actions = array_merge($defaultActions, $specificActions);
         unset($actions[0]);
