@@ -111,7 +111,8 @@ class HikingRoute extends OsmFeaturesResource
                     )
                     ->hideWhenCreating()
                     ->hideWhenUpdating()
-                    ->allowTooltipHTML(),
+                    ->allowTooltipHTML()
+                    ->onlyOnDetail(),
             ]);
         }
 
