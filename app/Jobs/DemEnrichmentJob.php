@@ -43,7 +43,7 @@ class DemEnrichmentJob implements ShouldQueue
         $logger->debug('DemEnrichmentJob geojson created');
 
         //make the request to the dem api with the geojson as the body of the request
-        $response = Http::timeout(60)->post($demApi, $geojson);
+        $response = Http::timeout(90)->post($demApi, $geojson);
         $logger->debug('DemEnrichmentJob request sent.');
 
         if (!$response->successful()) {

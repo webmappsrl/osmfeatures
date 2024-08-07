@@ -18,6 +18,6 @@ class DemEnrichment extends Enrichment
 
     public function demEnrichable()
     {
-        return $this->morphTo();
+        return $this->morphTo('dem-enrichable', 'dem-enrichable_type', 'dem-enrichable_id');
     }
 }
