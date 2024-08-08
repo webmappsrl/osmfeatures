@@ -2,16 +2,17 @@
 
 namespace App\Jobs;
 
+use Exception;
 use App\Models\DemEnrichment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 class DemEnrichmentJob implements ShouldQueue
 {
@@ -47,9 +48,14 @@ class DemEnrichmentJob implements ShouldQueue
         $logger->debug('DemEnrichmentJob request sent.');
 
         if (!$response->successful()) {
-            //get the error code from the response
+            if (isset($response->json()['error'])) {
+                $logger->error('DemEnrichmentJob request failed for model ' . get_class($this->model) . ' with id ' . $this->model->id, ['reason' => $response->json()['error']]);
+                // make the job fail
+                throw new Exception($response->json()['error']);
+            }
             $logger->error('DemEnrichmentJob request failed for model ' . get_class($this->model) . ' with id ' . $this->model->id, ['status' => $response->status(), 'reason' => $response->reason()]);
-            return;
+            // make the job fail
+            throw new Exception('DemEnrichmentJob request failed: ' . $response->status() . ' ' . $response->reason());
         }
 
         //get the json from the response
