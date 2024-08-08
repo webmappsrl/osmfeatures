@@ -50,6 +50,8 @@ class DemEnrichmentJob implements ShouldQueue
         if (!$response->successful()) {
             if (isset($response->json()['error'])) {
                 $logger->error('DemEnrichmentJob request failed for model ' . get_class($this->model) . ' with id ' . $this->model->id, ['reason' => $response->json()['error']]);
+                //flag the model as having an invalid geometry
+                $this->model->has_invalid_geometry = true;
                 // make the job fail
                 throw new Exception($response->json()['error']);
             }

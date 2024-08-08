@@ -21,5 +21,6 @@ class HikingRoute extends Model
 
     protected $fillable = [
         'updated_at',
+        'has_invalid_geometry'
     ];
 }

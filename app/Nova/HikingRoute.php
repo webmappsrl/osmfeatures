@@ -7,6 +7,7 @@ use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
 use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\DateTime;
 use Rpj\Daterangepicker\DateHelper;
@@ -94,6 +95,8 @@ class HikingRoute extends OsmFeaturesResource
                 ->asHtml(),
             Text::make('Osm2cai Status')
                 ->sortable(),
+            Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
+                ->onlyOnDetail()
         ];
 
         if ($demEnrichment) {
@@ -159,6 +162,7 @@ class HikingRoute extends OsmFeaturesResource
             new Filters\DemEnrichmentFilter(),
             new Filters\CaiScaleFilter(),
             new Filters\Osm2caiStatusFilter(),
+            new Filters\HasInvalidGeometryFilter(),
         ];
 
         return array_merge($osmfeaturesFilters, $specifiFilters);
