@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('hiking_routes', function (Blueprint $table) {
-            $table->boolean('has_invalid_geometry')->default(false);
-        });
+        //if hiking_routes table exists add has_invalid_geometry
+        if (Schema::hasTable('hiking_routes')) {
+            Schema::table('hiking_routes', function (Blueprint $table) {
+                $table->boolean('has_invalid_geometry')->default(false);
+            });
+        }
     }
 
     /**
@@ -21,8 +24,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('hiking_routes', function (Blueprint $table) {
-            $table->dropColumn('has_invalid_geometry');
-        });
+        if (Schema::hasTable('hiking_routes')) {
+            Schema::table('hiking_routes', function (Blueprint $table) {
+                $table->dropColumn('has_invalid_geometry');
+            });
+        }
     }
 };
