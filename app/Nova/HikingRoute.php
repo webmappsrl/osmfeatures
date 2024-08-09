@@ -2,6 +2,7 @@
 
 namespace App\Nova;
 
+use App\Nova\Actions\calculateAdminAreasIntersecting;
 use App\Nova\Actions\DemEnrichmentAction;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Code;
@@ -37,7 +38,9 @@ class HikingRoute extends OsmFeaturesResource
      * @var array
      */
     public static $search = [
-        'osm_id', 'name', 'ref',
+        'osm_id',
+        'name',
+        'ref',
     ];
 
     public static function indexQuery(NovaRequest $request, $query)
@@ -97,12 +100,32 @@ class HikingRoute extends OsmFeaturesResource
                 ->sortable(),
             Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
                 ->onlyOnDetail(),
+            Tooltip::make('Admin Areas', 'admin_areas')
+                ->iconFromPath(public_path('images/pricetags-outline.svg'))
+                ->content(
+                    collect(json_decode($this->admin_areas, true))->map(function ($value, $key) {
+                        if (is_array($value)) {
+                            $htmlString = '';
+                            foreach ($value as $innerValue) {
+                                $htmlString .= "<span style='font-weight: bold; color:#38ab98;'>{$innerValue['name']}</span>: {$innerValue['osmfeatures_id']}<br>";
+                            }
+                            return "<span style='font-weight: bold; color:#005f73;'> Admin Level: {$key}</span>:<br>{$htmlString}";
+                        }
+                        return "<span style='font-weight: bold; color:#005f73;'>{$key}</span>: {$value}";
+                    })->implode('<br>')
+                )
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+                ->allowTooltipHTML()
+                ->onlyOnDetail(),
+
+
         ];
 
         if ($demEnrichment) {
             $specificFields = array_merge($specificFields, [
                 Tooltip::make('DEM Data')
-                    ->iconFromPath(public_path('images/pricetags-outline.svg'))
+                    ->iconFromPath(public_path('images/dem.svg'))
                     ->content(
                         collect($demEnrichment)->map(function ($value, $key) {
                             //check if $value is a boolean and translate it to a string
@@ -132,6 +155,9 @@ class HikingRoute extends OsmFeaturesResource
             (new DemEnrichmentAction())->canRun(function () {
                 return true;
             }),
+            (new calculateAdminAreasIntersecting())->canRun(function () {
+                return true;
+            })
         ];
         $actions = array_merge($defaultActions, $specificActions);
         unset($actions[0]);
