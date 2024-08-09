@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\AdminAreasEnrichment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Model;
@@ -62,9 +63,14 @@ class CalculateAdminAreasIntersectingJob implements ShouldQueue
                 ];
             }
 
-            // Salva i risultati nel model
-            $this->model->admin_areas = json_encode(['admin_area' => $admin_areas]);
-            $this->model->save();
+            //crea un record di arricchimento admin areas
+            AdminAreasEnrichment::updateOrCreate([
+                'enrichable_osmfeatures_id' => $this->model->getOsmfeaturesId(),
+            ], [
+                'admin_areas-enrichable_id' => $this->model->id,
+                'admin_areas-enrichable_type' => get_class($this->model),
+                'data' => json_encode(['admin_area' => $admin_areas]),
+            ]);
         } catch (\Exception $e) {
             Log::error("Error in CalculateAdminAreasIntersectingJob: " . $e->getMessage());
         }

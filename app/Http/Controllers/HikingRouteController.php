@@ -129,6 +129,8 @@ class HikingRouteController extends Controller
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$hikingRoute->geom])[0]->geojson;
         // get dem enrichment
         $demEnrichment = $hikingRoute->demEnrichment ? json_decode($hikingRoute->demEnrichment->data, true) : null;
+        //get admin areas intersecting
+        $adminAreas = json_decode($hikingRoute->admin_areas, true);
 
         match ($hikingRoute->osm_type) {
             'R' => $osmType = 'relation',
@@ -152,6 +154,8 @@ class HikingRouteController extends Controller
         //get only the properties (ascent, ele_to, descent, ele_max, ele_min, distance, ele_from, round_trip etc..)
         $demProperties = $demEnrichment ? $demEnrichment['properties'] : null;
         $properties['dem_enrichment'] = $demProperties;
+
+        $properties['admin_areas'] = $adminAreas;
 
         $geojsonFeature = [
             'type' => 'Feature',

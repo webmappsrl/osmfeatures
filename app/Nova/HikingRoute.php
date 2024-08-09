@@ -62,6 +62,8 @@ class HikingRoute extends OsmFeaturesResource
         unset($osmfeaturesFields[1]); //remove datetime
         //get dem enrichment associated
         $demEnrichment = $this->demEnrichment ? json_decode($this->demEnrichment->data, true)['properties'] ?? null : null;
+        //get admin areas intersecting
+        $adminAreasIntersecting = $this->adminAreasEnrichment ? json_decode($this->adminAreasEnrichment->data, true)['properties'] ?? null : null;
 
         $specificFields = [
             DateTime::make('Updated_at')
@@ -100,24 +102,7 @@ class HikingRoute extends OsmFeaturesResource
                 ->sortable(),
             Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
                 ->onlyOnDetail(),
-            Tooltip::make('Admin Areas', 'admin_areas')
-                ->iconFromPath(public_path('images/admin_areas.svg'))
-                ->content(
-                    collect(json_decode($this->admin_areas, true))->map(function ($value, $key) {
-                        if (is_array($value)) {
-                            $htmlString = '';
-                            foreach ($value as $innerValue) {
-                                $htmlString .= "<span style='font-weight: bold; color:#38ab98;'>{$innerValue['name']}</span>: {$innerValue['osmfeatures_id']}<br>";
-                            }
-                            return "<span style='font-weight: bold; color:#005f73;'> Admin Level: {$key}</span>:<br>{$htmlString}";
-                        }
-                        return "<span style='font-weight: bold; color:#005f73;'>{$key}</span>: {$value}";
-                    })->implode('<br>')
-                )
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-                ->allowTooltipHTML()
-                ->onlyOnDetail(),
+
 
 
         ];
@@ -140,6 +125,32 @@ class HikingRoute extends OsmFeaturesResource
                     ->allowTooltipHTML()
                     ->onlyOnDetail(),
             ]);
+        }
+
+        if ($adminAreasIntersecting) {
+            $specificFields = array_merge(
+                $specificFields,
+                [
+                    Tooltip::make('Admin Areas', 'admin_areas')
+                        ->iconFromPath(public_path('images/admin_areas.svg'))
+                        ->content(
+                            collect(json_decode($this->admin_areas, true))->map(function ($value, $key) {
+                                if (is_array($value)) {
+                                    $htmlString = '';
+                                    foreach ($value as $innerValue) {
+                                        $htmlString .= "<span style='font-weight: bold; color:#38ab98;'>{$innerValue['name']}</span>: {$innerValue['osmfeatures_id']}<br>";
+                                    }
+                                    return "<span style='font-weight: bold; color:#005f73;'> Admin Level: {$key}</span>:<br>{$htmlString}";
+                                }
+                                return "<span style='font-weight: bold; color:#005f73;'>{$key}</span>: {$value}";
+                            })->implode('<br>')
+                        )
+                        ->hideWhenCreating()
+                        ->hideWhenUpdating()
+                        ->allowTooltipHTML()
+                        ->onlyOnDetail()
+                ]
+            );
         }
 
         $finalFields = array_merge($osmfeaturesFields, $specificFields);
