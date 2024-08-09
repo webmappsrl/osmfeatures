@@ -40,13 +40,13 @@ class CalculateAdminAreasIntersectingCommand extends Command
         if ($hikingRoutes instanceof \Illuminate\Support\Collection === false) {
             dispatch(new CalculateAdminAreasIntersectingJob($hikingRoutes));
         } else {
-            $this->output->createProgressBar(count($hikingRoutes))->start();
+            $progressBar = $this->output->createProgressBar(count($hikingRoutes));
 
             foreach ($hikingRoutes as $hikingRoute) {
                 dispatch(new CalculateAdminAreasIntersectingJob($hikingRoute));
-                $this->output->advance();
+                $progressBar->advance();
             }
-            $this->output->finish();
+            $progressBar->finish();
         }
         $this->newLine();
         $this->info('Jobs dispatched successfully!');
