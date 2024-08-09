@@ -80,6 +80,12 @@ return [
             'level' => env('LOG_LEVEL', 'debug'),
         ],
 
+        'admin-areas-enrichment' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/admin-areas-enrichment.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
         'openai' => [
             'driver' => 'single',
             'path' => storage_path('logs/openai.log'),
