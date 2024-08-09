@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.32.0](https://github.com/webmappsrl/osmfeatures/compare/v1.31.0...v1.32.0) (2024-08-09)
+
+
+### Features
+
+* add dem info to hikingroute OC:3740 ([#127](https://github.com/webmappsrl/osmfeatures/issues/127)) ([e0e3f75](https://github.com/webmappsrl/osmfeatures/commit/e0e3f75151cb150711597472ec018f1c1558923e))
+* add_admin_areas_to_hiking_routes OC:3762 ([#129](https://github.com/webmappsrl/osmfeatures/issues/129)) ([bf8376e](https://github.com/webmappsrl/osmfeatures/commit/bf8376efefd71ddd408c252ed43ab6abbc91c0e6))
+* added check dem enrichments update command ([9dccb69](https://github.com/webmappsrl/osmfeatures/commit/9dccb69dc8da1b9eed6d3a7509a46a10d028251a))
+* added find osmfeatures command ([#126](https://github.com/webmappsrl/osmfeatures/issues/126)) ([645d4cf](https://github.com/webmappsrl/osmfeatures/commit/645d4cfff81f27bf5cc3d786ff2a5fffca9bfae1))
+* added launch horizon script and updated prod deploy pipeline ([d5e887c](https://github.com/webmappsrl/osmfeatures/commit/d5e887c9690c2ed80111681935e1f01efb5ba160))
+* defined horizon gate ([60a07e1](https://github.com/webmappsrl/osmfeatures/commit/60a07e1d734b468fb25be3c5bd2565db5fb92932))
+* installed predis and laravel horizon with configuration ([b63b622](https://github.com/webmappsrl/osmfeatures/commit/b63b6222b57e870dd1be506a53a52ccb1ccd30c8))
+* supervisor integration in docker OC: 3690 ([0749997](https://github.com/webmappsrl/osmfeatures/commit/0749997f11d8af6224f64282b831d53f858b2f80))
+* supervisor integration with docker ([f309d35](https://github.com/webmappsrl/osmfeatures/commit/f309d35139f6026b1ec8a6ba99373081ef806c50))
+* updated dockerfile and docker compose to install redis ([5c052b4](https://github.com/webmappsrl/osmfeatures/commit/5c052b454989880e186a810af29f4e69ceabc2b8))
+
+
+### Bug Fixes
+
+* fix on nova place resource ([a829578](https://github.com/webmappsrl/osmfeatures/commit/a82957817078a68c13085db133085645a16a582f))
+* fixed admin areas and user link nova ([1340fec](https://github.com/webmappsrl/osmfeatures/commit/1340fecb7c1e6b990badfb9ab82b20f403090e56))
+* fixed docker supervisor configuration ([3c988d7](https://github.com/webmappsrl/osmfeatures/commit/3c988d7939a773b79c0e1b663dfc48b5f1e15ca6))
+
+
+### Miscellaneous Chores
+
+* added has invalid geometry flag for hiking routes and added nova filter ([4c1a65e](https://github.com/webmappsrl/osmfeatures/commit/4c1a65e1ddb0c7610a400c82762d39d5bcbbec05))
+* added progress bar to dem enrichment command ([1d572b2](https://github.com/webmappsrl/osmfeatures/commit/1d572b22d4599c46c072f2fda717f93ca66de101))
+* created laravel horizon test jobs ([8760e48](https://github.com/webmappsrl/osmfeatures/commit/8760e48bbde3cac9083c28f1f858b1fc633824bc))
+* new docker horizon and supervisor configuration ([a55ae99](https://github.com/webmappsrl/osmfeatures/commit/a55ae99dc93591c9e11e07270cef33842f82085b))
+* Update prod-deploy workflow to directly run bash script ([11bdb5e](https://github.com/webmappsrl/osmfeatures/commit/11bdb5e7285303044a54d38dfcb38f5cb9528c4a))
+* updated horizon timeout config ([5e5b68f](https://github.com/webmappsrl/osmfeatures/commit/5e5b68f0054724c5815eed9c8ad1e4b24f72cde8))
+* updated imported tags for places in lua file ([f7e84d7](https://github.com/webmappsrl/osmfeatures/commit/f7e84d7422c8d089d35e32ac95f87909ebd3f1a1))
+* updated prod deploy pipeline to use horizon:terminate command ([74440ca](https://github.com/webmappsrl/osmfeatures/commit/74440ca05e31f39ef96e01bac30050e195ff8893))
+
 ## [1.31.0](https://github.com/webmappsrl/osmfeatures/compare/v1.30.1...v1.31.0) (2024-07-16)
 
 
