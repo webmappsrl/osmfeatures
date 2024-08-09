@@ -101,7 +101,7 @@ class HikingRoute extends OsmFeaturesResource
             Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
                 ->onlyOnDetail(),
             Tooltip::make('Admin Areas', 'admin_areas')
-                ->iconFromPath(public_path('images/pricetags-outline.svg'))
+                ->iconFromPath(public_path('images/admin_areas.svg'))
                 ->content(
                     collect(json_decode($this->admin_areas, true))->map(function ($value, $key) {
                         if (is_array($value)) {
