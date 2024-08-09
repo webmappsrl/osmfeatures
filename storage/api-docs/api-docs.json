@@ -821,6 +821,10 @@
                                                     "type": "array",
                                                     "description": "Data about trail dem enrichments."
                                                 },
+                                                "admin_areas" : {
+                                                    "type": "array",
+                                                    "description": "Admin areas intersecting."
+                                                },
                                                 "osmfeatures_id": {
                                                     "type": "string",
                                                     "description": "Osmfeatures ID of the route"
@@ -1082,6 +1086,60 @@
                                                 "duration_forward_hiking": 315,
                                                 "duration_backward_hiking": 270
                                             },
+                                            "admin_areas": {
+            "2": [
+                {
+                    "osmfeatures_id": "R365331",
+                    "name": "Italia"
+                }
+            ],
+            "4": [
+                {
+                    "osmfeatures_id": "R41977",
+                    "name": "Toscana"
+                }
+            ],
+            "6": [
+                {
+                    "osmfeatures_id": "R42338",
+                    "name": "Pisa"
+                },
+                {
+                    "osmfeatures_id": "R42614",
+                    "name": "Lucca"
+                }
+            ],
+            "8": [
+                {
+                    "osmfeatures_id": "R42655",
+                    "name": "Vecchiano"
+                },
+                {
+                    "osmfeatures_id": "R42591",
+                    "name": "San Giuliano Terme"
+                },
+                {
+                    "osmfeatures_id": "R42592",
+                    "name": "Calci"
+                },
+                {
+                    "osmfeatures_id": "R42594",
+                    "name": "Buti"
+                },
+                {
+                    "osmfeatures_id": "R42659",
+                    "name": "Lucca"
+                },
+                {
+                    "osmfeatures_id": "R42613",
+                    "name": "Capannori"
+                },
+                {
+                    "osmfeatures_id": "R42583",
+                    "name": "Vicopisano"
+                }
+            ]
+        },
                                             "osmfeatures_id": "R4099576",
                                             "osm_url": "https://www.openstreetmap.org/relation/4099576",
                                             "osm_api": "https://www.openstreetmap.org/api/0.6/relation/4099576.json",

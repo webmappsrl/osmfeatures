@@ -129,6 +129,8 @@ class HikingRouteController extends Controller
         $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$hikingRoute->geom])[0]->geojson;
         // get dem enrichment
         $demEnrichment = $hikingRoute->demEnrichment ? json_decode($hikingRoute->demEnrichment->data, true) : null;
+        //get admin areas intersecting
+        $adminAreas = $hikingRoute->adminAreasEnrichment ? json_decode($hikingRoute->adminAreasenrichment->data, true) : null;
 
         match ($hikingRoute->osm_type) {
             'R' => $osmType = 'relation',
@@ -140,6 +142,7 @@ class HikingRouteController extends Controller
         unset($properties['geom']);
         unset($properties['tags']);
         unset($properties['id']);
+        unset($properties['admin_areas_enrichment']);
         $properties['osmfeatures_id'] = $id;
         $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id";
         $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
@@ -148,10 +151,12 @@ class HikingRouteController extends Controller
         $properties['wikidata'] = $hikingRoute->getWikidataUrl();
         $properties['wikipedia'] = $hikingRoute->getWikipediaUrl();
         $properties['wikimedia_commons'] = $hikingRoute->getWikimediaCommonsUrl();
+        $properties['admin_areas'] = $adminAreas;
 
         //get only the properties (ascent, ele_to, descent, ele_max, ele_min, distance, ele_from, round_trip etc..)
         $demProperties = $demEnrichment ? $demEnrichment['properties'] : null;
         $properties['dem_enrichment'] = $demProperties;
+
 
         $geojsonFeature = [
             'type' => 'Feature',
