@@ -96,7 +96,7 @@ class HikingRoute extends OsmFeaturesResource
             Text::make('Osm2cai Status')
                 ->sortable(),
             Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
-                ->onlyOnDetail()
+                ->onlyOnDetail(),
         ];
 
         if ($demEnrichment) {
