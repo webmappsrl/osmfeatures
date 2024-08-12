@@ -7,7 +7,7 @@ local places = osm2pgsql.define_table({
         { column = 'name' },
         { column = 'class', not_null = true },
         { column = 'subclass' },
-        { column = 'geom', type = 'point', not_null = true },
+        { column = 'geom', type = 'point', not_null = true, projection = 4326 },
         { column = 'tags', type = 'jsonb' },
         { column = 'elevation', type = 'int' },
         { column = 'score', type = 'int'}
