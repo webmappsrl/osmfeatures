@@ -2,28 +2,24 @@
 
 namespace Tests\Api;
 
-use App\Console\Commands\OsmfeaturesSync;
 use Tests\TestCase;
 use App\Models\Pole;
 use App\Models\Place;
 use App\Models\AdminArea;
 use App\Models\HikingRoute;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SridChangeTest extends TestCase
 {
 
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     public function setUp(): void
     {
         parent::setUp(); {
-            $app = app();
-            $command = new OsmfeaturesSync();
-            $command->setLaravel($app);
-            $command->osm2pgsqlSync('andorra_latest', 'storage/tests/original_andorra_latest.pbf', 'all_imports');
+            $cmd = 'PGPASSWORD=osmfeatures osm2pgsql -d osmfeatures -H db -U osmfeatures -O flex -x -S storage/osm/lua/all_imports.lua storage/tests/original_andorra_latest.pbf --slim --log-level=debug';
+            exec($cmd);
         }
     }
 
