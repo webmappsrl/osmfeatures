@@ -6,7 +6,7 @@ local poles = osm2pgsql.define_table({
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'point' },
+        { column = 'geom', type = 'point' projection = 4326 },
         { column = 'ref' },
         { column = 'ele' },
         { column = 'destination' },

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\DemEnrichment;
 use App\Models\Enrichment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
@@ -14,7 +15,7 @@ class EnrichmentsRecovery extends Command
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:enrichments-recovery {model=Place : The model where the enrichment should be recovered. Can be Place, AdminArea, HikingRoute or Pole}';
+    protected $signature = 'osmfeatures:enrichments-recovery {model=Place : The model where the enrichment should be recovered. Can be Place, AdminArea, HikingRoute or Pole} {--dem : Run the command on dem enrichments}';
 
     /**
      * The console command description.
@@ -37,7 +38,7 @@ class EnrichmentsRecovery extends Command
             return;
         }
 
-        $enrichments = Enrichment::where('enrichable_type', $modelClass)->get();
+        $enrichments = $this->option('dem') ? DemEnrichment::where('dem-enrichable_type', $modelClass)->get() : Enrichment::where('enrichable_type', $modelClass)->get();
 
         if ($enrichments->isEmpty()) {
             $this->info("No enrichments found for the model $modelClass.");
@@ -53,8 +54,13 @@ class EnrichmentsRecovery extends Command
                 $relatedModel = $modelClass::where('osm_type', $osmType)->where('osm_id', $osmId)->first();
 
                 if ($relatedModel) {
-                    $enrichment->enrichable_id = $relatedModel->id;
-                    $enrichment->save();
+                    if ($this->option('dem')) {
+                        $enrichment->dem_enrichable_id = $relatedModel->id;
+                        $enrichment->save();
+                    } else {
+                        $enrichment->enrichable_id = $relatedModel->id;
+                        $enrichment->save();
+                    }
 
                     $this->info('Enrichment recovered for ' . $modelClass . ' with osmfeatures ID ' . $osmfeaturesId);
                     Log::info('Enrichment recovered for ' . $modelClass . ' with osmfeatures ID ' . $osmfeaturesId);

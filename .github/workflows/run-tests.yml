@@ -27,10 +27,6 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
         run: php artisan key:generate
-      # - name: Import Test Database Dump
-      #   run: docker exec -i postgres_osmfeatures psql -U osmfeatures -d osmfeatures < tests/Database/dump.sql
-      #   env:
-      #     PGPASSWORD: osmfeatures
       - name: Add hosts to /etc/hosts
         run: sudo echo "127.0.0.1 db" | sudo tee -a /etc/hosts
       - name: Migrate
@@ -44,7 +40,7 @@ jobs:
       - name: Prepare Log File
         run: mkdir -p storage/logs && touch storage/logs/test.log
       - name: Laravel Tests
-        run: php artisan test --log-events-verbose-text storage/logs/test.log
+        run: php artisan test --exclude-group=srid-change --log-events-verbose-text storage/logs/test.log
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3

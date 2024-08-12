@@ -6,7 +6,7 @@ local admin_areas = osm2pgsql.define_table({
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'multipolygon' },
+        { column = 'geom', type = 'multipolygon', projection = 4326 },
         { column = 'admin_level', type = 'int' },
         { column = 'score', type = 'int', default = 0 },
     }
@@ -29,7 +29,7 @@ local hiking_routes_ways = osm2pgsql.define_table({
         { column = 'surface', type='text'},
         { column = 'ford', type='bool'},
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'linestring', projection = 4326},
+        { column = 'geom', type = 'linestring', projection = 4326 },
     }
 })
 
@@ -91,7 +91,7 @@ local places = osm2pgsql.define_table({
         { column = 'name' },
         { column = 'class', not_null = true },
         { column = 'subclass' },
-        { column = 'geom', type = 'point', not_null = true },
+        { column = 'geom', type = 'point', not_null = true, projection = 4326},
         { column = 'tags', type = 'jsonb' },
         { column = 'elevation', type = 'int' },
         { column = 'score', type = 'int'}
@@ -106,7 +106,7 @@ local poles = osm2pgsql.define_table({
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'point' },
+        { column = 'geom', type = 'point', projection = 4326 },
         { column = 'ref' },
         { column = 'ele' },
         { column = 'destination' },
@@ -120,7 +120,7 @@ function format_timestamp(unix_timestamp)
     return os.date('%Y-%m-%d %H:%M:%S', unix_timestamp)
 end
 
-function process_admin_area(object, geom)
+function process_admin_area(object)
     if object.tags.boundary ~= 'administrative' then
         return
     end
@@ -145,7 +145,7 @@ function process_admin_area(object, geom)
         updated_at = format_timestamp(object.timestamp) or nil,
         name = object.tags.name or 'unknown',
         tags = object.tags,
-        geom = geom,
+        geom = object:as_multipolygon(),
         admin_level = admin_level,
         score = score,
     }

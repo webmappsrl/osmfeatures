@@ -6,7 +6,7 @@ local admin_areas = osm2pgsql.define_table({
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'multipolygon' },
+        { column = 'geom', type = 'multipolygon', projection = 4326 },
         { column = 'admin_level', type = 'int' },
         { column = 'score', type = 'int', default = 0 },
     }
