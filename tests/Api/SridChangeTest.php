@@ -26,6 +26,7 @@ class SridChangeTest extends TestCase
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
      * @test
+     * @group srid-change
      * @throws \Exception
      * 
      */
@@ -56,6 +57,7 @@ class SridChangeTest extends TestCase
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
      * @test
+     * @group srid-change
      * @throws \Exception
      * 
      */
@@ -80,6 +82,7 @@ class SridChangeTest extends TestCase
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
      * @test
+     * @group srid-change
      * @throws \Exception
      * 
      */
@@ -105,6 +108,7 @@ class SridChangeTest extends TestCase
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
      * @test
+     * @group srid-change
      * @throws \Exception
      * 
      */
@@ -122,12 +126,5 @@ class SridChangeTest extends TestCase
         $srid = DB::select($query);
 
         $this->assertEquals(4326, $srid[0]->srid);
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        DB::statement('TRUNCATE TABLE admin_areas, places, hiking_routes, poles CASCADE');
     }
 }
