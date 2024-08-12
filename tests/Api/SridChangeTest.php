@@ -2,6 +2,7 @@
 
 namespace Tests\Api;
 
+use App\Console\Commands\OsmfeaturesSync;
 use Tests\TestCase;
 use App\Models\Pole;
 use App\Models\Place;
@@ -9,18 +10,20 @@ use App\Models\AdminArea;
 use App\Models\HikingRoute;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-
+use Illuminate\Support\Facades\Artisan;
 
 class SridChangeTest extends TestCase
 {
 
     use DatabaseTransactions;
 
-    public static function setUpBeforeClass(): void
+    public function setUp(): void
     {
-        parent::setUpBeforeClass(); {
-            $cmd = 'PGPASSWORD=osmfeatures osm2pgsql -d osmfeatures -H db -U osmfeatures -O flex -x -S storage/osm/lua/all_imports.lua storage/tests/original_andorra_latest.pbf --slim --log-level=debug';
-            exec($cmd);
+        parent::setUp(); {
+            $app = app();
+            $command = new OsmfeaturesSync();
+            $command->setLaravel($app);
+            $command->osm2pgsqlSync('andorra_latest', 'storage/tests/original_andorra_latest.pbf', 'all_imports');
         }
     }
 
@@ -125,9 +128,9 @@ class SridChangeTest extends TestCase
         $this->assertEquals(4326, $srid[0]->srid);
     }
 
-    public static function tearDownAfterClass(): void
+    public function tearDown(): void
     {
-        parent::tearDownAfterClass();
+        parent::tearDown();
 
         DB::statement('TRUNCATE TABLE admin_areas, places, hiking_routes, poles CASCADE');
     }
