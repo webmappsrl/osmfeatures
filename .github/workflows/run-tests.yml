@@ -16,19 +16,21 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
         with:
+          ##php version
           php-version: "8.2"
+      - uses: actions/checkout@v3
+      - name: Copy .env
+        run: cp .test-env-example .env
       - name: Install Dependencies
-        run: composer install --prefer-dist --no-interaction --no-scripts --no-progress
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
         run: php artisan key:generate
       - name: Install osm2pgsql
         run: sudo apt-get update && sudo apt-get install -y osm2pgsql
       - name: Add hosts to /etc/hosts
-        run: sudo sh -c 'echo "127.0.0.1 db" >> /etc/hosts'
+        run: sudo echo "127.0.0.1 db" | sudo tee -a /etc/hosts
       - name: Migrate
         run: php artisan migrate
         env:
