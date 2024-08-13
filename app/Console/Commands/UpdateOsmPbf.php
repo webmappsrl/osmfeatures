@@ -46,7 +46,7 @@ class UpdateOsmPbf extends Command
         $dbName = env('DB_DATABASE', 'osmfeatures');
         $dbUser = env('DB_USERNAME', 'osmfeatures');
         $dbPassword = env('DB_PASSWORD', 'osmfeatures');
-        $luaFile = storage_path('osm/lua/all_imports.lua');
+        $luaFile = storage_path('osm/lua/all_imports_3857.lua');
 
         //check if pbf_file name exists in storage/osm/pbf
         if (! file_exists($pbfPath)) {
