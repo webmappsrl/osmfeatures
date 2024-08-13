@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -40,12 +41,34 @@ class TestDBSeeder extends Seeder
             case 'Enrichments':
                 $this->createEnrichmentsTable();
                 break;
+            case 'srid3857':
+                $this->osm2pgsql3857Import();
+                break;
+            case 'srid4326':
+                $this->osm2pgsql4326Import();
+                break;
             default:
                 $this->createAdminAreasTableWithData();
                 $this->createPolesTableWithData();
                 $this->createHikingRoutesTableWithData();
                 $this->createPlacesTableWithData();
         }
+    }
+
+    private function osm2pgsql3857Import()
+    {
+        Artisan::call('migrate');
+        $cmd = 'PGPASSWORD=osmfeatures osm2pgsql -d osmfeatures -H db -U osmfeatures -O flex -x -S storage/osm/lua/all_imports_3857.lua storage/tests/montepisano.pbf';
+
+        exec($cmd);
+    }
+
+    private function osm2pgsql4326Import()
+    {
+        Artisan::call('migrate');
+        $cmd = 'PGPASSWORD=osmfeatures osm2pgsql -d osmfeatures -H db -U osmfeatures -O flex -x -S storage/osm/lua/all_imports.lua storage/tests/montepisano.pbf';
+
+        exec($cmd);
     }
 
     private function createAdminAreasTableWithData()

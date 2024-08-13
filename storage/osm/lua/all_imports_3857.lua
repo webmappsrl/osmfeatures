@@ -76,7 +76,7 @@ local hiking_routes = osm2pgsql.define_table({
         { column = 'description', type= 'text' },
         { column = 'description_it', type= 'text' },
         { column = 'tags', type = 'jsonb'},
-        { column = 'geom', type = 'multilinestring' },
+        { column = 'geom', type = 'multilinestring', projection = 4326 },
         { column = 'members', type = 'jsonb' },
         { column = 'members_ids', type = 'text'}
     }
