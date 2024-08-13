@@ -47,11 +47,17 @@ class CheckDemEnrichmentsUpdateCommand extends Command
             $progressBar->advance();
             $enrichmentTimestamp = $enrichment->updated_at;
             $modelInstance = $modelClass::getOsmfeaturesByOsmfeaturesID($enrichment->enrichable_osmfeatures_id);
-            $modelTimestamp = $modelInstance->updated_at;
-            //if the enrichment is outdated perform a dem enrichment job on the related model
-            if ($modelTimestamp > $enrichmentTimestamp) {
-                $logger->info('Enrichment ' . $enrichment->id . ' is outdated. Dispatching job for Enrich model ' . get_class($enrichment->demEnrichable) . ' ' . $enrichment->demEnrichable->osm_type . $enrichment->demEnrichable->osm_id);
-                DemEnrichmentJob::dispatch($enrichment->demEnrichable);
+            $modelTimestamp = $modelInstance ? $modelInstance->updated_at : null;
+
+            // Check if modelInstance exists and is updated
+            if ($modelTimestamp && $modelTimestamp > $enrichmentTimestamp) {
+                $demEnrichable = $enrichment->demEnrichable;
+                if ($demEnrichable) {
+                    $logger->info('Enrichment ' . $enrichment->id . ' is outdated. Dispatching job for Enrich model ' . get_class($demEnrichable) . ' ' . $demEnrichable->osm_type . $demEnrichable->osm_id);
+                    DemEnrichmentJob::dispatch($demEnrichable);
+                } else {
+                    $logger->warning('Enrichment ' . $enrichment->id . ' is outdated, but demEnrichable is null.');
+                }
             }
         }
 
