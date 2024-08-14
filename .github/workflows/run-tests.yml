@@ -29,10 +29,22 @@ jobs:
         run: php artisan key:generate
       - name: Add hosts to /etc/hosts
         run: sudo echo "127.0.0.1 db" | sudo tee -a /etc/hosts
-      - name: Install osm2pgsql
+      - name: Download osm2pgsql 1.8.0
         run: |
-          sudo apt-get update
-          sudo apt-get install -y osm2pgsql
+          wget https://github.com/openstreetmap/osm2pgsql/archive/refs/tags/1.8.0.tar.gz
+          tar -xzf 1.8.0.tar.gz
+          cd osm2pgsql-1.8.0
+
+      - name: Build and install osm2pgsql
+        run: |
+          ./autogen.sh
+          ./configure
+          make
+          sudo make install
+
+      - name: Verify osm2pgsql version
+        run: |
+          osm2pgsql --version
       - name: Migrate
         run: php artisan migrate
         env:
