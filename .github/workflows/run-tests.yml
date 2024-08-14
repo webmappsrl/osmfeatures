@@ -35,10 +35,16 @@ jobs:
           tar -xzf 1.8.0.tar.gz
           cd osm2pgsql-1.8.0
 
+      - name: List directory contents
+        run: |
+          ls -la
+
       - name: Build and install osm2pgsql
         run: |
-          ./autogen.sh
-          ./configure
+          cd osm2pgsql-1.8.0
+          mkdir build
+          cd build
+          cmake ..
           make
           sudo make install
 
