@@ -44,7 +44,7 @@ jobs:
       - name: Prepare Log File
         run: mkdir -p storage/logs && touch storage/logs/test.log
       - name: Laravel Tests
-        run: php artisan test --exclude-group=srid-change --log-events-verbose-text storage/logs/test.log
+        run: php artisan test --log-events-verbose-text storage/logs/test.log
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v3
