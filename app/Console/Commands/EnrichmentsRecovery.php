@@ -55,7 +55,7 @@ class EnrichmentsRecovery extends Command
 
                 if ($relatedModel) {
                     if ($this->option('dem')) {
-                        $enrichment->dem_enrichable_id = $relatedModel->id;
+                        $enrichment->{'dem-enrichable_id'} = $relatedModel->id;
                         $enrichment->save();
                     } else {
                         $enrichment->enrichable_id = $relatedModel->id;
