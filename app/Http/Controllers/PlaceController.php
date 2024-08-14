@@ -125,7 +125,7 @@ class PlaceController extends Controller
         if (!$place) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$place->geom])[0]->geojson;
+        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$place->geom])[0]->geojson;
 
         match ($place->osm_type) {
             'R' => $osmType = 'relation',

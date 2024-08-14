@@ -139,7 +139,7 @@ class AdminAreaController extends Controller
         if (!$adminArea) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson;
+        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$adminArea->geom])[0]->geojson;
 
         if ($adminArea->enrichment) {
             $enrichment = json_decode($adminArea->enrichment, true);

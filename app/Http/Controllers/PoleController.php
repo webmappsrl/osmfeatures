@@ -130,7 +130,7 @@ class PoleController extends Controller
         if (!$pole) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$pole->geom])[0]->geojson;
+        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$pole->geom])[0]->geojson;
         match ($pole->osm_type) {
             'R' => $osmType = 'relation',
             'W' => $osmType = 'way',

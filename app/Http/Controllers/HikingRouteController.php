@@ -126,7 +126,7 @@ class HikingRouteController extends Controller
         if ($hikingRoute === null) {
             return response()->json(['error' => 'Hiking Route not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$hikingRoute->geom])[0]->geojson;
+        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$hikingRoute->geom])[0]->geojson;
         // get dem enrichment
         $demEnrichment = $hikingRoute->demEnrichment ? json_decode($hikingRoute->demEnrichment->data, true) : null;
         //get admin areas intersecting
