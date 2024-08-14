@@ -1,0 +1,119 @@
+{
+"type": "FeatureCollection",
+"features": [
+{
+  "type": "Feature",
+  "id": "way/704967428",
+  "properties": {
+    "timestamp": "2022-09-23T13:23:20Z",
+    "version": "3",
+    "changeset": "126548265",
+    "user": "DnaX",
+    "uid": "69259",
+    "amenity": "place_of_worship",
+    "building": "yes",
+    "denomination": "catholic",
+    "height": "12.22",
+    "name": "Chiesa di San Giovanni Battista",
+    "religion": "christian",
+    "wikidata": "Q55187073",
+    "id": "way/704967428"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          10.4679916,
+          43.7501116
+        ],
+        [
+          10.4680101,
+          43.750056
+        ],
+        [
+          10.4680285,
+          43.7500003
+        ],
+        [
+          10.4682058,
+          43.7500312
+        ],
+        [
+          10.4682527,
+          43.7500394
+        ],
+        [
+          10.4682612,
+          43.7500133
+        ],
+        [
+          10.468411,
+          43.7500424
+        ],
+        [
+          10.4684084,
+          43.7500506
+        ],
+        [
+          10.4683583,
+          43.7502058
+        ],
+        [
+          10.4682122,
+          43.7501803
+        ],
+        [
+          10.4682216,
+          43.7501517
+        ],
+        [
+          10.4679916,
+          43.7501116
+        ]
+      ]
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/6750096195",
+  "properties": {
+    "timestamp": "2022-09-23T13:23:20Z",
+    "version": "3",
+    "changeset": "126548265",
+    "user": "DnaX",
+    "uid": "69259",
+    "entrance": "main",
+    "id": "node/6750096195"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      10.4680101,
+      43.750056
+    ]
+  }
+},
+{
+  "type": "Feature",
+  "id": "node/6750096196",
+  "properties": {
+    "timestamp": "2022-09-23T13:23:20Z",
+    "version": "3",
+    "changeset": "126548265",
+    "user": "DnaX",
+    "uid": "69259",
+    "entrance": "yes",
+    "id": "node/6750096196"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [
+      10.4682058,
+      43.7500312
+    ]
+  }
+}
+]
+}

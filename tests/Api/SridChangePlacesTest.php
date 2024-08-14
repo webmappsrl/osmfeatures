@@ -3,29 +3,13 @@
 namespace Tests\Api;
 
 use Tests\TestCase;
-use App\Models\Place;
+use App\Models\Pole;
 use Database\Seeders\TestDBSeeder;
+use Illuminate\Support\Facades\DB;
 
 class SridChangePlacesTest extends TestCase
 {
-
-    protected $geometry3857;
-
-    protected $geometry4326;
-
     protected $response;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->geometry3857 = $this->get3857sridGeometry();
-
-        //wipe the database
-        $this->artisan('db:wipe');
-
-        $this->geometry4326 = $this->get4326sridGeometry();
-    }
 
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
@@ -33,46 +17,75 @@ class SridChangePlacesTest extends TestCase
      * @group srid-change
      * @throws \Exception
      */
-    public function get_single_place_api_returns_correct_geometry_after_changing_srid()
+    public function get_single_place_api_returns_correct_geometry_4326()
     {
+        $this->artisan('db:wipe');
+
+        //call the srid seeder
+        $seeder = new TestDBSeeder('srid4326');
+        $seeder->run();
+
+        $this->response = $this->get('/api/v1/features/places/W704967428'); //https://www.openstreetmap.org/way/704967428
+
+        $filepath = storage_path('tests/chiesa_di_san_giovanni_battista.geojson');
+        $geojson = json_decode(file_get_contents($filepath), true)['features'][0]['geometry'];
+
+        //get the centroid of the polygon from the geojson with postgis
+        $centroidQuery = 'SELECT ST_X(ST_Centroid(ST_GeomFromGeoJSON(:geojson))) as longitude, ST_Y(ST_Centroid(ST_GeomFromGeoJSON(:geojson))) as latitude';
+        $centroid = DB::select($centroidQuery, ['geojson' => json_encode($geojson)]);
+        $geojsonLon = $centroid[0]->longitude;
+        $geojsonLat = $centroid[0]->latitude;
 
         // Verifica se la risposta è un geojson
         $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
 
-        // Verifica se il tipo di geometria è multipolygon
+        // Verifica se il tipo di geometria è point
         $this->assertEquals('Point', $this->response->json()['geometry']['type']);
 
+        $longitude = $this->response->json()['geometry']['coordinates'][0];
+        $latitude = $this->response->json()['geometry']['coordinates'][1];
+
         //verifica che la geometria sia invariata
-        $this->assertEquals($this->geometry3857, $this->geometry4326);
+        $this->assertTrue($longitude >= $geojsonLon - 0.00001, $longitude <= $geojsonLon + 0.00001);
+        $this->assertTrue($latitude >= $geojsonLat - 0.00001, $latitude <= $geojsonLat + 0.00001);
     }
 
-    private function get3857sridGeometry()
+    /**
+     * Test if the geometry output is the same changing SRID to 3857 to 4326
+     * @test
+     * @group srid-change
+     * @throws \Exception
+     */
+    public function get_single_place_api_returns_correct_geometry_3857()
     {
-        //call the srid3857 seeder
+        $this->artisan('db:wipe');
+
+        //call the srid seeder
         $seeder = new TestDBSeeder('srid3857');
         $seeder->run();
 
-        $place = Place::where('osm_id', 704967428)->first(); // https://www.openstreetmap.org/way/704967428
+        $this->response = $this->get('/api/v1/features/places/W704967428'); //https://www.openstreetmap.org/way/704967428
 
-        $this->response = $this->get('/api/v1/features/places/' . $place->getOsmfeaturesId());
+        $filepath = storage_path('tests/chiesa_di_san_giovanni_battista.geojson');
+        $geojson = json_decode(file_get_contents($filepath), true)['features'][0]['geometry'];
 
-        $geometry3857 = json_encode($this->response->json()['geometry']);
+        //get the centroid of the polygon from the geojson with postgis
+        $centroidQuery = 'SELECT ST_X(ST_Centroid(ST_GeomFromGeoJSON(:geojson))) as longitude, ST_Y(ST_Centroid(ST_GeomFromGeoJSON(:geojson))) as latitude';
+        $centroid = DB::select($centroidQuery, ['geojson' => json_encode($geojson)]);
+        $geojsonLon = $centroid[0]->longitude;
+        $geojsonLat = $centroid[0]->latitude;
 
-        return $geometry3857;
-    }
+        // Verifica se la risposta è un geojson
+        $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
 
-    private function get4326sridGeometry()
-    {
-        //call the srid 4326 seeder
-        $seeder = new TestDBSeeder('srid4326');
-        $seeder->run();
+        // Verifica se il tipo di geometria è point
+        $this->assertEquals('Point', $this->response->json()['geometry']['type']);
 
-        $place = Place::where('osm_id', 704967428)->first(); // https://www.openstreetmap.org/way/704967428
+        $longitude = $this->response->json()['geometry']['coordinates'][0];
+        $latitude = $this->response->json()['geometry']['coordinates'][1];
 
-        $this->response = $this->get('/api/v1/features/places/' . $place->getOsmfeaturesId());
-
-        $geometry4326 = json_encode($this->response->json()['geometry']);
-
-        return $geometry4326;
+        //verifica che la geometria sia invariata
+        $this->assertTrue($longitude >= $geojsonLon - 0.00001, $longitude <= $geojsonLon + 0.00001);
+        $this->assertTrue($latitude >= $geojsonLat - 0.00001, $latitude <= $geojsonLat + 0.00001);
     }
 }

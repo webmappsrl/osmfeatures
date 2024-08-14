@@ -3,75 +3,98 @@
 namespace Tests\Api;
 
 use Tests\TestCase;
-use App\Models\hikingRoute;
+use App\Models\Pole;
 use Database\Seeders\TestDBSeeder;
+use Illuminate\Support\Facades\DB;
 
 class SridChangeHikingRoutesTest extends TestCase
 {
-
-    protected $geometry3857;
-
-    protected $geometry4326;
-
     protected $response;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->geometry3857 = $this->get3857sridGeometry();
-
-        //wipe the database
-        $this->artisan('db:wipe');
-
-        $this->geometry4326 = $this->get4326sridGeometry();
-    }
-
     /**
-     * Test if the geometry output is the same changing SRID from 3857 to 4326
+     * Test if the geometry output is the same changing SRID to 4326
      * @test
      * @group srid-change
      * @throws \Exception
      */
-    public function get_single_hiking_route_api_returns_correct_geometry_after_changing_srid()
+    public function get_single_hiking_route_api_returns_correct_geometry_4326()
     {
+        $this->artisan('db:wipe');
 
-        // Verifica se la risposta è un geojson
-        $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
-
-        // Verifica se il tipo di geometria è multipolygon
-        $this->assertEquals('MultiLineString', $this->response->json()['geometry']['type']);
-
-        //verifica che la geometria sia invariata
-        $this->assertEquals($this->geometry3857, $this->geometry4326);
-    }
-
-    private function get3857sridGeometry()
-    {
-        //call the srid3857 seeder
-        $seeder = new TestDBSeeder('srid3857');
-        $seeder->run();
-
-        $hikingRoute = HikingRoute::where('osm_id', 4486120)->first(); //https://www.openstreetmap.org/relation/4486120#map=16/43.7506/10.4776
-        $this->response = $this->get('/api/v1/features/hiking-routes/' . $hikingRoute->getOsmfeaturesId());
-
-        $geometry3857 = json_encode($this->response->json()['geometry']);
-
-        return $geometry3857;
-    }
-
-    private function get4326sridGeometry()
-    {
-        //call the srid 4326 seeder
+        //Call the srid 4326 seeder
         $seeder = new TestDBSeeder('srid4326');
         $seeder->run();
 
-        $hikingRoute = HikingRoute::where('osm_id', 4486120)->first(); //https://www.openstreetmap.org/relation/4486120#map=16/43.7506/10.4776
+        // Get the API response
+        $this->response = $this->get('/api/v1/features/hiking-routes/R4174475'); //https://www.openstreetmap.org/relation/4174475
 
-        $this->response = $this->get('/api/v1/features/hiking-routes/' . $hikingRoute->getOsmfeaturesId());
+        // Convert MultiLineString to LineString using PostGIS
+        $linestringGeomQuery = 'SELECT ST_AsText(ST_LineMerge(ST_SetSRID(ST_GeomFromGeoJSON(:geometry), 4326))) as geometry';
+        $linestringGeom = DB::select($linestringGeomQuery, ['geometry' => json_encode($this->response->json()['geometry'])])[0]->geometry;
 
-        $geometry4326 = json_encode($this->response->json()['geometry']);
+        // Transform the LineString geometry to GeoJSON
+        $toGeojsonQuery = 'SELECT ST_AsGeoJSON(ST_Transform(ST_SetSRID(ST_GeomFromText(:geometry), 4326), 4326)) as geometry';
+        $toGeojson = DB::select($toGeojsonQuery, ['geometry' => $linestringGeom])[0]->geometry;
+        $linestring = json_decode($toGeojson, true);
 
-        return $geometry4326;
+        // Load the GeoJSON file
+        $geojsonPath = storage_path('tests/sentiero_pisa.geojson');
+        $geojson = json_decode(file_get_contents($geojsonPath), true);
+        $geojsonCoordinates = $geojson['features'][0]['geometry']['coordinates'];
+
+        // Verifica se la risposta è un GeoJSON
+        $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
+        $this->assertEquals('MultiLineString', $this->response->json()['geometry']['type']);
+        $this->assertCount(count($linestring['coordinates']), $geojsonCoordinates);
+
+        // Compare each line string's coordinates
+        foreach ($linestring['coordinates'] as $key => $value) {
+            $this->assertEquals($value, $geojsonCoordinates[$key]);
+        }
+    }
+
+
+
+    /**
+     * Test if the geometry output is the same changing SRID to 3857
+     * @test
+     * @group srid-change
+     * @throws \Exception
+     */
+    public function get_single_hiking_route_api_returns_correct_geometry_3857()
+    {
+        $this->artisan('db:wipe');
+
+        //Call the srid 3857 seeder (hiking routes projection was 4326)
+        $seeder = new TestDBSeeder('srid3857');
+        $seeder->run();
+
+        // Get the API response
+        $this->response = $this->get('/api/v1/features/hiking-routes/R4174475'); //https://www.openstreetmap.org/relation/4174475
+        $apiCoordinates = $this->response->json()['geometry']['coordinates'];
+
+        // Convert MultiLineString to LineString using PostGIS
+        $linestringGeomQuery = 'SELECT ST_AsText(ST_LineMerge(ST_SetSRID(ST_GeomFromGeoJSON(:geometry), 4326))) as geometry';
+        $linestringGeom = DB::select($linestringGeomQuery, ['geometry' => json_encode($this->response->json()['geometry'])])[0]->geometry;
+
+        // Transform the LineString geometry to GeoJSON
+        $toGeojsonQuery = 'SELECT ST_AsGeoJSON(ST_Transform(ST_SetSRID(ST_GeomFromText(:geometry), 4326), 4326)) as geometry';
+        $toGeojson = DB::select($toGeojsonQuery, ['geometry' => $linestringGeom])[0]->geometry;
+        $linestring = json_decode($toGeojson, true);
+
+        // Load the GeoJSON file
+        $geojsonPath = storage_path('tests/sentiero_pisa.geojson');
+        $geojson = json_decode(file_get_contents($geojsonPath), true);
+        $geojsonCoordinates = $geojson['features'][0]['geometry']['coordinates'];
+
+        // Verifica se la risposta è un GeoJSON
+        $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
+        $this->assertEquals('MultiLineString', $this->response->json()['geometry']['type']);
+        $this->assertCount(count($linestring['coordinates']), $geojsonCoordinates);
+
+        // Compare each line string's coordinates
+        foreach ($linestring['coordinates'] as $key => $value) {
+            $this->assertEquals($value, $geojsonCoordinates[$key]);
+        }
     }
 }

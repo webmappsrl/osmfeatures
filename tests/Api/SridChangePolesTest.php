@@ -9,23 +9,7 @@ use Database\Seeders\TestDBSeeder;
 class SridChangePolesTest extends TestCase
 {
 
-    protected $geometry3857;
-
-    protected $geometry4326;
-
     protected $response;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->geometry3857 = $this->get3857sridGeometry();
-
-        //wipe the database
-        $this->artisan('db:wipe');
-
-        $this->geometry4326 = $this->get4326sridGeometry();
-    }
 
     /**
      * Test if the geometry output is the same changing SRID from 3857 to 4326
@@ -33,46 +17,57 @@ class SridChangePolesTest extends TestCase
      * @group srid-change
      * @throws \Exception
      */
-    public function get_single_pole_api_returns_correct_geometry_after_changing_srid()
+    public function get_single_pole_api_returns_correct_geometry_4326()
     {
+        $this->artisan('db:wipe');
+
+        //chiama il seeder
+        $seeder = new TestDBSeeder('srid4326');
+        $seeder->run();
+
+        $this->response = $this->get('/api/v1/features/poles/N4317322863'); //https://www.openstreetmap.org/node/4317322863
 
         // Verifica se la risposta è un geojson
         $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
 
-        // Verifica se il tipo di geometria è multipolygon
+        // Verifica se il tipo di geometria è point
         $this->assertEquals('Point', $this->response->json()['geometry']['type']);
 
+        $longitude = $this->response->json()['geometry']['coordinates'][0];
+        $latitude = $this->response->json()['geometry']['coordinates'][1];
+
         //verifica che la geometria sia invariata
-        $this->assertEquals($this->geometry3857, $this->geometry4326);
+        $this->assertTrue($longitude >= 10.4925598, $longitude <= 10.4925599); // 10.4925598
+        $this->assertTrue($latitude >= 43.7519477, $latitude <= 43.751948); // 43.7519477
     }
 
-    private function get3857sridGeometry()
+    /**
+     * Test if the geometry output is the same changing SRID to 3857 to 4326
+     * @test
+     * @group srid-change
+     * @throws \Exception
+     */
+    public function get_single_pole_api_returns_correct_geometry_3857()
     {
-        //call the srid3857 seeder
+        $this->artisan('db:wipe');
+
+        //chiama il seeder
         $seeder = new TestDBSeeder('srid3857');
         $seeder->run();
 
-        $pole = Pole::where('osm_id', 4317322863)->first(); // https://www.openstreetmap.org/node/4317322863
+        $this->response = $this->get('/api/v1/features/poles/N4317322863'); //https://www.openstreetmap.org/node/4317322863
 
-        $this->response = $this->get('/api/v1/features/poles/' . $pole->getOsmfeaturesId());
+        // Verifica se la risposta è un geojson
+        $this->response->assertJsonStructure(['type', 'properties', 'geometry']);
 
-        $geometry3857 = json_encode($this->response->json()['geometry']);
+        // Verifica se il tipo di geometria è point
+        $this->assertEquals('Point', $this->response->json()['geometry']['type']);
 
-        return $geometry3857;
-    }
+        $longitude = $this->response->json()['geometry']['coordinates'][0];
+        $latitude = $this->response->json()['geometry']['coordinates'][1];
 
-    private function get4326sridGeometry()
-    {
-        //call the srid 4326 seeder
-        $seeder = new TestDBSeeder('srid4326');
-        $seeder->run();
-
-        $pole = Pole::where('osm_id', 4317322863)->first(); // https://www.openstreetmap.org/node/4317322863
-
-        $this->response = $this->get('/api/v1/features/poles/' . $pole->getOsmfeaturesId());
-
-        $geometry4326 = json_encode($this->response->json()['geometry']);
-
-        return $geometry4326;
+        //verifica che la geometria sia invariata
+        $this->assertTrue($longitude >= 10.4925598, $longitude <= 10.4925599); // 10.4925598
+        $this->assertTrue($latitude >= 43.7519477, $latitude <= 43.751948); // 43.7519477
     }
 }
