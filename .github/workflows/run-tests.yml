@@ -33,6 +33,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential autoconf libtool pkg-config libgeos-dev libproj-dev cmake liblua5.1-dev lua5.1
+          sudo apt-get install -y libboost-all-dev
+
+      - name: Install Composer Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Generate key
+        run: php artisan key:generate
+
+      - name: Add hosts to /etc/hosts
+        run: |
+          echo "127.0.0.1 db" | sudo tee -a /etc/hosts
 
       - name: Download osm2pgsql 1.8.0
         run: |
