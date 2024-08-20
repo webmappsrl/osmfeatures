@@ -130,7 +130,7 @@ class HikingRoute extends OsmFeaturesResource
                 ->hideWhenCreating()
                 ->hideWhenUpdating()
                 ->allowTooltipHTML()
-                ->onlyOnDetail()
+                ->onlyOnDetail(),
 
         ];
 
@@ -196,7 +196,7 @@ class HikingRoute extends OsmFeaturesResource
             }),
             (new calculateAdminAreasIntersecting())->canRun(function () {
                 return true;
-            })
+            }),
         ];
         $actions = array_merge($defaultActions, $specificActions);
         unset($actions[0]);

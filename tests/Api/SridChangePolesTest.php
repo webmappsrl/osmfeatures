@@ -8,7 +8,6 @@ use Database\Seeders\TestDBSeeder;
 
 class SridChangePolesTest extends TestCase
 {
-
     protected $response;
 
     /**

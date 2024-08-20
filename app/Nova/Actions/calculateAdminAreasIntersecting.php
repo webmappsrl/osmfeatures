@@ -13,7 +13,8 @@ use App\Jobs\CalculateAdminAreasIntersectingJob;
 
 class calculateAdminAreasIntersecting extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue;
+    use Queueable;
 
     /**
      * Perform the action on the given models.
