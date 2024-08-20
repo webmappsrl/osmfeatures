@@ -30,6 +30,9 @@
         "spatie/db-dumper": "^3.3",
         "spatie/laravel-translatable": "^6.3",
         "symfony/console": "^6.4",
+        "wm/map-multi-linestring": "^0.0.9",
+        "wm/map-multi-polygon": "^0.0.3",
+        "wm/map-point": "^0.0.9",
         "wm/wm-internal": "*",
         "wm/wm-package": "*"
     },
@@ -47,7 +50,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "Wm\\MapMultiPolygon\\": "nova-components/map-multi-polygon/src/"
         }
     },
     "autoload-dev": {
@@ -95,5 +99,6 @@
             "type": "path",
             "url": "./wm-internal"
         }
+
     ]
 }

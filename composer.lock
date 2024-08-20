@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "effee9d89423eaf109946cbf1bf3bf0f",
+    "content-hash": "cb35bfc8f3c4c2c6898a5dc02fc081e1",
     "packages": [
         {
             "name": "abordage/nova-html-card",
@@ -8360,6 +8360,141 @@
             "time": "2022-06-03T18:03:27+00:00"
         },
         {
+            "name": "wm/map-multi-linestring",
+            "version": "v0.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmappsrl/map-multi-linestring.git",
+                "reference": "df2a016658a96c63516c3b42e2e32a25020ee161"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmappsrl/map-multi-linestring/zipball/df2a016658a96c63516c3b42e2e32a25020ee161",
+                "reference": "df2a016658a96c63516c3b42e2e32a25020ee161",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Wm\\MapMultiLinestring\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Wm\\MapMultiLinestring\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/webmappsrl/map-multi-linestring/issues",
+                "source": "https://github.com/webmappsrl/map-multi-linestring/tree/v0.0.9"
+            },
+            "time": "2023-11-28T11:17:49+00:00"
+        },
+        {
+            "name": "wm/map-multi-polygon",
+            "version": "V0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmappsrl/map-multi-polygon.git",
+                "reference": "64a10c23929462f71fb2d4ba82a3337da8640956"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmappsrl/map-multi-polygon/zipball/64a10c23929462f71fb2d4ba82a3337da8640956",
+                "reference": "64a10c23929462f71fb2d4ba82a3337da8640956",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Wm\\MapMultiPolygon\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Wm\\MapMultiPolygon\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/webmappsrl/map-multi-polygon/issues",
+                "source": "https://github.com/webmappsrl/map-multi-polygon/tree/V0.0.3"
+            },
+            "time": "2023-03-29T06:53:45+00:00"
+        },
+        {
+            "name": "wm/map-point",
+            "version": "v0.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webmappsrl/map-point.git",
+                "reference": "eeceb44f2088955a33d28da77de04b075fd1adc0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webmappsrl/map-point/zipball/eeceb44f2088955a33d28da77de04b075fd1adc0",
+                "reference": "eeceb44f2088955a33d28da77de04b075fd1adc0",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Wm\\MapPoint\\FieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Wm\\MapPoint\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A Laravel Nova field.",
+            "keywords": [
+                "laravel",
+                "nova"
+            ],
+            "support": {
+                "issues": "https://github.com/webmappsrl/map-point/issues",
+                "source": "https://github.com/webmappsrl/map-point/tree/v0.0.9"
+            },
+            "time": "2023-03-16T14:26:41+00:00"
+        },
+        {
             "name": "wm/wm-internal",
             "version": "dev-main",
             "dist": {
@@ -12260,5 +12395,5 @@
         "php": "^8.1.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

@@ -15,6 +15,7 @@ use Rpj\Daterangepicker\DateHelper;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Wm\MapMultiLinestring\MapMultiLinestring;
 
 class HikingRoute extends OsmFeaturesResource
 {
@@ -79,6 +80,14 @@ class HikingRoute extends OsmFeaturesResource
                         return Carbon::parse($value)->toIso8601String();
                     }
                 ),
+            MapMultiLinestring::make('geom')->withMeta([
+                'center' => [42, 10],
+                'attribution' => '<a href="https://webmapp.it/">Webmapp</a> contributors',
+                'tiles' => 'https://api.webmapp.it/tiles/{z}/{x}/{y}.png',
+                'minZoom' => 5,
+                'maxZoom' => 17,
+                'defaultZoom' => 10,
+            ])->onlyOnDetail(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);
                 $ref = $tags['ref'] ?? 'N/A';
