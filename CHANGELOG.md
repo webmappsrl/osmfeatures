@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.32.0](https://github.com/webmappsrl/osmfeatures/compare/v1.31.0...v1.32.0) (2024-08-20)
+
+
+### Features
+
+* add dem info to hikingroute OC:3740 ([#127](https://github.com/webmappsrl/osmfeatures/issues/127)) ([e0e3f75](https://github.com/webmappsrl/osmfeatures/commit/e0e3f75151cb150711597472ec018f1c1558923e))
+* add_admin_areas_to_hiking_routes OC:3762 ([#129](https://github.com/webmappsrl/osmfeatures/issues/129)) ([bf8376e](https://github.com/webmappsrl/osmfeatures/commit/bf8376efefd71ddd408c252ed43ab6abbc91c0e6))
+* added check dem enrichments update command ([9dccb69](https://github.com/webmappsrl/osmfeatures/commit/9dccb69dc8da1b9eed6d3a7509a46a10d028251a))
+* change_geometry_projection_to_4326 OC:3779 ([#130](https://github.com/webmappsrl/osmfeatures/issues/130)) ([9895140](https://github.com/webmappsrl/osmfeatures/commit/98951407c9b0624fc1b41a44d4f357d81121808d))
+* hiking_routes_admin_area_auto_update OC:3800 ([#132](https://github.com/webmappsrl/osmfeatures/issues/132)) ([9144811](https://github.com/webmappsrl/osmfeatures/commit/9144811ee3b77a854f28b00c83172b85c8cec9a6))
+* supervisor integration in docker OC: 3690 ([0749997](https://github.com/webmappsrl/osmfeatures/commit/0749997f11d8af6224f64282b831d53f858b2f80))
+* supervisor integration with docker ([f309d35](https://github.com/webmappsrl/osmfeatures/commit/f309d35139f6026b1ec8a6ba99373081ef806c50))
+
+
+### Bug Fixes
+
+* added srid transform 4326 to controllers ([8f25320](https://github.com/webmappsrl/osmfeatures/commit/8f253208818ea4e7f27ecc6d187fd3275ba65077))
+* check dem enrichments update command ([7335fea](https://github.com/webmappsrl/osmfeatures/commit/7335fea229abc95c756440b40e4eb5e841e3862e))
+* fixed admin areas and user link nova ([1340fec](https://github.com/webmappsrl/osmfeatures/commit/1340fecb7c1e6b990badfb9ab82b20f403090e56))
+* fixed docker supervisor configuration ([3c988d7](https://github.com/webmappsrl/osmfeatures/commit/3c988d7939a773b79c0e1b663dfc48b5f1e15ca6))
+* srid change tests ([048c0ed](https://github.com/webmappsrl/osmfeatures/commit/048c0ed70599bd306f7224a95c633071445843d2))
+
+
+### Miscellaneous Chores
+
+* added has invalid geometry flag for hiking routes and added nova filter ([4c1a65e](https://github.com/webmappsrl/osmfeatures/commit/4c1a65e1ddb0c7610a400c82762d39d5bcbbec05))
+* added progress bar to dem enrichment command ([1d572b2](https://github.com/webmappsrl/osmfeatures/commit/1d572b22d4599c46c072f2fda717f93ca66de101))
+* new docker horizon and supervisor configuration ([a55ae99](https://github.com/webmappsrl/osmfeatures/commit/a55ae99dc93591c9e11e07270cef33842f82085b))
+* srid change tests ([ca81641](https://github.com/webmappsrl/osmfeatures/commit/ca816411c4cb28fbcd15e7764aea12d78bba3df8))
+* updated prod deploy pipeline to use horizon:terminate command ([74440ca](https://github.com/webmappsrl/osmfeatures/commit/74440ca05e31f39ef96e01bac30050e195ff8893))
+
 ## [1.31.0](https://github.com/webmappsrl/osmfeatures/compare/v1.30.1...v1.31.0) (2024-07-16)
 
 
