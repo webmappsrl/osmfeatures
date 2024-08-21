@@ -56,6 +56,7 @@ class HikingRouteController extends Controller
         $perPage = 100;
         $bbox = $request->query('bbox');
         $score = $request->query('score');
+        $osm2caiStatus = $request->query('status');
         $isTest = $request->query('testdata');
 
         $query = DB::table('hiking_routes');
@@ -80,6 +81,10 @@ class HikingRouteController extends Controller
 
         if ($score) {
             $query->where('score', '>=', $score);
+        }
+
+        if ($osm2caiStatus) {
+            $query->where('osm2cai_status', '>=', $osm2caiStatus);
         }
 
         $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);

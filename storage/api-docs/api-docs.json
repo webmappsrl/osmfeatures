@@ -598,6 +598,16 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Hiking Routes that have osm2cai status greater than or equal to the specified value. Max status is 3.",
+                        "example": "1",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
