@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Laravel\Nova\Panel;
+use Wm\MapPoint\MapPoint;
 use Laravel\Nova\Fields\Text;
 use App\Nova\OsmFeaturesResource;
 use Laravel\Nova\Fields\DateTime;
@@ -41,7 +42,10 @@ class Place extends OsmFeaturesResource
      * @var array
      */
     public static $search = [
-        'name', 'class', 'subclass', 'osm_id',
+        'name',
+        'class',
+        'subclass',
+        'osm_id',
     ];
 
     /**
@@ -68,6 +72,14 @@ class Place extends OsmFeaturesResource
                     }
                 }
             ),
+            MapPoint::make('geom')->withMeta([
+                'center' => [42, 10],
+                'attribution' => '<a href="https://webmapp.it/">Webmapp</a> contributors',
+                'tiles' => 'https://api.webmapp.it/tiles/{z}/{x}/{y}.png',
+                'minZoom' => 8,
+                'maxZoom' => 17,
+                'defaultZoom' => 14
+            ])->onlyOnDetail(),
         ];
 
         return array_merge($osmfeaturesFields, $specificFields);

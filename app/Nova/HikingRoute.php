@@ -15,6 +15,7 @@ use Rpj\Daterangepicker\DateHelper;
 use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Wm\MapMultiLinestring\MapMultiLinestring;
 
 class HikingRoute extends OsmFeaturesResource
 {
@@ -79,6 +80,14 @@ class HikingRoute extends OsmFeaturesResource
                         return Carbon::parse($value)->toIso8601String();
                     }
                 ),
+            MapMultiLinestring::make('geom')->withMeta([
+                'center' => [42, 10],
+                'attribution' => '<a href="https://webmapp.it/">Webmapp</a> contributors',
+                'tiles' => 'https://api.webmapp.it/tiles/{z}/{x}/{y}.png',
+                'minZoom' => 5,
+                'maxZoom' => 17,
+                'defaultZoom' => 10,
+            ])->onlyOnDetail(),
             Text::make('Specs', function () {
                 $tags = json_decode($this->tags, true);
                 $ref = $tags['ref'] ?? 'N/A';
@@ -135,18 +144,20 @@ class HikingRoute extends OsmFeaturesResource
         ];
 
         if ($demEnrichment) {
+            $content = collect($demEnrichment)->map(function ($value, $key) {
+                //check if $value is a boolean and translate it to a string
+                if (is_bool($value)) {
+                    $value =  $value ? 'True' : 'False';
+                }
+                return "<span style='font-weight: bold; color: #7b4896';>{$key}:</span> : {$value}";
+            })->implode('<br>');
+        } else {
+            $content = 'DEM data not available';
+        } {
             $specificFields = array_merge($specificFields, [
                 Tooltip::make('DEM Data')
                     ->iconFromPath(public_path('images/dem.svg'))
-                    ->content(
-                        collect($demEnrichment)->map(function ($value, $key) {
-                            //check if $value is a boolean and translate it to a string
-                            if (is_bool($value)) {
-                                $value =  $value ? 'True' : 'False';
-                            }
-                            return "<span style='font-weight: bold; color: #7b4896';>{$key}:</span> : {$value}";
-                        })->implode('<br>')
-                    )
+                    ->content($content)
                     ->hideWhenCreating()
                     ->hideWhenUpdating()
                     ->allowTooltipHTML()
@@ -197,6 +208,7 @@ class HikingRoute extends OsmFeaturesResource
         $osmfeaturesFilters = parent::filters($request);
         $specifiFilters = [
             new Filters\DemEnrichmentFilter(),
+            new Filters\AdminAreasEnrichmentFilter(),
             new Filters\CaiScaleFilter(),
             new Filters\Osm2caiStatusFilter(),
             new Filters\HasInvalidGeometryFilter(),

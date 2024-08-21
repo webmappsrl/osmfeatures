@@ -5,6 +5,7 @@ namespace App\Nova;
 use Laravel\Nova\Panel;
 use Laravel\Nova\Fields\Text;
 use App\Nova\OsmFeaturesResource;
+use Wm\MapMultiPolygon\MapMultiPolygon;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AdminArea extends OsmFeaturesResource
@@ -29,7 +30,8 @@ class AdminArea extends OsmFeaturesResource
      * @var array
      */
     public static $search = [
-        'osm_id', 'name',
+        'osm_id',
+        'name',
     ];
 
     /**
@@ -45,6 +47,10 @@ class AdminArea extends OsmFeaturesResource
         $specificFields = [
             Text::make('Level', 'admin_level')
                 ->sortable(),
+            MapMultiPolygon::make('geom')->withMeta([
+                'center' => ['42.795977075', '10.326813853'],
+                'attribution' => '<a href="https://webmapp.it/">Webmapp</a> contributors',
+            ])->hideFromIndex(),
         ];
 
         return array_merge($osmfeaturesFields, $specificFields);

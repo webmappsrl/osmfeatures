@@ -2,18 +2,19 @@
 
 namespace App\Nova;
 
-use App\Nova\Filters\PolesElevationFilter;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
+use Wm\MapPoint\MapPoint;
 use Laravel\Nova\Fields\Code;
-use Laravel\Nova\Fields\DateTime;
-use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Outl1ne\NovaTooltipField\Tooltip;
+use Illuminate\Support\Carbon;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\DateTime;
+use Illuminate\Support\Facades\DB;
 use Rpj\Daterangepicker\DateHelper;
+use Illuminate\Support\Facades\Date;
+use Outl1ne\NovaTooltipField\Tooltip;
 use Rpj\Daterangepicker\Daterangepicker;
+use App\Nova\Filters\PolesElevationFilter;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Pole extends OsmFeaturesResource
 {
@@ -45,7 +46,10 @@ class Pole extends OsmFeaturesResource
      * @var array
      */
     public static $search = [
-        'osm_id', 'name', 'ref', 'destination',
+        'osm_id',
+        'name',
+        'ref',
+        'destination',
     ];
 
     public static function indexQuery(NovaRequest $request, $query)
@@ -72,6 +76,14 @@ class Pole extends OsmFeaturesResource
             Text::make('Destination', function () {
                 return wordwrap($this->destination, 50, '<br>', true);
             })->asHtml(),
+            MapPoint::make('geom')->withMeta([
+                'center' => [42, 10],
+                'attribution' => '<a href="https://webmapp.it/">Webmapp</a> contributors',
+                'tiles' => 'https://api.webmapp.it/tiles/{z}/{x}/{y}.png',
+                'minZoom' => 8,
+                'maxZoom' => 17,
+                'defaultZoom' => 14
+            ])->onlyOnDetail(),
         ];
 
         $finalFields = array_merge($osmfeaturesFields, $specificFields);
