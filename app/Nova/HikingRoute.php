@@ -236,6 +236,7 @@ class HikingRoute extends OsmFeaturesResource
         $osmfeaturesFilters = parent::filters($request);
         $specifiFilters = [
             new Filters\DemEnrichmentFilter(),
+            new Filters\AdminAreasEnrichmentFilter(),
             new Filters\CaiScaleFilter(),
             new Filters\Osm2caiStatusFilter(),
             new Filters\HasInvalidGeometryFilter(),
