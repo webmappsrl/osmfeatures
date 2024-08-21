@@ -144,18 +144,20 @@ class HikingRoute extends OsmFeaturesResource
         ];
 
         if ($demEnrichment) {
+            $content = collect($demEnrichment)->map(function ($value, $key) {
+                //check if $value is a boolean and translate it to a string
+                if (is_bool($value)) {
+                    $value =  $value ? 'True' : 'False';
+                }
+                return "<span style='font-weight: bold; color: #7b4896';>{$key}:</span> : {$value}";
+            })->implode('<br>');
+        } else {
+            $content = 'DEM data not available';
+        } {
             $specificFields = array_merge($specificFields, [
                 Tooltip::make('DEM Data')
                     ->iconFromPath(public_path('images/dem.svg'))
-                    ->content(
-                        collect($demEnrichment)->map(function ($value, $key) {
-                            //check if $value is a boolean and translate it to a string
-                            if (is_bool($value)) {
-                                $value =  $value ? 'True' : 'False';
-                            }
-                            return "<span style='font-weight: bold; color: #7b4896';>{$key}:</span> : {$value}";
-                        })->implode('<br>')
-                    )
+                    ->content($content)
                     ->hideWhenCreating()
                     ->hideWhenUpdating()
                     ->allowTooltipHTML()
