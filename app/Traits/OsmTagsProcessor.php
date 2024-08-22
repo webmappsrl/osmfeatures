@@ -89,18 +89,26 @@ trait OsmTagsProcessor
     }
 
     /**
+     * Get full osm type name based on osm_type (R = Relation etc.)
+     * 
+     * @return string
+     */
+    public function getFullOsmType(): string
+    {
+        return  match ($this->osm_type) {
+            'R' =>  'relation',
+            'W' =>  'way',
+            'N' =>  'node',
+        };
+    }
+
+    /**
      * Get the osm url
      * @return string
      */
     public function getOsmUrl(): string
     {
-        match ($this->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
-
-        return "https://www.openstreetmap.org/$osmType/$this->osm_id";
+        return "https://www.openstreetmap.org/{$this->getFullOsmType()}/$this->osm_id";
     }
 
     /**

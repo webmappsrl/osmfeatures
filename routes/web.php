@@ -3,6 +3,7 @@
 use App\Jobs\TestHorizonJob;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\XLSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,5 @@ Route::get('/test-horizon', function () {
 
     return 'Dispatched 1000 jobs';
 });
+
+Route::get('/export/excel', [XLSController::class, 'export'])->name('export.excel');

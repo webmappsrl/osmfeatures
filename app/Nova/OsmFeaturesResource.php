@@ -14,6 +14,7 @@ use Laravel\Nova\Fields\Textarea;
 use Rpj\Daterangepicker\DateHelper;
 use Outl1ne\NovaTooltipField\Tooltip;
 use App\Nova\Actions\EnrichmentAction;
+use App\Nova\Actions\ExportXLS;
 use App\Nova\Filters\EnrichmentFilter;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -164,9 +165,14 @@ class OsmFeaturesResource extends Resource
      */
     public function actions(NovaRequest $request)
     {
-        return [(new EnrichmentAction())->canRun(function () {
-            return true;
-        }),];
+        return [
+            (new EnrichmentAction())->canRun(function () {
+                return true;
+            }),
+            (new ExportXLS())->canRun(function () {
+                return true;
+            })
+        ];
     }
 
     protected function enrichmentsFields(NovaRequest $request)

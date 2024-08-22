@@ -164,34 +164,6 @@ class HikingRoute extends OsmFeaturesResource
                     ->onlyOnDetail(),
             ]);
         }
-
-        // if ($adminAreasIntersecting) {
-        //     $specificFields = array_merge(
-        //         $specificFields,
-        //         [
-        //             Tooltip::make('Admin Areas', 'admin_areas')
-        //                 ->iconFromPath(public_path('images/admin_areas.svg'))
-        //                 ->content(
-        //                     collect($adminAreasIntersecting)->map(function ($levels, $level) {
-        //                         if (is_array($levels)) {
-        //                             $htmlString = '';
-        //                             foreach ($levels as $area) {
-        //                                 $htmlString .= "<span style='font-weight: bold; color:#38ab98;'>{$area['name']}</span>: {$area['osmfeatures_id']}<br>";
-        //                             }
-        //                             return "<span style='font-weight: bold; color:#005f73;'>Admin Level {$level}</span>:<br>{$htmlString}";
-        //                         }
-        //                         return "<span style='font-weight: bold; color:#005f73;'>Admin Level {$level}</span>: {$levels}";
-        //                     })->implode('<br>')
-        //                 )
-        //                 ->hideWhenCreating()
-        //                 ->hideWhenUpdating()
-        //                 ->allowTooltipHTML()
-        //                 ->onlyOnDetail()
-
-        //         ]
-        //     );
-        // }
-
         $finalFields = array_merge($osmfeaturesFields, $specificFields);
 
         return $finalFields;
