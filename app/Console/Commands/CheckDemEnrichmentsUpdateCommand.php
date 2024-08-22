@@ -14,14 +14,16 @@ class CheckDemEnrichmentsUpdateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:check-dem-enrichments-update {model : The name of the model} {id? : The osmfeatures ID of the model}';
+    protected $signature = 'osmfeatures:check-dem-enrichments-update
+                            {model=HikingRoute : The name of the model}
+                            {id? : The osmfeatures ID of the model}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This command loop over all dem enrichments record in database and compare them to the related model updated_at value (if osmfeatures id not provided). If the model updated_at value is greater than the dem enrichments record updated_at value, the dem enrichments record will be updated making another call to dem api.';
+    protected $description = 'Checks and updates DEM enrichment records and handles missing enrichments.';
 
     /**
      * Execute the console command.
@@ -30,38 +32,93 @@ class CheckDemEnrichmentsUpdateCommand extends Command
     {
         $logger = Log::channel('dem-enrichment');
         $modelClass = 'App\\Models\\' . $this->argument('model');
+
         if (!class_exists($modelClass)) {
             $this->error("The model class $modelClass does not exist.");
             $logger->error("The model class $modelClass does not exist.");
             return;
         }
-        if ($this->argument('id')) {
-            $demEnrichments = collect(DemEnrichment::where('enrichable_osmfeatures_id', $this->argument('id'))->get());
-        } else {
-            $demEnrichments = DemEnrichment::all();
-        }
 
-        $logger->info('Checking dem enrichments update...');
+        // Recupera gli arricchimenti esistenti
+        $demEnrichments = $this->getDemEnrichments();
+
+        $logger->info('Checking DEM enrichments update...');
         $progressBar = $this->output->createProgressBar(count($demEnrichments));
+
+        // Controlla e aggiorna gli arricchimenti esistenti
         foreach ($demEnrichments as $enrichment) {
             $progressBar->advance();
-            $enrichmentTimestamp = $enrichment->updated_at;
-            $modelInstance = $modelClass::getOsmfeaturesByOsmfeaturesID($enrichment->enrichable_osmfeatures_id);
-            if (!$modelInstance) {
-                $this->error('No model ' . $modelClass . ' found with osmfeatured id of: ' . $enrichment->enrichable_osmfeatures_id);
-                $logger->error('No model ' . $modelClass . ' found with osmfeatured id of: ' . $enrichment->enrichable_osmfeatures_id);
-                continue;
-            }
-            $modelTimestamp = $modelInstance->updated_at;
-            //if the enrichment is outdated perform a dem enrichment job on the related model
-            if ($modelTimestamp > $enrichmentTimestamp) {
-                $logger->info('Enrichment ' . $enrichment->id . ' is outdated. Dispatching job for Enrich model ' . get_class($modelInstance) . ' ' . $modelInstance->osm_type . $modelInstance->osm_id);
-                DemEnrichmentJob::dispatch($modelInstance);
-            }
+            $this->updateEnrichmentIfOutdated($enrichment, $modelClass, $logger);
         }
 
         $progressBar->finish();
         $this->newLine();
-        $logger->info('Finished checking dem enrichments update');
+
+        // Gestisce i record senza arricchimento associato
+        if (!$this->argument('id')) {
+            $this->processMissingEnrichments($modelClass, $logger);
+        }
+
+        $logger->info('Finished checking DEM enrichments update.');
+    }
+
+    /**
+     * Recupera gli arricchimenti DEM esistenti dal database.
+     */
+    protected function getDemEnrichments()
+    {
+        if ($this->argument('id')) {
+            return DemEnrichment::where('enrichable_osmfeatures_id', $this->argument('id'))->get();
+        } else {
+            return DemEnrichment::all();
+        }
+    }
+
+    /**
+     * Aggiorna l'arricchimento DEM se è obsoleto rispetto al modello collegato.
+     */
+    protected function updateEnrichmentIfOutdated($enrichment, $modelClass, $logger)
+    {
+        $enrichmentTimestamp = $enrichment->updated_at;
+        $modelInstance = $modelClass::getOsmfeaturesByOsmfeaturesID($enrichment->enrichable_osmfeatures_id);
+
+        if (!$modelInstance) {
+            $this->error('No model ' . $modelClass . ' found with osmfeatures ID: ' . $enrichment->enrichable_osmfeatures_id);
+            $logger->error('No model ' . $modelClass . ' found with osmfeatures ID: ' . $enrichment->enrichable_osmfeatures_id);
+            return;
+        }
+
+        $modelTimestamp = $modelInstance->updated_at;
+
+        // Se l'arricchimento è obsoleto, aggiorna
+        if ($modelTimestamp > $enrichmentTimestamp) {
+            $logger->info('Enrichment ' . $enrichment->id . ' is outdated. Dispatching job for Enrich model '
+                . get_class($modelInstance) . ' ' . $modelInstance->osm_type . $modelInstance->osm_id);
+            DemEnrichmentJob::dispatch($modelInstance);
+        }
+    }
+
+    /**
+     * Trova i record senza arricchimento associato e lancia il job di arricchimento.
+     */
+    protected function processMissingEnrichments($modelClass, $logger)
+    {
+        $logger->info('Processing missing enrichments...');
+        $this->info('Processing missing enrichments...');
+
+        // Trova i record che non hanno arricchimenti associati
+        $missingEnrichments = $modelClass::whereDoesntHave('demEnrichment')->get();
+
+        if ($missingEnrichments->isEmpty()) {
+            $logger->info('No missing enrichments found.');
+            return;
+        }
+
+        foreach ($missingEnrichments as $model) {
+            $logger->info('Dispatching job for missing enrichment on model ' . get_class($model) . ' ' . $model->osm_type .
+                $model->osm_id);
+            $this->info('Enrichment ' . $model->osm_type . $model->osm_id . ' is missing. Dispatching job for Enrich model ' . get_class($model) . ' ' . $model->osm_type . $model->osm_id);
+            DemEnrichmentJob::dispatch($model);
+        }
     }
 }
