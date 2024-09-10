@@ -26,6 +26,7 @@
         "openai-php/laravel": "^0.10.1",
         "outl1ne/nova-tooltip-field": "^1.0",
         "predis/predis": "^2.2",
+        "rap2hpoutre/laravel-log-viewer": "^2.4",
         "romanzipp/laravel-queue-monitor": "^5.2",
         "rpj/daterangepicker": "^0.0.7",
         "spatie/db-dumper": "^3.3",
