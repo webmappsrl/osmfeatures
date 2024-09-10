@@ -28,3 +28,5 @@ Route::get('/test-horizon', function () {
 });
 
 Route::get('/export/excel', [XLSController::class, 'export'])->name('export.excel');
+
+Route::get('/logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
