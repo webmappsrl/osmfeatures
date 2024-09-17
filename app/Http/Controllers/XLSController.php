@@ -49,7 +49,7 @@ class XLSController extends Controller
         });
 
         // Genera e restituisci il file Excel
-        return Excel::download(new class($data) implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents {
+        return Excel::download(new class ($data) implements FromCollection, WithHeadings, ShouldAutoSize, WithEvents {
             private $data;
 
             public function __construct($data)
@@ -97,8 +97,8 @@ class XLSController extends Controller
                                     $sheet->getStyle($cellCoordinate)->applyFromArray([
                                         'font' => [
                                             'color' => ['rgb' => '0000FF'], // Blu tipico dei collegamenti ipertestuali
-                                            'underline' => 'single'
-                                        ]
+                                            'underline' => 'single',
+                                        ],
                                     ]);
                                 }
                             }

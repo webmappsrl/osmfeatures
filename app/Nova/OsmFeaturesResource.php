@@ -171,7 +171,7 @@ class OsmFeaturesResource extends Resource
             }),
             (new ExportXLS())->canRun(function () {
                 return true;
-            })
+            }),
         ];
     }
 
