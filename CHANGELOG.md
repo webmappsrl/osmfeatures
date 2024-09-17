@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.33.0](https://github.com/webmappsrl/osmfeatures/compare/v1.32.0...v1.33.0) (2024-09-17)
+
+
+### Features
+
+* added map components to nova resources (admin areas, places, hiking routes, poles) ([d462b74](https://github.com/webmappsrl/osmfeatures/commit/d462b743bf47f3cade0126c1ef56057adae01b20))
+* configured log viewer ([472b70a](https://github.com/webmappsrl/osmfeatures/commit/472b70a48c3405227f2703fcea988c2222ad541b))
+* features xls export OC:3811 ([#137](https://github.com/webmappsrl/osmfeatures/issues/137)) ([8b7db2c](https://github.com/webmappsrl/osmfeatures/commit/8b7db2cead29ff923c499b796ec25ef94ffc2784))
+
+
+### Bug Fixes
+
+* added osm2cai status query parameter to hiking routes list api ([77ab216](https://github.com/webmappsrl/osmfeatures/commit/77ab21680fb220bf17566e4f5a461449437c7cb8))
+* dem field missing in hiking route OC:3809 ([91e650e](https://github.com/webmappsrl/osmfeatures/commit/91e650ed5ece7fb5422601ad362a5831d409510b))
+
+
+### Miscellaneous Chores
+
+* admin_areas_enrichments nova filter ([cf5d61f](https://github.com/webmappsrl/osmfeatures/commit/cf5d61ffd5321f42622219478a009d5fe7d28571))
+* improved enrichments recovery and check update commands ([8ee2dd6](https://github.com/webmappsrl/osmfeatures/commit/8ee2dd6cccd10bab66633d3dfa29c15bbe0abed1))
+* installed log viewer package ([5642e61](https://github.com/webmappsrl/osmfeatures/commit/5642e61453fc108ad2f38afe3e7be04f3bdf077f))
+* upload to aws testing command (to insert in cron job production) ([0066e90](https://github.com/webmappsrl/osmfeatures/commit/0066e90aa346698f165daf517ceb3f2342b1ca8c))
+
 ## [1.32.0](https://github.com/webmappsrl/osmfeatures/compare/v1.31.0...v1.32.0) (2024-08-20)
 
 
