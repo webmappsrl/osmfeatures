@@ -22,6 +22,11 @@ class Place extends Model
 
     protected $primaryKey = 'id';
 
+    /**
+     * Get the GeoJSON representation of the Place.
+     *
+     * @return array
+     */
     public function getGeojsonFeature()
     {
         $geom = $this->transformGeomToGeojson();
@@ -38,11 +43,21 @@ class Place extends Model
         return $geojsonFeature;
     }
 
+    /**
+     * Transform the geometry from the database to a GeoJSON representation.
+     *
+     * @return string
+     */
     private function transformGeomToGeojson()
     {
         return DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$this->geom])[0]->geojson;
     }
 
+    /**
+     * Get the OSM type from the database.
+     *
+     * @return string|null
+     */
     private function getOsmType()
     {
         switch ($this->osm_type) {
@@ -57,6 +72,12 @@ class Place extends Model
         }
     }
 
+    /**
+     * Prepare the properties for the GeoJSON feature.
+     *
+     * @param string $osmType
+     * @return array
+     */
     private function prepareProperties($osmType)
     {
         $properties = $this->toArray();
@@ -77,6 +98,11 @@ class Place extends Model
         return $properties;
     }
 
+    /**
+     * Get the enrichment data from the database.
+     *
+     * @return array|null
+     */
     private function getEnrichment()
     {
         if ($this->enrichment) {
