@@ -2,19 +2,12 @@
 
 namespace App\Models;
 
-use App\Traits\Enrichable;
-use App\Traits\OsmTagsProcessor;
-use Illuminate\Support\Facades\DB;
-use App\Traits\OsmFeaturesIdProcessor;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\OsmfeaturesModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class HikingRoute extends Model
+class HikingRoute extends OsmfeaturesModel
 {
     use HasFactory;
-    use OsmTagsProcessor;
-    use OsmFeaturesIdProcessor;
-    use Enrichable;
 
     protected $table = 'hiking_routes';
 
@@ -48,6 +41,8 @@ class HikingRoute extends Model
 
         // Prepare the properties
         $properties = $this->prepareProperties($osmType, $demEnrichment, $adminAreas);
+        $properties['admin_areas'] = $adminAreas;
+        $properties['dem_enrichment'] = $demEnrichment ? $demEnrichment['properties'] : null;
 
         // Return the GeoJSON feature
         $geojsonFeature = [
@@ -59,54 +54,14 @@ class HikingRoute extends Model
         return $geojsonFeature;
     }
 
-    /**
-     * Returns the geometry of the Hiking Route in GeoJSON format.
-     *
-     * The geometry is transformed to the WGS 84 coordinate reference system
-     * (SRID 4326) before being converted to GeoJSON.
-     *
-     * @return string
-     */
-    private function transformGeomToGeojson(): string
-    {
-        // Get the geometry in GeoJSON format
-        $geom = DB::select(
-            'SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson',
-            [$this->geom]
-        )[0]->geojson;
-
-        return $geom;
-    }
-
-    /**
-     * Returns the OSM type from the given osm_type.
-     *
-     * @param string $osmType
-     * @return string
-     */
-    private function getOsmType($osmType): string
-    {
-        switch ($osmType) {
-            case 'R':
-                return 'relation';
-            case 'W':
-                return 'way';
-            case 'N':
-                return 'node';
-            default:
-                return null;
-        }
-    }
 
     /**
      * Prepare the properties for the GeoJSON feature.
      *
      * @param string $osmType
-     * @param array|null $demEnrichment
-     * @param array|null $adminAreas
      * @return array
      */
-    private function prepareProperties($osmType, $demEnrichment, $adminAreas): array
+    protected function prepareProperties($osmType): array
     {
         $properties = $this->toArray();
         unset($properties['geom'], $properties['tags'], $properties['id'], $properties['admin_areas_enrichment']);
@@ -118,8 +73,6 @@ class HikingRoute extends Model
         $properties['wikidata'] = $this->getWikidataUrl();
         $properties['wikipedia'] = $this->getWikipediaUrl();
         $properties['wikimedia_commons'] = $this->getWikimediaCommonsUrl();
-        $properties['admin_areas'] = $adminAreas;
-        $properties['dem_enrichment'] = $demEnrichment ? $demEnrichment['properties'] : null;
 
         return $properties;
     }
