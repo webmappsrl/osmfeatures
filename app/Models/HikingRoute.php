@@ -24,7 +24,7 @@ class HikingRoute extends OsmfeaturesModel
      *
      * @return array
      */
-    public function getGeojsonFeature(): array
+    public function getGeojsonFeature(array $props = []): array
     {
 
         // Get the geometry in GeoJSON format
@@ -40,9 +40,13 @@ class HikingRoute extends OsmfeaturesModel
         $osmType = $this->getOsmType($this->osm_type);
 
         // Prepare the properties
-        $properties = $this->prepareProperties($osmType, $demEnrichment, $adminAreas);
+        $properties = $this->prepareProperties($osmType);
         $properties['admin_areas'] = $adminAreas;
         $properties['dem_enrichment'] = $demEnrichment ? $demEnrichment['properties'] : null;
+
+        if (!empty($props))
+            $properties = array_intersect_key($properties, array_flip($props));
+
 
         // Return the GeoJSON feature
         $geojsonFeature = [

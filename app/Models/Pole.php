@@ -23,27 +23,4 @@ class Pole extends OsmfeaturesModel
         'geom',
         'updated_at',
     ];
-
-    /**
-     * Return the pole as a GeoJSON Feature.
-     *
-     * @return array
-     */
-    public function getGeojsonFeature()
-    {
-        $geom = $this->transformGeomToGeojson();
-        $osmType = $this->getOsmType();
-        $properties = $this->prepareProperties($osmType);
-
-        //remove enrichments from properties
-        unset($properties['enrichments']);
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom),
-        ];
-
-        return $geojsonFeature;
-    }
 }

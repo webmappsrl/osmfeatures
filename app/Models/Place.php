@@ -22,24 +22,4 @@ class Place extends OsmfeaturesModel
     protected $fillable = ['osm_id', 'name', 'class', 'subclass', 'geom', 'updated_at'];
 
     protected $primaryKey = 'id';
-
-    /**
-     * Get the GeoJSON representation of the Place.
-     *
-     * @return array
-     */
-    public function getGeojsonFeature()
-    {
-        $geom = $this->transformGeomToGeojson();
-        $osmType = $this->getOsmType();
-        $properties = $this->prepareProperties($osmType);
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom),
-        ];
-
-        return $geojsonFeature;
-    }
 }

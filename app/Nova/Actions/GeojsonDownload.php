@@ -43,13 +43,9 @@ class GeojsonDownload extends Action
         $fileName = strtolower($modelClass);
 
         foreach ($models as $model) {
-            $feature = $model->getGeojsonFeature();
+            $feature = $model->getGeojsonFeature($this->propertyKeys);
             if ($feature) {
                 $properties = $feature['properties'];
-
-                //filter the properties
-                if (!empty($this->propertyKeys))
-                    $properties = array_intersect_key($properties, array_flip($this->propertyKeys));
 
                 $feature['properties'] = $properties;
                 $features[] = $feature;

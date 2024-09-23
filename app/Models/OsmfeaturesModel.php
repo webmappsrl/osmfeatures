@@ -18,6 +18,30 @@ class OsmfeaturesModel extends Model
 
 
     /**
+     * Return the GeoJSON representation.
+     *
+     * @param array $props
+     * @return array
+     */
+    public function getGeojsonFeature(array $props = []): array
+    {
+        $geom = $this->transformGeomToGeojson();
+        $osmType = $this->getOsmType();
+        $properties = $this->prepareProperties($osmType);
+
+        if (!empty($props)) {
+            $properties = array_intersect_key($properties, array_flip($props));
+        }
+
+        return [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($geom, true),
+        ];
+    }
+
+
+    /**
      * Transform the geometry to GeoJSON.
      *
      * @return string

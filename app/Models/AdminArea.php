@@ -31,24 +31,4 @@ class AdminArea extends OsmfeaturesPivot
     protected $casts = [
         'admin_level ' => 'integer',
     ];
-
-    /**
-     * Return the admin area as a GeoJSON Feature.
-     *
-     * @return array
-     */
-    public function getGeojsonFeature()
-    {
-        $geom = $this->transformGeomToGeojson();
-        $osmType = $this->getOsmType();
-        $properties = $this->prepareProperties($osmType);
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom, true),
-        ];
-
-        return $geojsonFeature;
-    }
 }
