@@ -35,7 +35,7 @@ class HikingRoute extends Model
     {
 
         // Get the geometry in GeoJSON format
-        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$this->geom])[0]->geojson;
+        $geom = $this->transformGeomToGeojson();
 
         // Get the DEM enrichment
         $demEnrichment = $this->demEnrichment ? json_decode($this->demEnrichment->data, true) : null;
@@ -57,6 +57,25 @@ class HikingRoute extends Model
         ];
 
         return $geojsonFeature;
+    }
+
+    /**
+     * Returns the geometry of the Hiking Route in GeoJSON format.
+     *
+     * The geometry is transformed to the WGS 84 coordinate reference system
+     * (SRID 4326) before being converted to GeoJSON.
+     *
+     * @return string
+     */
+    private function transformGeomToGeojson(): string
+    {
+        // Get the geometry in GeoJSON format
+        $geom = DB::select(
+            'SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson',
+            [$this->geom]
+        )[0]->geojson;
+
+        return $geom;
     }
 
     /**

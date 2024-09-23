@@ -173,7 +173,7 @@ class OsmFeaturesResource extends Resource
             (new ExportXLS())->canRun(function () {
                 return true;
             }),
-            (new GeojsonDownload(['description', 'tags']))->canRun(function () {
+            (new GeojsonDownload())->canRun(function () {
                 return true;
             })
         ];
