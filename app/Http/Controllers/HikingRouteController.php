@@ -126,48 +126,13 @@ class HikingRouteController extends Controller
      */
     public function show(string $id)
     {
-        $hikingRoute = HikingRoute::getOsmfeaturesByOsmfeaturesID($id);
+        $hr = HikingRoute::getOsmfeaturesByOsmfeaturesID($id);
 
-        if ($hikingRoute === null) {
-            return response()->json(['error' => 'Hiking Route not found'], 404);
+        if (!$hr) {
+            return response()->json(['message' => 'Hiking route not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$hikingRoute->geom])[0]->geojson;
-        // get dem enrichment
-        $demEnrichment = $hikingRoute->demEnrichment ? json_decode($hikingRoute->demEnrichment->data, true) : null;
-        //get admin areas intersecting
-        $adminAreas = $hikingRoute->adminAreasEnrichment ? json_decode($hikingRoute->adminAreasenrichment->data, true) : null;
 
-        match ($hikingRoute->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
-
-        $properties = $hikingRoute->toArray();
-        unset($properties['geom']);
-        unset($properties['tags']);
-        unset($properties['id']);
-        unset($properties['admin_areas_enrichment']);
-        $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$hikingRoute->osm_id";
-        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$hikingRoute->osm_id.json";
-        $properties['osm_tags'] = json_decode($hikingRoute->tags, true);
-        $properties['members'] = json_decode($hikingRoute->members, true);
-        $properties['wikidata'] = $hikingRoute->getWikidataUrl();
-        $properties['wikipedia'] = $hikingRoute->getWikipediaUrl();
-        $properties['wikimedia_commons'] = $hikingRoute->getWikimediaCommonsUrl();
-        $properties['admin_areas'] = $adminAreas;
-
-        //get only the properties (ascent, ele_to, descent, ele_max, ele_min, distance, ele_from, round_trip etc..)
-        $demProperties = $demEnrichment ? $demEnrichment['properties'] : null;
-        $properties['dem_enrichment'] = $demProperties;
-
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom, true),
-        ];
+        $geojsonFeature = $hr->getGeojsonFeature();
 
         return response()->json($geojsonFeature);
     }

@@ -15,6 +15,7 @@ use Rpj\Daterangepicker\DateHelper;
 use Outl1ne\NovaTooltipField\Tooltip;
 use App\Nova\Actions\EnrichmentAction;
 use App\Nova\Actions\ExportXLS;
+use App\Nova\Actions\GeojsonDownload;
 use App\Nova\Filters\EnrichmentFilter;
 use Rpj\Daterangepicker\Daterangepicker;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -170,6 +171,9 @@ class OsmFeaturesResource extends Resource
                 return true;
             }),
             (new ExportXLS())->canRun(function () {
+                return true;
+            }),
+            (new GeojsonDownload())->canRun(function () {
                 return true;
             })
         ];

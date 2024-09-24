@@ -2,18 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\Enrichable;
-use App\Traits\OsmFeaturesIdProcessor;
-use App\Traits\OsmTagsProcessor;
+use App\Models\OsmfeaturesModel;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Pole extends Model
+class Pole extends OsmfeaturesModel
 {
     use HasFactory;
-    use OsmTagsProcessor;
-    use OsmFeaturesIdProcessor;
-    use Enrichable;
 
     protected $table = 'poles';
 

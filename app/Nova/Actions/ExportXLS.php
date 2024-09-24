@@ -17,7 +17,8 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class ExportXLS extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue;
+    use Queueable;
 
     public $name = 'Export XLS';
 

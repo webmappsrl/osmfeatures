@@ -78,7 +78,7 @@ class Place extends OsmFeaturesResource
                 'tiles' => 'https://api.webmapp.it/tiles/{z}/{x}/{y}.png',
                 'minZoom' => 8,
                 'maxZoom' => 17,
-                'defaultZoom' => 14
+                'defaultZoom' => 14,
             ])->onlyOnDetail(),
         ];
 

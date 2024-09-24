@@ -47,7 +47,7 @@ class AdminAreasEnrichmentFilter extends Filter
     {
         return [
             'With Enrichments' => 1,
-            'Without Enrichments' => 0
+            'Without Enrichments' => 0,
         ];
     }
 }

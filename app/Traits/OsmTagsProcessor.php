@@ -90,7 +90,7 @@ trait OsmTagsProcessor
 
     /**
      * Get full osm type name based on osm_type (R = Relation etc.)
-     * 
+     *
      * @return string
      */
     public function getFullOsmType(): string
