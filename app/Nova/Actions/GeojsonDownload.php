@@ -45,9 +45,6 @@ class GeojsonDownload extends Action
         foreach ($models as $model) {
             $feature = $model->getGeojsonFeature($this->propertyKeys);
             if ($feature) {
-                $properties = $feature['properties'];
-
-                $feature['properties'] = $properties;
                 $features[] = $feature;
             }
         }
