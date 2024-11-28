@@ -21,10 +21,11 @@ jobs:
           ##php version
           php-version: "8.2"
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: actions/checkout@v3
       - name: Copy .env
         run: cp .test-env-example .env
-      - name: Init git submodule
-        run: git submodule update --init --recursive
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Generate key
