@@ -21,6 +21,9 @@ jobs:
           ##php version
           php-version: "8.2"
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: actions/checkout@v3
       - name: Copy .env
         run: cp .test-env-example .env
       - name: Install Dependencies
