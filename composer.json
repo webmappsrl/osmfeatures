@@ -36,7 +36,7 @@
         "wm/map-multi-polygon": "v0.0.4",
         "wm/map-point": "v0.0.10",
         "wm/wm-internal": "*",
-        "wm/wm-package": "*"
+        "wm/wm-package": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -100,7 +100,10 @@
         {
             "type": "path",
             "url": "./wm-internal"
+        },
+        {
+            "type": "path",
+            "url": "./wm-package"
         }
-
     ]
 }
