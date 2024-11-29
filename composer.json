@@ -32,6 +32,7 @@
         "spatie/db-dumper": "^3.3",
         "spatie/laravel-translatable": "^6.3",
         "symfony/console": "^6.4",
+        "tymon/jwt-auth": "^2.1",
         "wm/map-multi-linestring": "v0.0.10",
         "wm/map-multi-polygon": "v0.0.4",
         "wm/map-point": "v0.0.10",
