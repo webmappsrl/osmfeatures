@@ -120,46 +120,12 @@ class PlaceController extends Controller
     public function show(string $id)
     {
         $place = Place::getOsmfeaturesByOsmfeaturesID($id);
-        $enrichment = null;
 
         if (!$place) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$place->geom])[0]->geojson;
-
-        match ($place->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
-
-        $properties = $place->toArray();
-        unset($properties['geom']);
-        unset($properties['tags']);
-        unset($properties['id']);
-        unset($properties['enrichment']);
-
-        if ($place->enrichment) {
-            $enrichment = json_decode($place->enrichment, true);
-            $enrichment['data'] = json_decode($enrichment['data'], true);
-        } else {
-            $enrichment = null;
+            return response()->json(['message' => 'Place not found'], 404);
         }
 
-        $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$place->osm_id";
-        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$place->osm_id.json";
-        $properties['osm_tags'] = json_decode($place->tags, true);
-        $properties['wikidata'] = $place->getWikidataUrl();
-        $properties['wikipedia'] = $place->getWikipediaUrl();
-        $properties['wikimedia_commons'] = $place->getWikimediaCommonsUrl();
-        $properties['enrichments'] = $enrichment;
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom),
-        ];
+        $geojsonFeature = $place->getGeojsonFeature();
 
         return response()->json($geojsonFeature);
     }

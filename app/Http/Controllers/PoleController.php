@@ -130,31 +130,8 @@ class PoleController extends Controller
         if (!$pole) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$pole->geom])[0]->geojson;
-        match ($pole->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
 
-        $properties = $pole->toArray();
-        unset($properties['geom']);
-        unset($properties['tags']);
-        unset($properties['elevation']);
-        unset($properties['id']);
-        $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = "https://www.openstreetmap.org/$osmType/$pole->osm_id";
-        $properties['osm_api'] = "https://www.openstreetmap.org/api/0.6/$osmType/$pole->osm_id.json";
-        $properties['osm_tags'] = json_decode($pole->tags, true);
-        $properties['wikidata'] = $pole->getWikidataUrl();
-        $properties['wikipedia'] = $pole->getWikipediaUrl();
-        $properties['wikimedia_commons'] = $pole->getWikimediaCommonsUrl();
-
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom),
-        ];
+        $geojsonFeature = $pole->getGeojsonFeature();
 
         return response()->json($geojsonFeature);
     }

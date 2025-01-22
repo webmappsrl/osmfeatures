@@ -3,17 +3,16 @@
 namespace App\Models;
 
 use App\Traits\Enrichable;
-use App\Traits\OsmFeaturesIdProcessor;
+use App\Models\OsmfeaturesModel;
 use App\Traits\OsmTagsProcessor;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
+use App\Traits\OsmFeaturesIdProcessor;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AdminArea extends Pivot
+class AdminArea extends OsmfeaturesPivot
 {
     use HasFactory;
-    use OsmTagsProcessor;
-    use OsmFeaturesIdProcessor;
-    use Enrichable;
 
     protected $table = 'admin_areas';
 

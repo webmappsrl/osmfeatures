@@ -139,38 +139,8 @@ class AdminAreaController extends Controller
         if (!$adminArea) {
             return response()->json(['message' => 'Not found'], 404);
         }
-        $geom = DB::select('SELECT ST_AsGeoJSON(ST_Transform(?, 4326)) AS geojson', [$adminArea->geom])[0]->geojson;
 
-        if ($adminArea->enrichment) {
-            $enrichment = json_decode($adminArea->enrichment, true);
-            $enrichment['data'] = json_decode($enrichment['data'], true);
-        } else {
-            $enrichment = null;
-        }
-
-        match ($adminArea->osm_type) {
-            'R' => $osmType = 'relation',
-            'W' => $osmType = 'way',
-            'N' => $osmType = 'node',
-        };
-
-        $properties = $adminArea->toArray();
-        unset($properties['geom']);
-        unset($properties['tags']);
-        unset($properties['id']);
-        $properties['osmfeatures_id'] = $id;
-        $properties['osm_url'] = 'https://www.openstreetmap.org/' . $osmType . '/' . $adminArea->osm_id;
-        $properties['osm_api'] = 'https://www.openstreetmap.org/api/0.6/' . $osmType . '/' . $adminArea->osm_id . '.json';
-        $properties['osm_tags'] = json_decode($adminArea->tags, true);
-        $properties['wikipedia'] = $adminArea->getWikipediaUrl();
-        $properties['wikidata'] = $adminArea->getWikidataUrl();
-        $properties['wikimedia_commons'] = $adminArea->getWikimediaCommonsUrl();
-        $properties['enrichments'] = $enrichment;
-        $geojsonFeature = [
-            'type' => 'Feature',
-            'properties' => $properties,
-            'geometry' => json_decode($geom, true),
-        ];
+        $geojsonFeature = $adminArea->getGeojsonFeature();
 
         return response()->json($geojsonFeature);
     }
