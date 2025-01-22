@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Osm2pgsqlCrontabUpdate;
+use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
+use function Laravel\Prompts\text;
 use Illuminate\Support\Facades\Log;
+use App\Models\Osm2pgsqlCrontabUpdate;
+use Illuminate\Support\Facades\Artisan;
 
 class PbfUpdate extends Command
 {
@@ -15,6 +17,8 @@ class PbfUpdate extends Command
      * @var string
      */
     protected $signature = 'osmfeatures:update {pbf}';
+
+    protected const pbfDir = 'osm/pbf/';
 
     /**
      * The console command description.
@@ -28,21 +32,13 @@ class PbfUpdate extends Command
      */
     public function handle()
     {
-        // Create directory if it doesn't exist
-        if (! file_exists(storage_path('osm/pbf'))) {
-            mkdir(storage_path('osm/pbf'));
-        }
 
-        switch ($this->argument('pbf')) {
-            case 'europe':
-                $pbfUrl = 'https://download.geofabrik.de/europe-latest.osm.pbf';
-                $pbfPath = storage_path('osm/pbf/original_europe_latest.pbf');
-                break;
-            case 'italy':
-                $pbfUrl = 'https://download.geofabrik.de/europe/italy-latest.osm.pbf';
-                $pbfPath = storage_path('osm/pbf/original_italy_latest.pbf');
-        }
+        $this->createPbfFolderIfDoesntExist();
+
+
         $commandTime = now();
+
+        [$pbfUrl, $pbfPath] = $this->getPbfUrlAndPath();
 
         // Download the PBF file
         $this->handleDownload($pbfUrl, $pbfPath);
@@ -85,6 +81,46 @@ class PbfUpdate extends Command
         $commandTime = now()->diffInSeconds($commandTime) / 60;
         $this->info('osmfeatures:update command completed in ' . $commandTime . ' minutes.');
         Log::info('osmfeatures:update command completed in ' . $commandTime . ' minutes.');
+    }
+
+    protected function getPbfUrlAndPath()
+    {
+        $pbf = $this->argument('pbf');
+        if (is_null($pbf)) {
+            $pbf = text(
+                label: 'Name of the PBF file to use',
+                placeholder: 'original_italy_latest',
+                hint: 'The file must be saved in storage/' . $this::pbfDir . ' with the specified name.',
+                required: true,
+                default: 'original_italy_latest',
+            );
+
+            switch ($pbf) {
+                case 'europe':
+                case 'europe-latest':
+                    $pbfUrl = 'https://download.geofabrik.de/europe-latest.osm.pbf';
+                    $pbfPath = storage_path($this::pbfDir . 'original_europe_latest.pbf');
+                    break;
+                default:
+                    $pbfUrl = 'https://download.geofabrik.de/europe/italy-latest.osm.pbf';
+                    $pbfPath = storage_path($this::pbfDir . 'original_italy_latest.pbf');
+                    break;
+            }
+        } else {
+            $pbfUrl = null;
+            $pbfPath = storage_path($this::pbfDir . $pbf . '.pbf');
+        }
+
+
+        return [$pbfUrl, $pbfPath];
+    }
+
+    protected function createPbfFolderIfDoesntExist()
+    {
+        // Create directory if it doesn't exist
+        if (! file_exists(storage_path($this::pbfDir))) {
+            mkdir(storage_path($this::pbfDir));
+        }
     }
 
     /**
@@ -242,5 +278,12 @@ class PbfUpdate extends Command
         Log::info('Import successfully completed for ' . $luaFile . '.lua in ' . $syncTime . ' minutes');
 
         return true;
+    }
+
+
+    public function logToConsoleAndFile($message, $methodName = 'info')
+    {
+        $this->$methodName($message);
+        Log::$methodName($message);
     }
 }
