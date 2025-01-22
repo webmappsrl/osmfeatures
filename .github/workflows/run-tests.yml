@@ -36,7 +36,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential autoconf libtool pkg-config libgeos-dev libproj-dev cmake liblua5.1-dev lua5.1
-          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y libboost-all-dev osm2pgsql
 
       - name: Install Composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -48,19 +48,19 @@ jobs:
         run: |
           echo "127.0.0.1 db" | sudo tee -a /etc/hosts
 
-      - name: Download osm2pgsql 1.8.0
-        run: |
-          wget https://github.com/openstreetmap/osm2pgsql/archive/refs/tags/1.8.0.tar.gz
-          tar -xzf 1.8.0.tar.gz
+      # - name: Download osm2pgsql 1.8.0
+      #   run: |
+      #     wget https://github.com/openstreetmap/osm2pgsql/archive/refs/tags/1.8.0.tar.gz
+      #     tar -xzf 1.8.0.tar.gz
 
-      - name: Build and install osm2pgsql
-        run: |
-          cd osm2pgsql-1.8.0
-          mkdir build
-          cd build
-          cmake ..
-          make
-          sudo make install
+      # - name: Build and install osm2pgsql
+      #   run: |
+      #     cd osm2pgsql-1.8.0
+      #     mkdir build
+      #     cd build
+      #     cmake ..
+      #     make
+      #     sudo make install
 
       - name: Verify osm2pgsql version
         run: osm2pgsql --version
