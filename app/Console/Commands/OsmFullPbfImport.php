@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Services\Osm2pgsqlService;
 use Exception;
 
-class OsmFullImport extends PbfUpdate
+class OsmFullPbfImport extends PbfUpdate
 {
     /**
      * The name and signature of the console command.
