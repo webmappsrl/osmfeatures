@@ -89,13 +89,9 @@ class Osm2pgsqlService
 
     protected function importOsm2pgsqlTables($path)
     {
-        $this->log("Importing osm2pgsql tables");
-        foreach ($this::$tables as $table) {
-            Schema::dropIfExists($table);
-        }
-        $this->exec("cat $path | PGPASSWORD=\"{$this->getDbPassword()}\" psql -U \"{$this->getDbUser()}\" -h \"{$this->getDbHost()}\" \"{$this->getDbName()}\" > /dev/null 2>&1");
+        $this->exec("PGPASSWORD=\"{$this->getDbPassword()}\" psql -U \"{$this->getDbUser()}\" -h \"{$this->getDbHost()}\" \"{$this->getLaravelDbName()}\" < $path");
         $this->log("Imported! Deleted $path");
-        Storage::delete($path);
+        //Storage::delete($path);
     }
 
 
@@ -111,15 +107,22 @@ class Osm2pgsqlService
             ->setUserName($this->getDbUser())
             ->setPassword($this->getDbPassword())
             ->setHost($this->getDbHost())
+            ->addExtraOption('--clean')
             ->includeTables($this::$tables)
             ->dumpToFile($path);
 
         return $path;
     }
 
+
+    protected function getLaravelDbName()
+    {
+        return config('database.connections.' . config('database.default') . '.database', 'osmfeatures');
+    }
+
     protected function getDbName()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.database');;
+        return config('database.connections.' . self::$slaveDbConnection . '.database');
     }
 
     protected function getDbHost()
