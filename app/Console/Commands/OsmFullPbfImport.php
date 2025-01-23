@@ -24,7 +24,7 @@ class OsmFullPbfImport extends PbfUpdate
      *
      * @var string
      */
-    protected $description = 'Update the database with osm features downloading a new pbf with low application downtime. Eg: php artisan osmfeatures:osm-import italy-latest.osm --force-download';
+    protected $description = 'Update the database with osm features downloading a new pbf with low application downtime. Eg: php artisan osmfeatures:osm-full-pbf-import italy-latest.osm --force-download';
 
     /**
      * Execute the console command.
