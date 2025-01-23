@@ -12,7 +12,7 @@ class OsmFullPbfImport extends PbfUpdate
      *
      * @var string
      */
-    protected $signature = 'osmfeatures:osm-import 
+    protected $signature = 'osmfeatures:osm-full-pbf-import 
         {pbf? : Specify the filename to use only without the .pbf extension, eg: italy_latest}
         {--remove-pbf : Remove the PBF file after the import}
         {--force-download : Force the download of the PBF file}
