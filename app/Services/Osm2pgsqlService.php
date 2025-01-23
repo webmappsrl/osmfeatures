@@ -90,8 +90,13 @@ class Osm2pgsqlService
     protected function importOsm2pgsqlTables($path)
     {
         $this->exec("PGPASSWORD=\"{$this->getDbPassword()}\" psql -U \"{$this->getDbUser()}\" -h \"{$this->getDbHost()}\" \"{$this->getLaravelDbName()}\" < $path");
-        $this->log("Imported! Deleted $path");
-        //Storage::delete($path);
+
+        $this->log('Imported osm2pgsql tables to the Laravel database');
+        $check = unlink($path);
+        if (!$check) {
+            $this->log("Failed to delete $path", 'error');
+        } else
+            $this->log("Deleted $path");
     }
 
 

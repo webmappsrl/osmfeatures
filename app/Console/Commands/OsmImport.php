@@ -16,6 +16,8 @@ class OsmImport extends PbfUpdate
      */
     protected $signature = 'osmfeatures:osm-import 
         {pbf? : Specify the filename to use only without the .pbf extension, eg: italy_latest}
+        {--remove-pbf : Remove the PBF file after the import}
+        {--force-download : Force the download of the PBF file}
     ';
 
     /**
@@ -23,7 +25,7 @@ class OsmImport extends PbfUpdate
      *
      * @var string
      */
-    protected $description = 'Update the database with osm features downloading a new pbf.';
+    protected $description = 'Update the database with osm features downloading a new pbf with low application downtime. Eg: php artisan osmfeatures:osm-import italy-latest.osm --force-download';
 
     /**
      * Execute the console command.
@@ -37,7 +39,7 @@ class OsmImport extends PbfUpdate
         [$pbfUrl, $pbfPath] = $this->getPbfUrlAndPath();
 
 
-        if (! file_exists($pbfPath)) {
+        if ($this->option('force-download') || ! file_exists($pbfPath)) {
             if (is_null($pbfUrl))
                 throw new Exception("PBF file not found: $pbfPath. Impossible to download a new one.");
             $this->handleDownload($pbfUrl, $pbfPath);
@@ -48,6 +50,11 @@ class OsmImport extends PbfUpdate
 
         $osm2pgsqlService->import($luaPath, $pbfPath);
         $this->info("Database updated with the latest OSM features.");
+
+        if ($this->option('remove-pbf')) {
+            unlink($pbfPath);
+            $this->logToConsoleAndFile("Removed PBF file: $pbfPath");
+        }
     }
 
 

@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Console\Command;
 use function Laravel\Prompts\text;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Models\Osm2pgsqlCrontabUpdate;
 use Illuminate\Support\Facades\Artisan;
 
@@ -99,15 +100,18 @@ class PbfUpdate extends Command
                 case 'europe':
                 case 'europe-latest':
                     $pbfUrl = 'https://download.geofabrik.de/europe-latest.osm.pbf';
-                    $pbfPath = storage_path($this::pbfDir . 'original_europe_latest.pbf');
+                    $pbfPath = storage_path($this::pbfDir . 'europe-latest.osm.pbf');
                     break;
                 default:
                     $pbfUrl = 'https://download.geofabrik.de/europe/italy-latest.osm.pbf';
-                    $pbfPath = storage_path($this::pbfDir . 'original_italy_latest.pbf');
+                    $pbfPath = storage_path($this::pbfDir . 'italy-latest.osm.pbf');
                     break;
             }
         } else {
-            $pbfUrl = null;
+            //TODO: handle region
+            $pbfUrl = "https://download.geofabrik.de/europe/$pbf.pbf";
+            if (! Http::head($pbfUrl)->successful())
+                $pbfUrl = null;
             $pbfPath = storage_path($this::pbfDir . $pbf . '.pbf');
         }
 
