@@ -31,6 +31,13 @@ class Osm2pgsqlService
     }
 
 
+    /**
+     * Undocumented function
+     *
+     * @param [type] $luaPath
+     * @param [type] $pbfPath
+     * @return void
+     */
     public function import($luaPath, $pbfPath)
     {
         $this->createOsm2pgsqlDatabaseIfNoteExists();
@@ -113,10 +120,15 @@ class Osm2pgsqlService
             ->setPassword($this->getDbPassword())
             ->setHost($this->getDbHost())
             ->addExtraOption('--clean')
-            ->includeTables($this::$tables)
+            ->includeTables($this->getTablesToOverride())
             ->dumpToFile($path);
 
         return $path;
+    }
+
+    public function getTablesToOverride()
+    {
+        return $this::$tables;
     }
 
 

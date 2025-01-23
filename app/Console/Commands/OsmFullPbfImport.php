@@ -16,6 +16,7 @@ class OsmFullPbfImport extends PbfUpdate
         {pbf? : Specify the filename to use only without the .pbf extension, eg: italy_latest}
         {--remove-pbf : Remove the PBF file after the import}
         {--force-download : Force the download of the PBF file}
+        {--y|yes : Skip manual confirmation }
     ';
 
     /**
@@ -30,13 +31,32 @@ class OsmFullPbfImport extends PbfUpdate
      */
     public function handle()
     {
+
         $osm2pgsqlService = Osm2pgsqlService::make();
+        $tables = implode(", ", $osm2pgsqlService->getTablesToOverride());
+
+
+        /** ASK confirmation */
+        if (! $this->option('yes')) {
+            $check = $this->confirm("
+            WARNING
+            This command will update the current database with the specified pbf osm features. 
+            This procedure WILL OVERRIDE ALL THESE CURRENT TABLES:
+            {$tables}. 
+            Do you wish to continue?");
+
+            if (! $check) {
+                $this->info("Command aborted.");
+                return;
+            }
+        }
+
+        /** Prepare needed paths and urls */
         $luaPath = storage_path('osm/lua/all_imports.lua');
-
-
         [$pbfUrl, $pbfPath] = $this->getPbfUrlAndPath();
 
 
+        /** Download the pbf file if needed */
         if ($this->option('force-download') || ! file_exists($pbfPath)) {
             if (is_null($pbfUrl))
                 throw new Exception("PBF file not found: $pbfPath. Impossible to download a new one.");
@@ -45,10 +65,11 @@ class OsmFullPbfImport extends PbfUpdate
             $this->logToConsoleAndFile("Using existing PBF file: $pbfPath");
         }
 
-
+        /** Import the pbf file */
         $osm2pgsqlService->import($luaPath, $pbfPath);
         $this->info("Database updated with the latest OSM features.");
 
+        /** Remove the pbf file if needed */
         if ($this->option('remove-pbf')) {
             unlink($pbfPath);
             $this->logToConsoleAndFile("Removed PBF file: $pbfPath");
