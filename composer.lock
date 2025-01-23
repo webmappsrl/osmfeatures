@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "10a671373b77f4fe590ad6d275838244",
+    "content-hash": "f555319c0dfc31e82627650633cf5526",
     "packages": [
         {
             "name": "abordage/nova-html-card",
@@ -6066,16 +6066,16 @@
         },
         {
             "name": "spatie/db-dumper",
-            "version": "3.4.2",
+            "version": "3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/db-dumper.git",
-                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7"
+                "reference": "55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/59beef7ad612ca7463dfddb64de6e038eb59e0d7",
-                "reference": "59beef7ad612ca7463dfddb64de6e038eb59e0d7",
+                "url": "https://api.github.com/repos/spatie/db-dumper/zipball/55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016",
+                "reference": "55d4d6710e1ab18c1e7ce2b22b8ad4bea2a30016",
                 "shasum": ""
             },
             "require": {
@@ -6113,7 +6113,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/db-dumper/tree/3.4.2"
+                "source": "https://github.com/spatie/db-dumper/tree/3.7.1"
             },
             "funding": [
                 {
@@ -6125,7 +6125,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-12-25T11:42:15+00:00"
+            "time": "2024-11-18T14:54:31+00:00"
         },
         {
             "name": "spatie/laravel-package-tools",
@@ -9297,7 +9297,7 @@
         },
         {
             "name": "wm/wm-internal",
-            "version": "dev-main",
+            "version": "dev-fix/missing-osm-features-oc-4625",
             "dist": {
                 "type": "path",
                 "url": "./wm-internal",
@@ -9378,18 +9378,20 @@
         },
         {
             "name": "wm/wm-package",
-            "version": "dev-main",
+            "version": "v1.2.3",
             "dist": {
                 "type": "path",
                 "url": "./wm-package",
-                "reference": "b2be2ed0df3524c233b9044a49490f98b4b32f7b"
+                "reference": "9579035df82f30dae89003a2efe957bf77511292"
             },
             "require": {
                 "illuminate/contracts": "^10.0||^11.0",
-                "php": "^8.2",
-                "spatie/laravel-package-tools": "^1.16"
+                "php": "^8.2||^8.1",
+                "spatie/laravel-package-tools": "^1.16",
+                "tymon/jwt-auth": "^2.0"
             },
             "require-dev": {
+                "guzzlehttp/guzzle": "^7.9",
                 "larastan/larastan": "^2.9",
                 "laravel/pint": "^1.14",
                 "nunomaduro/collision": "^8.1.1||^7.10.0",
@@ -9409,14 +9411,16 @@
                         "Wm\\WmPackage\\WmPackageServiceProvider"
                     ],
                     "aliases": {
-                        "WmPackage": "Wm\\WmPackage\\Facades\\WmPackage"
+                        "WmPackage": "Wm\\WmPackage\\Facades\\WmPackage",
+                        "JWTAuth": "Tymon\\JWTAuth\\Facades\\JWTAuth",
+                        "JWTFactory": "Tymon\\JWTAuth\\Facades\\JWTFactory"
                     }
                 }
             },
             "autoload": {
                 "psr-4": {
                     "Wm\\WmPackage\\": "src",
-                    "Wm\\WmPackage\\Database\\Factories\\": "database/factories"
+                    "Wm\\WmPackage\\Http\\Controllers\\": "src/Http/Controllers"
                 },
                 "classmap": [
                     "src/Exceptions/"
