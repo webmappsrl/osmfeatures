@@ -58,8 +58,9 @@ class OsmFullPbfImport extends PbfUpdate
 
         /** Download the pbf file if needed */
         if ($this->option('force-download') || ! file_exists($pbfPath)) {
-            if (is_null($pbfUrl))
+            if (is_null($pbfUrl)) {
                 throw new Exception("PBF file not found: $pbfPath. Impossible to download a new one.");
+            }
             $this->handleDownload($pbfUrl, $pbfPath);
         } else {
             $this->logToConsoleAndFile("Using existing PBF file: $pbfPath");

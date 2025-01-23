@@ -4,11 +4,12 @@ namespace App\Console\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
-use function Laravel\Prompts\text;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Models\Osm2pgsqlCrontabUpdate;
 use Illuminate\Support\Facades\Artisan;
+
+use function Laravel\Prompts\text;
 
 class PbfUpdate extends Command
 {
@@ -110,8 +111,9 @@ class PbfUpdate extends Command
         } else {
             //TODO: handle region
             $pbfUrl = "https://download.geofabrik.de/europe/$pbf.pbf";
-            if (! Http::head($pbfUrl)->successful())
+            if (! Http::head($pbfUrl)->successful()) {
                 $pbfUrl = null;
+            }
             $pbfPath = storage_path($this::pbfDir . $pbf . '.pbf');
         }
 
