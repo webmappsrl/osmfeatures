@@ -49,10 +49,10 @@ use Illuminate\Support\Facades\DB;
  *         property="properties",
  *         type="object",
  *         @OA\Property(property="name", type="string", example="Duomo di Arezzo"),
- *         @OA\Property(property="class", type="string, example="amenity"),
- *         @OA\Property(property="subclass", type="string, example="place_of_worship"),
- *         @OA\Property(property="osm_id", type="integer, example="22720153"),
- *         @OA\Property(property="osm_type", type="string, example="W")
+ *         @OA\Property(property="class", type="string", example="amenity"),     
+ *         @OA\Property(property="subclass", type="string", example="place_of_worship"),
+ *         @OA\Property(property="osm_id", type="integer", example="22720153"),
+ *         @OA\Property(property="osm_type", type="string", example="W")
  *     ),
  *     @OA\Property(
  *         property="geometry",
