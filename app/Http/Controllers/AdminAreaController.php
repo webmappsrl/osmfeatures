@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class AdminAreaController extends Controller
 {
@@ -211,5 +212,127 @@ class AdminAreaController extends Controller
         ];
 
         return response()->json($geojsonFeature);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/features/admin-areas/geojson",
+     *     operationId="intersectingGeojsonAdminArea",
+     *     tags={"AdminAreas"},
+     *     summary="Calcola e restituisce le Admin Areas che intersecano il GeoJSON fornito",
+     *     description="Dati in input un oggetto GeoJSON (contenente la proprietà 'geometry') e, opzionalmente, i filtri updated_at, admin_level e score, l'API restituisce una FeatureCollection GeoJSON contenente tutte le Admin Areas le cui geometrie intersecano quella fornita. Il payload di risposta include tutte le proprietà del modello admin_area (eccetto la geometria, che viene restituita separatamente).",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Oggetto JSON contenente il campo geojson e i filtri opzionali",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             required={"geojson"},
+     *             @OA\Property(
+     *                 property="geojson",
+     *                 type="object",
+     *                 description="Oggetto GeoJSON contenente la geometria da utilizzare per il calcolo dell'intersezione. Deve avere la struttura standard GeoJSON, con almeno il campo 'geometry'.",
+     *                 example={
+     *                     "type": "Feature",
+     *                     "geometry": {
+     *                         "type": "Polygon",
+     *                         "coordinates": {
+     *                             {
+     *                                 {12.496366, 41.902783},
+     *                                 {12.507366, 41.912783},
+     *                                 {12.517366, 41.902783},
+     *                                 {12.496366, 41.902783}
+     *                             }
+     *                         }
+     *                     }
+     *                 }
+     *             ),
+     *             @OA\Property(
+     *                 property="updated_at",
+     *                 type="string",
+     *                 format="date-time",
+     *                 nullable=true,
+     *                 description="Filtro: restituisce solo le admin areas aggiornate dopo questa data",
+     *                 example="2021-03-10T02:00:00Z"
+     *             ),
+     *             @OA\Property(
+     *                 property="admin_level",
+     *                 type="integer",
+     *                 nullable=true,
+     *                 description="Filtro: restituisce solo le admin areas con questo livello di amministrazione",
+     *                 example=8
+     *             ),
+     *             @OA\Property(
+     *                 property="score",
+     *                 type="integer",
+     *                 nullable=true,
+     *                 description="Filtro: restituisce solo le admin areas con un punteggio maggiore o uguale al valore specificato",
+     *                 example=3
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Operazione riuscita. Restituisce una FeatureCollection in formato GeoJSON",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="type",
+     *                 type="string",
+     *                 example="FeatureCollection"
+     *             ),
+     *             @OA\Property(
+     *                 property="features",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/GeoJsonFeature")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Errore di validazione",
+     *         @OA\JsonContent(ref="#/components/schemas/ValidationError")
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Errore durante il processamento dell'intersezione GeoJSON",
+     *         @OA\JsonContent(ref="#/components/schemas/Error")
+     *     )
+     * )
+     */
+    public function intersectingGeojson(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'geojson' => 'required|array',
+            'updated_at' => 'nullable|date',
+            'admin_level' => 'nullable|integer|min:1|max:10',
+            'score' => 'nullable|integer|min:1|max:5',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+        }
+
+        try {
+            $query = DB::table('admin_areas')
+                ->whereRaw('ST_Intersects(geom, ST_GeomFromGeoJSON(?))', [json_encode($request->geojson['geometry'])])
+                ->when($request->updated_at, fn($q) => $q->where('updated_at', '>=', $request->updated_at))
+                ->when($request->admin_level, fn($q) => $q->where('admin_level', $request->admin_level))
+                ->when($request->score, fn($q) => $q->where('score', '>=', $request->score));
+
+            $results = $query->get();
+
+            return response()->json([
+                'type' => 'FeatureCollection',
+                'features' => $results->map(function ($adminArea) {
+                    return [
+                        'type' => 'Feature',
+                        'properties' => collect($adminArea)->except(['geom'])->all(),
+                        'geometry' => DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson,
+                    ];
+                })
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error processing geojson intersection', 'error' => $e->getMessage()], 500);
+        }
     }
 }
