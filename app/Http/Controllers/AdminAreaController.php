@@ -303,16 +303,46 @@ class AdminAreaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'geojson' => 'required|array',
-            'updated_at' => 'nullable|date',
+            'geojson.geometry' => 'required|array', // Validate geometry exists
+            'geojson.geometry.type' => 'required|string|in:Point,LineString,Polygon,MultiPoint,MultiLineString,MultiPolygon', // Validate geometry type
+            'geojson.geometry.coordinates' => 'required|array', // Validate coordinates exist
+            'updated_at' => 'nullable|date_format:Y-m-d\TH:i:s\Z',
             'admin_level' => 'nullable|integer|min:1|max:10',
             'score' => 'nullable|integer|min:1|max:5',
+        ], [
+            'geojson.required' => 'The geojson field is required',
+            'geojson.array' => 'The geojson field must be a valid GeoJSON object',
+            'geojson.geometry.required' => 'The geometry field is required in the GeoJSON object',
+            'geojson.geometry.array' => 'The geometry field must be a valid object',
+            'geojson.geometry.type.required' => 'The geometry type is required',
+            'geojson.geometry.type.in' => 'Invalid geometry type',
+            'geojson.geometry.coordinates.required' => 'Coordinates are required',
+            'geojson.geometry.coordinates.array' => 'Coordinates must be an array',
+            'updated_at.date_format' => 'Invalid date format. Use ISO 8601 format (e.g. 2021-03-10T02:00:00Z)',
+            'admin_level.integer' => 'The admin level must be an integer',
+            'admin_level.min' => 'The admin level must be at least 1',
+            'admin_level.max' => 'The admin level cannot be greater than 10',
+            'score.integer' => 'The score must be an integer',
+            'score.min' => 'The score must be at least 1',
+            'score.max' => 'The score cannot be greater than 5'
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $validator->errors()], 422);
+            return response()->json([
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()->toArray()
+            ], 422);
         }
 
         try {
+            // Validate GeoJSON structure before processing
+            if (!isset($request->geojson['geometry']) || !is_array($request->geojson['geometry'])) {
+                return response()->json([
+                    'message' => 'Validation errors',
+                    'errors' => ['geojson' => ['Invalid GeoJSON structure']]
+                ], 422);
+            }
+
             $query = DB::table('admin_areas')
                 ->whereRaw('ST_Intersects(geom, ST_GeomFromGeoJSON(?))', [json_encode($request->geojson['geometry'])])
                 ->when($request->updated_at, fn($q) => $q->where('updated_at', '>=', $request->updated_at))
@@ -332,7 +362,10 @@ class AdminAreaController extends Controller
                 })
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error processing geojson intersection', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Error processing GeoJSON intersection',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
