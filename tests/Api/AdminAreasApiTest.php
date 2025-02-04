@@ -5,11 +5,7 @@ namespace Tests\Api;
 use App\Models\AdminArea;
 use Carbon\Carbon;
 use Database\Seeders\TestDBSeeder;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -22,8 +18,7 @@ class AdminAreasApiTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp();
-        {
+        parent::setUp(); {
             if (! Schema::hasTable('admin_areas')) {
                 $seeder = new TestDBSeeder('AdminAreas');
                 $seeder->run();
@@ -173,10 +168,130 @@ class AdminAreasApiTest extends TestCase
         );
     }
 
+    /**
+     * Test per il metodo intersectingGeojson con richiesta valida (senza filtri).
+     * @test
+     */
+    public function intersecting_geojson_api_returns_feature_collection()
+    {
+        $payload = [
+            'geojson' => [
+                'geometry' => [
+                    'type' => 'Polygon',
+                    'coordinates' => [
+                        [
+                            [0, 0],
+                            [0, 1],
+                            [1, 1],
+                            [1, 0],
+                            [0, 0]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['type', 'features']);
+        $this->assertEquals('FeatureCollection', $response->json()['type']);
+    }
+
+    /**
+     * Test per il metodo intersectingGeojson con richiesta valida e con filtri.
+     * @test
+     */
+    public function intersecting_geojson_api_with_filters_returns_feature_collection()
+    {
+        //created a geometry that intersects with exactly one admin area
+        $payload = [
+            'geojson' => [
+                'type' => 'Feature',
+                'geometry' => [
+                    'type' => 'MultiLineString',
+                    'coordinates' => [
+                        [
+                            [10.6955, 43.8535],
+                            [10.697, 43.8525],
+                            [10.699, 43.8515],
+                            [10.701, 43.8505],
+                            [10.703, 43.8495]
+                        ],
+                        [
+                            [10.704, 43.849],
+                            [10.706, 43.848],
+                            [10.708, 43.847],
+                            [10.71, 43.846],
+                            [10.712, 43.845]
+                        ]
+                    ]
+                ],
+                'properties' => [
+                    'name' => 'Hiking Route Intersecting'
+                ]
+            ],
+            'updated_at' => '2016-01-01T00:00:00Z',
+            'admin_level' => 8,
+            'score' => 2
+        ];
+
+        $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['type', 'features']);
+        $this->assertEquals('FeatureCollection', $response->json()['type']);
+        $this->assertEquals(1, count($response->json()['features']));
+    }
+
+    /**
+     * Test per il metodo intersectingGeojson che verifica che richieste con parametri extra non ammessi restituiscano errore.
+     * @test
+     */
+    public function intersecting_geojson_api_returns_validation_error_for_extra_parameters()
+    {
+        $payload = [
+            'geojson' => [
+                'geometry' => [
+                    'type' => 'Polygon',
+                    'coordinates' => [
+                        [
+                            [0, 0],
+                            [0, 1],
+                            [1, 1],
+                            [1, 0],
+                            [0, 0]
+                        ]
+                    ]
+                ]
+            ],
+            'unexpected' => 'valore'
+        ];
+
+        $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['message' => 'Validation errors']);
+        $this->assertArrayHasKey('invalid_parameters', $response->json()['errors']);
+    }
+
+    /**
+     * Test per il metodo intersectingGeojson che verifica che una struttura GeoJSON non valida restituisca un errore.
+     * @test
+     */
+    public function intersecting_geojson_api_returns_validation_error_for_invalid_geojson_structure()
+    {
+        // Inviare "geojson" senza la chiave "geometry"
+        $payload = [
+            'geojson' => []
+        ];
+
+        $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['message' => 'Validation errors']);
+        $this->assertTrue(isset($response->json()['errors']['geojson']));
+    }
+
     public function tearDown(): void
     {
         Schema::dropIfExists('admin_areas');
-
         parent::tearDown();
     }
 }
