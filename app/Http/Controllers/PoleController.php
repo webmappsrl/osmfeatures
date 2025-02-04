@@ -14,45 +14,25 @@ class PoleController extends Controller
      * @OA\Get(
      *     path="/api/v1/features/poles/list",
      *     operationId="listPoles",
-     *     tags={"Poles"},
+     *     tags={"API V1"},
      *     summary="List all Poles",
-     *     description="Returns a paginated list of Poles with their details. Optionally, provide an 'updated_at' parameter to filter poles updated after the specified date. Supports pagination with 100 results per page.",
-     *     @OA\Parameter(
-     *         name="updated_at",
-     *         in="query",
-     *         description="Filter by the updated timestamp. Only poles updated after this date will be returned. The date should be in ISO 8601 format.",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string",
-     *             format="date-time",
-     *             example="2021-03-10T02:00:00Z"
-     *         )
-     *     ),
-     *     @OA\Parameter(
-     *         name="page",
-     *         in="query",
-     *         description="Page number to retrieve. Each page contains 100 results.",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example="1"
-     *         )
-     *     ),
+     *     description="Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
+     * 
+     *     @OA\Parameter(ref="#/components/parameters/list_updated_at"),
+     *     @OA\Parameter(ref="#/components/parameters/list_page"),
+     *     @OA\Parameter(ref="#/components/parameters/list_bbox"),
+     *     @OA\Parameter(ref="#/components/parameters/list_score"),
+     * 
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
      *             type="object",
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/PoleItem")
-     *             ),
-     *             @OA\Property(property="current_page", type="integer"),
-     *             @OA\Property(property="last_page", type="integer"),
-     *             @OA\Property(property="total", type="integer")
-     *         ),
-     *     ),
+     *             allOf={
+     *                 @OA\Schema(ref="#/components/schemas/BaseListItem")
+     *             }
+     *         )
+     *     )
      * )
      */
     public function list(Request $request)
@@ -102,20 +82,45 @@ class PoleController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/features/poles/{id}",
-     *     operationId="getPoleById",
-     *     tags={"Poles"},
-     *     summary="Get Pole by ID",
+     *     operationId="getPoleById", 
+     *     tags={"API V1"},
+     *     summary="Get Pole by Osmfeatures ID",
      *     description="Returns a single Pole in GeoJSON format",
      *     @OA\Parameter(
      *         name="id",
-     *         description="Pole ID",
+     *         description="Pole osmfeatures ID",
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="type", type="string", description="Type of the GeoJSON object"),
+     *             @OA\Property(
+     *                 property="properties",
+     *                 type="object",
+     *                 @OA\Property(property="osm_type", type="string", description="Type of the OSM object (N, W, R)"),
+     *                 @OA\Property(property="osm_id", type="integer", description="ID of the OSM object"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", description="When the pole was last updated in OSM, in ISO 8601 format."),
+     *                 @OA\Property(property="name", type="string", description="Name of the pole"),
+     *                 @OA\Property(property="ref", type="string", description="Reference number of the pole"),
+     *                 @OA\Property(property="ele", type="number", description="Elevation of the pole in meters"),
+     *                 @OA\Property(property="destination", type="string", description="Destination of the pole"),
+     *                 @OA\Property(property="support", type="string", description="Support of the pole"),
+     *                 @OA\Property(property="score", type="number", description="Score of the pole"),
+     *                 @OA\Property(property="osmfeatures_id", type="string", description="Osmfeatures ID of the pole"),
+     *                 @OA\Property(property="osm_url", type="string", description="URL to the Openstreetmap corresponding feature."),
+     *                 @OA\Property(property="osm_api", type="string", description="URL to the OSM API for the object"),
+     *                 @OA\Property(property="osm_tags", type="object", description="OSM tags of the object"),
+     *                 @OA\Property(property="wikidata", type="string", description="Wikidata link for the pole"),
+     *                 @OA\Property(property="wikipedia", type="string", description="Wikipedia link for the pole"),
+     *                 @OA\Property(property="wikimedia_commons", type="string", description="Wikimedia Commons link for the pole")
+     *             ),
+     *             @OA\Property(property="geometry", type="object", description="Geometry of the pole in GeoJSON format")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -136,37 +141,7 @@ class PoleController extends Controller
         return response()->json($geojsonFeature);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/features/poles/osm/{osmtype}/{osmid}",
-     *     operationId="getPoleByOsmId",
-     *     tags={"Poles"},
-     *     summary="Get Pole by OSM ID",
-     *     description="Returns a single Pole in GeoJSON format",
-     *     @OA\Parameter(
-     *         name="osmtype",
-     *         description="OSM Type (relation, way, node)",
-     *         required=true,
-     *         in="path",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="osmid",
-     *         description="OSM ID",
-     *         required=true,
-     *         in="path",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful operation",
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Pole not found"
-     *     )
-     * )
-     */
+
     public function osm(string $osmType, int $osmid)
     {
         $acceptedTypes = ['relation', 'way', 'node'];
