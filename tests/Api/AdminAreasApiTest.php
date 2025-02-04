@@ -2,17 +2,19 @@
 
 namespace Tests\Api;
 
-use App\Models\AdminArea;
 use Carbon\Carbon;
+use Tests\TestCase;
+use App\Models\AdminArea;
 use Database\Seeders\TestDBSeeder;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class AdminAreasApiTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions;
 
     private $usingTestData = false;
 
@@ -235,11 +237,46 @@ class AdminAreasApiTest extends TestCase
             'score' => 2
         ];
 
+        //create a new admin area that intersects with the payload
+        $lat = 43.85;
+        $lon = 10.70;
+        $polygon = sprintf(
+            '((%.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f, %.2f %.2f))',
+            $lon - 0.01,
+            $lat - 0.01,  // Lower Left
+            $lon + 0.01,
+            $lat - 0.01,  // Lower Right 
+            $lon + 0.01,
+            $lat + 0.01,  // Upper Right
+            $lon - 0.01,
+            $lat + 0.01,  // Upper Left
+            $lon - 0.01,
+            $lat - 0.01   // Close polygon
+        );
+
+        $adminAreaId = DB::table('admin_areas')->insertGetId([
+            'name' => 'Admin Area Intersecting',
+            'osm_id' => 999,
+            'osm_type' => 'R',
+            'geom' => DB::raw("ST_GeomFromText('MULTIPOLYGON($polygon)', 4326)"),
+            'admin_level' => 8,
+            'score' => 2,
+            'tags' => json_encode(['wikidata' => 'value']),
+            'updated_at' => Carbon::now()
+        ]);
+
+        $adminArea = AdminArea::find($adminAreaId);
+
         $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
         $response->assertStatus(200);
         $response->assertJsonStructure(['type', 'features']);
         $this->assertEquals('FeatureCollection', $response->json()['type']);
-        $this->assertEquals(1, count($response->json()['features']));
+        $this->assertGreaterThan(0, count($response->json()['features']));
+
+        //check if the adminArea is in the response
+        $this->assertTrue(collect($response->json()['features'])->contains(function ($feature) use ($adminArea) {
+            return $feature['properties']['osmfeatures_id'] === $adminArea->getOsmfeaturesId();
+        }));
     }
 
     /**

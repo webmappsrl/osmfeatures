@@ -393,21 +393,13 @@
                                                                 "type": "integer",
                                                                 "example": 42652
                                                             },
-                                                            "id": {
-                                                                "type": "integer",
-                                                                "example": 2
-                                                            },
                                                             "updated_at": {
                                                                 "type": "string",
-                                                                "example": "2016-12-03 05:53:02"
+                                                                "example": "2016-12-03T04:53:02.000000Z"
                                                             },
                                                             "name": {
                                                                 "type": "string",
                                                                 "example": "Chiesina Uzzanese"
-                                                            },
-                                                            "tags": {
-                                                                "type": "string",
-                                                                "example": "{\"name\": \"Chiesina Uzzanese\", \"type\": \"boundary\", \"boundary\": \"administrative\", \"wikidata\": \"Q102578\", \"ref:ISTAT\": \"047022\", \"wikipedia\": \"it:Chiesina Uzzanese\", \"admin_level\": \"8\", \"ref:catasto\": \"C631\"}"
                                                             },
                                                             "admin_level": {
                                                                 "type": "integer",
@@ -416,6 +408,47 @@
                                                             "score": {
                                                                 "type": "integer",
                                                                 "example": 3
+                                                            },
+                                                            "osmfeatures_id": {
+                                                                "type": "string",
+                                                                "example": "R42652"
+                                                            },
+                                                            "osm_url": {
+                                                                "type": "string",
+                                                                "example": "https://www.openstreetmap.org/relation/42652"
+                                                            },
+                                                            "osm_api": {
+                                                                "type": "string",
+                                                                "example": "https://www.openstreetmap.org/api/0.6/relation/42652.json"
+                                                            },
+                                                            "osm_tags": {
+                                                                "type": "object",
+                                                                "example": {
+                                                                    "name": "Chiesina Uzzanese",
+                                                                    "type": "boundary",
+                                                                    "boundary": "administrative",
+                                                                    "wikidata": "Q102578",
+                                                                    "ref:ISTAT": "047022",
+                                                                    "wikipedia": "it:Chiesina Uzzanese",
+                                                                    "admin_level": "8",
+                                                                    "ref:catasto": "C631"
+                                                                }
+                                                            },
+                                                            "wikidata": {
+                                                                "type": "string",
+                                                                "example": "https://www.wikidata.org/wiki/Q102578"
+                                                            },
+                                                            "wikipedia": {
+                                                                "type": "string",
+                                                                "example": "https://en.wikipedia.org/wiki/it:Chiesina Uzzanese"
+                                                            },
+                                                            "wikimedia_commons": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "enrichments": {
+                                                                "type": "object",
+                                                                "nullable": true
                                                             }
                                                         },
                                                         "type": "object"

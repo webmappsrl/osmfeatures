@@ -298,7 +298,7 @@ class AdminAreaController extends Controller
      *                     ),
      *                     @OA\Property(
      *                         property="score",
-     *                         type="integer", 
+     *                         type="integer",
      *                         description="Admin Area score",
      *                         example=2
      *                     ),
@@ -353,12 +353,31 @@ class AdminAreaController extends Controller
      *                         type="object",
      *                         @OA\Property(property="osm_type", type="string", example="R"),
      *                         @OA\Property(property="osm_id", type="integer", example=42652),
-     *                         @OA\Property(property="id", type="integer", example=2),
-     *                         @OA\Property(property="updated_at", type="string", example="2016-12-03 05:53:02"),
+     *                         @OA\Property(property="updated_at", type="string", example="2016-12-03T04:53:02.000000Z"),
      *                         @OA\Property(property="name", type="string", example="Chiesina Uzzanese"),
-     *                         @OA\Property(property="tags", type="string", example="{""name"": ""Chiesina Uzzanese"", ""type"": ""boundary"", ""boundary"": ""administrative"", ""wikidata"": ""Q102578"", ""ref:ISTAT"": ""047022"", ""wikipedia"": ""it:Chiesina Uzzanese"", ""admin_level"": ""8"", ""ref:catasto"": ""C631""}"),
      *                         @OA\Property(property="admin_level", type="integer", example=8),
-     *                         @OA\Property(property="score", type="integer", example=3)
+     *                         @OA\Property(property="score", type="integer", example=3),
+     *                         @OA\Property(property="osmfeatures_id", type="string", example="R42652"),
+     *                         @OA\Property(property="osm_url", type="string", example="https://www.openstreetmap.org/relation/42652"),
+     *                         @OA\Property(property="osm_api", type="string", example="https://www.openstreetmap.org/api/0.6/relation/42652.json"),
+     *                         @OA\Property(
+     *                             property="osm_tags",
+     *                             type="object",
+     *                             example={
+     *                                 "name": "Chiesina Uzzanese",
+     *                                 "type": "boundary",
+     *                                 "boundary": "administrative",
+     *                                 "wikidata": "Q102578",
+     *                                 "ref:ISTAT": "047022",
+     *                                 "wikipedia": "it:Chiesina Uzzanese",
+     *                                 "admin_level": "8",
+     *                                 "ref:catasto": "C631"
+     *                             }
+     *                         ),
+     *                         @OA\Property(property="wikidata", type="string", example="https://www.wikidata.org/wiki/Q102578"),
+     *                         @OA\Property(property="wikipedia", type="string", example="https://en.wikipedia.org/wiki/it:Chiesina Uzzanese"),
+     *                         @OA\Property(property="wikimedia_commons", type="string", nullable=true),
+     *                         @OA\Property(property="enrichments", type="object", nullable=true)
      *                     ),
      *                     @OA\Property(
      *                         property="geometry",
@@ -440,7 +459,7 @@ class AdminAreaController extends Controller
                 ], 422);
             }
 
-            $query = DB::table('admin_areas')
+            $query = AdminArea::query()
                 ->whereRaw('ST_Intersects(geom, ST_GeomFromGeoJSON(?))', [json_encode($request->geojson['geometry'])])
                 ->when($request->updated_at, fn($q) => $q->where('updated_at', '>=', $request->updated_at))
                 ->when($request->admin_level, fn($q) => $q->where('admin_level', $request->admin_level))
@@ -451,11 +470,7 @@ class AdminAreaController extends Controller
             return response()->json([
                 'type' => 'FeatureCollection',
                 'features' => $results->map(function ($adminArea) {
-                    return [
-                        'type' => 'Feature',
-                        'properties' => collect($adminArea)->except(['geom'])->all(),
-                        'geometry' => DB::select('SELECT ST_AsGeoJSON(?) AS geojson', [$adminArea->geom])[0]->geojson,
-                    ];
+                    return $adminArea->getGeojsonFeature();
                 })
             ]);
         } catch (\Exception $e) {
