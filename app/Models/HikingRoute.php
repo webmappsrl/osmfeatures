@@ -44,8 +44,9 @@ class HikingRoute extends OsmfeaturesModel
         $properties['admin_areas'] = $adminAreas;
         $properties['dem_enrichment'] = $demEnrichment ? $demEnrichment['properties'] : null;
 
-        if (!empty($props))
+        if (!empty($props)) {
             $properties = array_intersect_key($properties, array_flip($props));
+        }
 
 
         // Return the GeoJSON feature

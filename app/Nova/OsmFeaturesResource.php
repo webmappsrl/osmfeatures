@@ -175,7 +175,7 @@ class OsmFeaturesResource extends Resource
             }),
             (new GeojsonDownload())->canRun(function () {
                 return true;
-            })
+            }),
         ];
     }
 

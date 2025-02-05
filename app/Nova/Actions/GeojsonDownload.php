@@ -14,7 +14,8 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 
 class GeojsonDownload extends Action
 {
-    use InteractsWithQueue, Queueable;
+    use InteractsWithQueue;
+    use Queueable;
 
     public $name = 'Download GeoJSON';
     protected $propertyKeys;

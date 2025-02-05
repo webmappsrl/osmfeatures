@@ -24,7 +24,7 @@ class OsmFullPbfImport extends PbfUpdate
      *
      * @var string
      */
-    protected $description = 'Update the database with osm features downloading a new pbf with low application downtime. Eg: php artisan osmfeatures:osm-import italy-latest.osm --force-download';
+    protected $description = 'Update the database with osm features downloading a new pbf with low application downtime. Eg: php artisan osmfeatures:osm-full-pbf-import italy-latest.osm --force-download';
 
     /**
      * Execute the console command.
@@ -58,8 +58,9 @@ class OsmFullPbfImport extends PbfUpdate
 
         /** Download the pbf file if needed */
         if ($this->option('force-download') || ! file_exists($pbfPath)) {
-            if (is_null($pbfUrl))
+            if (is_null($pbfUrl)) {
                 throw new Exception("PBF file not found: $pbfPath. Impossible to download a new one.");
+            }
             $this->handleDownload($pbfUrl, $pbfPath);
         } else {
             $this->logToConsoleAndFile("Using existing PBF file: $pbfPath");

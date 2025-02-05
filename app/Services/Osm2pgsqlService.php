@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\Services;
 
 use Exception;
@@ -13,7 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class Osm2pgsqlService
 {
-
     protected static $slaveDbConnection = 'osm2pgsql';
 
     protected static $tables = [
@@ -21,11 +18,11 @@ class Osm2pgsqlService
         'hiking_routes_ways',
         'hiking_routes',
         'places',
-        'poles'
+        'poles',
     ];
 
 
-    static public function make(): self
+    public static function make(): self
     {
         return app(self::class);
     }
@@ -102,8 +99,9 @@ class Osm2pgsqlService
         $check = unlink($path);
         if (!$check) {
             $this->log("Failed to delete $path", 'error');
-        } else
+        } else {
             $this->log("Deleted $path");
+        }
     }
 
 
@@ -144,7 +142,8 @@ class Osm2pgsqlService
 
     protected function getDbHost()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.host');;
+        return config('database.connections.' . self::$slaveDbConnection . '.host');
+        ;
     }
     protected function getDbUser()
     {
