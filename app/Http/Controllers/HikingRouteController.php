@@ -12,7 +12,7 @@ class HikingRouteController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/v1/features/hiking-routes/list", 
+     *     path="/api/v1/features/hiking-routes/list",
      *     operationId="listHikingRoutes",
      *     tags={"API V1"},
      *     summary="List all Hiking Routes",
@@ -98,7 +98,7 @@ class HikingRouteController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/features/hiking-routes/{id}",
-     *     operationId="getHikingRouteById", 
+     *     operationId="getHikingRouteById",
      *     tags={"API V1"},
      *     summary="Get Hiking Routes by Osmfeatures ID",
      *     description="Returns a single Hiking Route in GeoJSON format",

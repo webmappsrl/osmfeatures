@@ -17,12 +17,12 @@ class PoleController extends Controller
      *     tags={"API V1"},
      *     summary="List all Poles",
      *     description="Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
-     * 
+     *
      *     @OA\Parameter(ref="#/components/parameters/list_updated_at"),
      *     @OA\Parameter(ref="#/components/parameters/list_page"),
      *     @OA\Parameter(ref="#/components/parameters/list_bbox"),
      *     @OA\Parameter(ref="#/components/parameters/list_score"),
-     * 
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -82,7 +82,7 @@ class PoleController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/features/poles/{id}",
-     *     operationId="getPoleById", 
+     *     operationId="getPoleById",
      *     tags={"API V1"},
      *     summary="Get Pole by Osmfeatures ID",
      *     description="Returns a single Pole in GeoJSON format",

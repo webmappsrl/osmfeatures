@@ -28,7 +28,7 @@ namespace App\Swagger;
  *             @OA\Property(
  *                 property="updated_at",
  *                 type="string",
- *                 format="date-time", 
+ *                 format="date-time",
  *                 description="Update date in ISO 8601 format",
  *                 example="2024-08-22T08:01:13+02:00"
  *             )

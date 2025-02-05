@@ -119,7 +119,7 @@ class AdminAreaController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/features/admin-areas/{id}",
-     *     operationId="getAdminAreaById", 
+     *     operationId="getAdminAreaById",
      *     tags={"API V1"},
      *     summary="Get Admin Area by Osmfeatures ID",
      *     description="Returns a single Admin Area in GeoJSON format",
@@ -175,7 +175,7 @@ class AdminAreaController extends Controller
      *                         "boundary": "administrative"
      *                     },
      *                     "wikipedia": "https://en.wikipedia.org/wiki/Example",
-     *                     "wikidata": "https://www.wikidata.org/wiki/Q123456", 
+     *                     "wikidata": "https://www.wikidata.org/wiki/Q123456",
      *                     "wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example"
      *                 },
      *                 "geometry": {
@@ -413,7 +413,7 @@ class AdminAreaController extends Controller
         if (!empty($invalidParams)) {
             return response()->json([
                 'message' => 'Validation errors',
-                'errors' => ['invalid_parameters' => 'The following parameters are not allowed: ' . implode(', ', $invalidParams)]
+                'errors' => ['invalid_parameters' => 'The following parameters are not allowed: ' . implode(', ', $invalidParams)],
             ], 422);
         }
 
@@ -440,13 +440,13 @@ class AdminAreaController extends Controller
             'admin_level.max' => 'The admin level cannot be greater than 10',
             'score.integer' => 'The score must be an integer',
             'score.min' => 'The score must be at least 1',
-            'score.max' => 'The score cannot be greater than 5'
+            'score.max' => 'The score cannot be greater than 5',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation errors',
-                'errors' => $validator->errors()->toArray()
+                'errors' => $validator->errors()->toArray(),
             ], 422);
         }
 
@@ -455,7 +455,7 @@ class AdminAreaController extends Controller
             if (!isset($request->geojson['geometry']) || !is_array($request->geojson['geometry'])) {
                 return response()->json([
                     'message' => 'Validation errors',
-                    'errors' => ['geojson' => ['Invalid GeoJSON structure']]
+                    'errors' => ['geojson' => ['Invalid GeoJSON structure']],
                 ], 422);
             }
 
@@ -471,12 +471,12 @@ class AdminAreaController extends Controller
                 'type' => 'FeatureCollection',
                 'features' => $results->map(function ($adminArea) {
                     return $adminArea->getGeojsonFeature();
-                })
+                }),
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error processing GeoJSON intersection',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-
 /**
  * @OA\Info(
  * version="1.0.0",
@@ -24,7 +23,7 @@ class PlaceController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/features/places/list",
-     *     operationId="listPlaces", 
+     *     operationId="listPlaces",
      *     tags={"API V1"},
      *     summary="List all Places",
      *     description="Returns a list of Places with their IDs and updated timestamps. Optionally filtered by updated_at, bbox and score. Paginated results are available.",

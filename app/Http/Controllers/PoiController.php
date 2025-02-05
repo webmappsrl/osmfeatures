@@ -6,10 +6,8 @@ use App\Models\Poi;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
-
 class PoiController extends Controller
 {
-
     public function list()
     {
         $pois = Poi::all(['osm_id', 'updated_at'])->mapWithKeys(function ($poi) {

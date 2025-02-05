@@ -20,7 +20,8 @@ class AdminAreasApiTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp(); {
+        parent::setUp();
+        {
             if (! Schema::hasTable('admin_areas')) {
                 $seeder = new TestDBSeeder('AdminAreas');
                 $seeder->run();
@@ -186,11 +187,11 @@ class AdminAreasApiTest extends TestCase
                             [0, 1],
                             [1, 1],
                             [1, 0],
-                            [0, 0]
-                        ]
-                    ]
-                ]
-            ]
+                            [0, 0],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
@@ -217,24 +218,24 @@ class AdminAreasApiTest extends TestCase
                             [10.697, 43.8525],
                             [10.699, 43.8515],
                             [10.701, 43.8505],
-                            [10.703, 43.8495]
+                            [10.703, 43.8495],
                         ],
                         [
                             [10.704, 43.849],
                             [10.706, 43.848],
                             [10.708, 43.847],
                             [10.71, 43.846],
-                            [10.712, 43.845]
-                        ]
-                    ]
+                            [10.712, 43.845],
+                        ],
+                    ],
                 ],
                 'properties' => [
-                    'name' => 'Hiking Route Intersecting'
-                ]
+                    'name' => 'Hiking Route Intersecting',
+                ],
             ],
             'updated_at' => '2016-01-01T00:00:00Z',
             'admin_level' => 8,
-            'score' => 2
+            'score' => 2,
         ];
 
         //create a new admin area that intersects with the payload
@@ -245,7 +246,7 @@ class AdminAreasApiTest extends TestCase
             $lon - 0.01,
             $lat - 0.01,  // Lower Left
             $lon + 0.01,
-            $lat - 0.01,  // Lower Right 
+            $lat - 0.01, // Lower Right
             $lon + 0.01,
             $lat + 0.01,  // Upper Right
             $lon - 0.01,
@@ -262,7 +263,7 @@ class AdminAreasApiTest extends TestCase
             'admin_level' => 8,
             'score' => 2,
             'tags' => json_encode(['wikidata' => 'value']),
-            'updated_at' => Carbon::now()
+            'updated_at' => Carbon::now(),
         ]);
 
         $adminArea = AdminArea::find($adminAreaId);
@@ -295,12 +296,12 @@ class AdminAreasApiTest extends TestCase
                             [0, 1],
                             [1, 1],
                             [1, 0],
-                            [0, 0]
-                        ]
-                    ]
-                ]
+                            [0, 0],
+                        ],
+                    ],
+                ],
             ],
-            'unexpected' => 'valore'
+            'unexpected' => 'valore',
         ];
 
         $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
@@ -317,7 +318,7 @@ class AdminAreasApiTest extends TestCase
     {
         // Inviare "geojson" senza la chiave "geometry"
         $payload = [
-            'geojson' => []
+            'geojson' => [],
         ];
 
         $response = $this->postJson('/api/v1/features/admin-areas/geojson', $payload);
