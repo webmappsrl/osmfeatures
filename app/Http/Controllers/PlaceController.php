@@ -8,44 +8,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+
+/**
+ * @OA\Info(
+ * version="1.0.0",
+ * title="OSM features API",
+ * description="The OSM Features API provides a comprehensive suite of endpoints for accessing OpenStreetMap (OSM) features in GeoJSON format, designed to streamline the integration and utilization of OSM data in applications. By leveraging daily syncs from the OSM database through osm2pgsql imports, the API ensures the delivery of up-to-date and efficiently processed data. Endpoints include retrieving lists and specific details of Places, Administrative Areas, Hiking Routes, and Poles, each identifiable by unique osmfeatures IDs and accompanied by their latest update timestamps. The API allows for fetching single items or lists, providing data in GeoJSON format. Every endpoint is provided with detailed descriptions, parameters and responses.",
+ * @OA\Contact(
+ * email="info@webmapp.it"
+ * )
+ * )
+ */
 class PlaceController extends Controller
 {
     /**
      * @OA\Get(
      *     path="/api/v1/features/places/list",
-     *     operationId="listPlaces",
-     *     tags={"Places"},
+     *     operationId="listPlaces", 
+     *     tags={"API V1"},
      *     summary="List all Places",
-     *     description="Returns a list of Places with their details. Optionally, provide an 'updated_at' parameter to filter places updated after the specified date.",
-     *     @OA\Parameter(
-     *         name="updated_at",
-     *         in="query",
-     *         description="Filter by the updated timestamp. Only places updated after this date will be returned. The date should be in ISO 8601 format.",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="string",
-     *             format="date-time",
-     *             example="2021-03-10T02:00:00Z"
-     *         )
-     *     ),
-     * @OA\Parameter(
-     *         name="page",
-     *         in="query",
-     *         description="Page number to retrieve. Each page contains 100 results.",
-     *         required=false,
-     *         @OA\Schema(
-     *             type="integer",
-     *             example="1"
-     *         )
-     *     ),
+     *     description="Returns a list of Places with their IDs and updated timestamps. Optionally filtered by updated_at, bbox and score. Paginated results are available.",
+     *
+     *     @OA\Parameter(ref="#/components/parameters/list_updated_at"),
+     *     @OA\Parameter(ref="#/components/parameters/list_page"),
+     *     @OA\Parameter(ref="#/components/parameters/list_bbox"),
+     *     @OA\Parameter(ref="#/components/parameters/list_score"),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(ref="#/components/schemas/PlaceItem")
-     *         ),
-     *     ),
+     *             type="object",
+     *             allOf={
+     *                 @OA\Schema(ref="#/components/schemas/BaseListItem")
+     *             }
+     *         )
+     *     )
      * )
      */
     public function list(Request $request)
@@ -97,12 +95,12 @@ class PlaceController extends Controller
      * @OA\Get(
      *     path="/api/v1/features/places/{id}",
      *     operationId="getPlaceById",
-     *     tags={"Places"},
-     *     summary="Get Place by osmfeatures ID",
+     *     tags={"API V1"},
+     *     summary="Get Place by Osmfeatures ID",
      *     description="Returns a single Place in GeoJSON format",
      *     @OA\Parameter(
-     *         name="osmfeatures_id",
-     *         description="Place osmfeatures ID",
+     *         name="id",
+     *         description="Place Osmfeatures ID",
      *         required=true,
      *         in="path",
      *         @OA\Schema(type="string")
@@ -110,6 +108,64 @@ class PlaceController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="type", type="string", example="Feature"),
+     *             @OA\Property(
+     *                 property="properties",
+     *                 type="object",
+     *                 @OA\Property(property="osm_type", type="string", example="N"),
+     *                 @OA\Property(property="osm_id", type="integer", example=123456),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2021-01-01T00:00:00Z"),
+     *                 @OA\Property(property="name", type="string", example="Place"),
+     *                 @OA\Property(property="class", type="string", example="amenity"),
+     *                 @OA\Property(property="subclass", type="string", example="restaurant"),
+     *                 @OA\Property(property="elevation", type="number", example=1000),
+     *                 @OA\Property(property="score", type="number", example=1),
+     *                 @OA\Property(property="osmfeatures_id", type="string", example="N123456"),
+     *                 @OA\Property(property="osm_url", type="string", example="https://www.openstreetmap.org/node/123456"),
+     *                 @OA\Property(property="osm_api", type="string", example="https://www.openstreetmap.org/api/0.6/node/1952252737.json"),
+     *                 @OA\Property(
+     *                     property="osm_tags",
+     *                     type="object",
+     *                     example={"amenity": "restaurant"}
+     *                 ),
+     *                 @OA\Property(property="wikidata", type="string", example="https://www.wikidata.org/wiki/Q123456"),
+     *                 @OA\Property(property="wikipedia", type="string", example="https://en.wikipedia.org/wiki/Example"),
+     *                 @OA\Property(property="wikimedia_commons", type="string", example="https://commons.wikimedia.org/wiki/Category:Example"),
+     *                 @OA\Property(
+     *                     property="enriched_data",
+     *                     type="object",
+     *                     example={
+     *                         "id": 1,
+     *                         "last_update_wikipedia": "https://en.wikipedia.org/wiki/Example",
+     *                         "last_update_wikidata": "https://www.wikidata.org/wiki/Q123456",
+     *                         "last_update_wikimedia_commons": "https://commons.wikimedia.org/wiki/Category:Example",
+     *                         "abstract": {
+     *                             "it": "Questo é un abstract",
+     *                             "en": "This is an abstract"
+     *                         },
+     *                         "description": {
+     *                             "it": "Questa é una descrizione",
+     *                             "en": "This is a description"
+     *                         },
+     *                         "images": {
+     *                             "0": {
+     *                                 "source_url": "https://wikicommons.example.com/image.jpg",
+     *                                 "dateTime": "2021-01-01T00:00:00Z",
+     *                                 "aws_url": "https://aws.example.com/image.jpg"
+     *                             }
+     *                         }
+     *                     }
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="geometry",
+     *                 type="object",
+     *                 @OA\Property(property="type", type="string", example="Point"),
+     *                 @OA\Property(property="coordinates", type="array", example={100, 0}, @OA\Items(type="number"))
+     *             )
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -130,37 +186,7 @@ class PlaceController extends Controller
         return response()->json($geojsonFeature);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/v1/features/places/osm/{osmtype}/{osmid}",
-     *     operationId="getPlaceByOsmId",
-     *     tags={"Places"},
-     *     summary="Get Place by OSM ID",
-     *     description="Returns a single Place in GeoJSON format",
-     *     @OA\Parameter(
-     *         name="osmtype",
-     *         description="OSM type (node, way, relation)",
-     *         required=true,
-     *         in="path",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="osmid",
-     *         description="OSM ID",
-     *         required=true,
-     *         in="path",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Successful operation",
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Place not found"
-     *     )
-     * )
-     */
+
     public function osm(string $osmType, int $osmid)
     {
         $acceptedOsmtypes = ['node', 'way', 'relation'];
@@ -198,35 +224,49 @@ class PlaceController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/features/places/distance/{lon}/{lat}/{distance}",
+     *     path="/api/v1/features/places/{lon}/{lat}/{distance}",
      *     operationId="getPlacesByDistance",
-     *     tags={"Places"},
-     *     summary="Get Places by distance",
-     *     description="Returns a list of Places within the specified distance from the given coordinates.",
+     *     tags={"API V1"},
+     *     summary="Get nearby places",
+     *     description="Get places within a specified distance from the given coordinates.",
      *     @OA\Parameter(
      *         name="lon",
-     *         description="Longitude",
+     *         description="Longitude of the location",
+     *         example="10.494953",
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="number")
      *     ),
      *     @OA\Parameter(
      *         name="lat",
-     *         description="Latitude",
+     *         description="Latitude of the location",
+     *         example="46.179482",
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="number")
      *     ),
      *     @OA\Parameter(
      *         name="distance",
      *         description="Distance in meters",
+     *         example=1000,
      *         required=true,
      *         in="path",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="number")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful operation",
+     *         description="OK",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             example={
+     *                 "osmfeatures_id": "W195710674",
+     *                 "name": "Rifugio Giuseppe Garibaldi",
+     *                 "class": "tourism",
+     *                 "subclass": "alpine_hut",
+     *                 "elevation": 2548,
+     *                 "distance": 9
+     *             }
+     *         )
      *     )
      * )
      */
