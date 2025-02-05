@@ -1,5 +1,52 @@
 # Changelog
 
+## [1.33.0](https://github.com/webmappsrl/osmfeatures/compare/v1.32.0...v1.33.0) (2025-02-05)
+
+
+### Features
+
+* added map components to nova resources (admin areas, places, hiking routes, poles) ([d462b74](https://github.com/webmappsrl/osmfeatures/commit/d462b743bf47f3cade0126c1ef56057adae01b20))
+* added post endpoint for admin areas geojson ([2447ae3](https://github.com/webmappsrl/osmfeatures/commit/2447ae315bbe85cde2bfea4e17bec1c1967f192d))
+* ask for a confirmation on sm full pbf import oc:4625 ([ca769fd](https://github.com/webmappsrl/osmfeatures/commit/ca769fd08162da6807c13cf7beba4d0dae4ce934))
+* configured log viewer ([472b70a](https://github.com/webmappsrl/osmfeatures/commit/472b70a48c3405227f2703fcea988c2222ad541b))
+* enable xdebug code coverage feature oc:4354 ([a2a30e3](https://github.com/webmappsrl/osmfeatures/commit/a2a30e39fcc7014ed6af005c7b3696b451403d2b))
+* features collection geojson download action OC:3720 ([#138](https://github.com/webmappsrl/osmfeatures/issues/138)) ([ade8a78](https://github.com/webmappsrl/osmfeatures/commit/ade8a7898f88243d15a2b9f3ae604f42f0392d30))
+* features xls export OC:3811 ([#137](https://github.com/webmappsrl/osmfeatures/issues/137)) ([8b7db2c](https://github.com/webmappsrl/osmfeatures/commit/8b7db2cead29ff923c499b796ec25ef94ffc2784))
+* move the wm-package as submodule ([fea50e7](https://github.com/webmappsrl/osmfeatures/commit/fea50e7a1ba964df8de1a32fd15c08e0fe754218))
+
+
+### Bug Fixes
+
+* added osm2cai status query parameter to hiking routes list api ([77ab216](https://github.com/webmappsrl/osmfeatures/commit/77ab21680fb220bf17566e4f5a461449437c7cb8))
+* change command name oc:4625 ([82f9390](https://github.com/webmappsrl/osmfeatures/commit/82f9390032ba8d778dd46630331ed991fc69f045))
+* change command name2 oc:4625 ([58e93e1](https://github.com/webmappsrl/osmfeatures/commit/58e93e112a2ec9b49b01314eab19dfeceb74607a))
+* change command name3 oc:4625 ([68bdf65](https://github.com/webmappsrl/osmfeatures/commit/68bdf65121a1db098759f528bf70a11b2ed7fbac))
+* db name on sql import oc:4625 ([13410a5](https://github.com/webmappsrl/osmfeatures/commit/13410a515720ac7b8c136ea286fbfedbbe8d95b5))
+* dem field missing in hiking route OC:3809 ([91e650e](https://github.com/webmappsrl/osmfeatures/commit/91e650ed5ece7fb5422601ad362a5831d409510b))
+* fixed admin area api tests ([9fcab4c](https://github.com/webmappsrl/osmfeatures/commit/9fcab4c65134bdcf44aa96fd8a29b12752b3f40a))
+* installed jwt dependency in root project ([50230a4](https://github.com/webmappsrl/osmfeatures/commit/50230a4843b1f73dd6d263dd75969304a8743ccd))
+* pbf rewrite oc:4625 ([bc7cad6](https://github.com/webmappsrl/osmfeatures/commit/bc7cad6eb36d3c216a174a339f21ea8861aa811c))
+* refactor of pbf import procedure oc:4625 ([2058ec9](https://github.com/webmappsrl/osmfeatures/commit/2058ec9f3e56712cc258a183b2606834ccadaccb))
+* running tests on github actions ([fe61eaf](https://github.com/webmappsrl/osmfeatures/commit/fe61eaf79cee6132b56c56a0da93224aa4e1e352))
+* running tests on github actions2 oc: 4379 ([446c1c5](https://github.com/webmappsrl/osmfeatures/commit/446c1c592f5249872641f459047e5bcb70555890))
+* typo in poiController swagger notation ([2086ed5](https://github.com/webmappsrl/osmfeatures/commit/2086ed53e0cbe22aad8e635dfd6164db40cba13b))
+* wm-package version in composer json ([7fdc0b9](https://github.com/webmappsrl/osmfeatures/commit/7fdc0b9dc443495704e36d96f99cc082204a037c))
+* wmdumps filesystem ([e8ccecd](https://github.com/webmappsrl/osmfeatures/commit/e8ccecd914e8b1ab11061580cb00352d51a3cda9))
+
+
+### Miscellaneous Chores
+
+* admin_areas_enrichments nova filter ([cf5d61f](https://github.com/webmappsrl/osmfeatures/commit/cf5d61ffd5321f42622219478a009d5fe7d28571))
+* fix a command typo oc:4625 ([2dbf531](https://github.com/webmappsrl/osmfeatures/commit/2dbf5313f4cbe68a0471c6f8c3e0b43f1b88b0be))
+* improved data validation for post request ([fb5863a](https://github.com/webmappsrl/osmfeatures/commit/fb5863a09983d0ba507e8c48b002ce00402c74a9))
+* improved enrichments recovery and check update commands ([8ee2dd6](https://github.com/webmappsrl/osmfeatures/commit/8ee2dd6cccd10bab66633d3dfa29c15bbe0abed1))
+* installed log viewer package ([5642e61](https://github.com/webmappsrl/osmfeatures/commit/5642e61453fc108ad2f38afe3e7be04f3bdf077f))
+* removed deprecated pois api from documentation ([fac0c46](https://github.com/webmappsrl/osmfeatures/commit/fac0c4622e4c85d3bf1e82dddf1aaac6d6a43ce0))
+* swagger notation refactoring ([8ea1074](https://github.com/webmappsrl/osmfeatures/commit/8ea10744cd1a4499e3cf029e5e5fda994bf0008f))
+* tests for new api endpoint ([1858fcc](https://github.com/webmappsrl/osmfeatures/commit/1858fcc521ef1905bf00ab2a295e4dc5bb21e877))
+* updated actions/upload-artifact to [@v4](https://github.com/v4) ([b342f10](https://github.com/webmappsrl/osmfeatures/commit/b342f10c2ae413c29ee13fa6eebbdf9be86ecb5a))
+* upload to aws testing command (to insert in cron job production) ([0066e90](https://github.com/webmappsrl/osmfeatures/commit/0066e90aa346698f165daf517ceb3f2342b1ca8c))
+
 ## [1.32.0](https://github.com/webmappsrl/osmfeatures/compare/v1.31.0...v1.32.0) (2024-08-20)
 
 
