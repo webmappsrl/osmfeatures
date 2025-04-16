@@ -109,8 +109,6 @@ class HikingRoute extends OsmFeaturesResource
                 ->asHtml(),
             Text::make('Osm2cai Status')
                 ->sortable(),
-            Boolean::make('Has Invalid Geometry', 'has_invalid_geometry')->sortable()
-                ->onlyOnDetail(),
             Tooltip::make('Admin Areas', 'admin_areas')
                 ->iconFromPath(public_path('images/admin_areas.svg'))
                 ->content(

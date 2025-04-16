@@ -15,7 +15,6 @@ class HikingRoute extends OsmfeaturesModel
 
     protected $fillable = [
         'updated_at',
-        'has_invalid_geometry',
         'admin_areas',
     ];
 
