@@ -17,14 +17,17 @@ class HasInvalidGeometryFilter extends BooleanFilter
      */
     public function apply(NovaRequest $request, $query, $value)
     {
-        switch ($value) {
+        switch (true) {
             case $value['Valid']:
-                return  $query->where('has_invalid_geometry', false);
+                return $query->whereHas('demEnrichment', function ($q) {
+                    $q->where('enrichable_has_invalid_geometry', false);
+                });
                 break;
             case $value['Invalid']:
-                return  $query->where('has_invalid_geometry', true);
+                return $query->whereHas('demEnrichment', function ($q) {
+                    $q->where('enrichable_has_invalid_geometry', true);
+                });
                 break;
-
             default:
                 return $query;
         }
