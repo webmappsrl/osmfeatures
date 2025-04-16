@@ -136,7 +136,7 @@ class DemEnrichmentJob implements ShouldQueue
         if (isset($response->json()['error'])) {
             $errorMessage = $response->json()['error'];
             $logger->error("DemEnrichmentJob request failed for model {$modelClass} with id {$modelId}", [
-                'reason' => $errorMessage
+                'reason' => $errorMessage,
             ]);
 
             $this->markModelAsInvalidGeometry();
@@ -145,7 +145,7 @@ class DemEnrichmentJob implements ShouldQueue
 
         $logger->error("DemEnrichmentJob request failed for model {$modelClass} with id {$modelId}", [
             'status' => $response->status(),
-            'reason' => $response->reason()
+            'reason' => $response->reason(),
         ]);
 
         throw new Exception("DemEnrichmentJob request failed: {$response->status()} {$response->reason()}");
@@ -219,9 +219,9 @@ class DemEnrichmentJob implements ShouldQueue
         $geojson = [
             'type' => 'Feature',
             'properties' => [
-                'id' => $model->id
+                'id' => $model->id,
             ],
-            'geometry' => json_decode($geometry[0]->geom)
+            'geometry' => json_decode($geometry[0]->geom),
         ];
 
         return $geojson;
