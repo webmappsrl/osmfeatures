@@ -14,6 +14,7 @@ class DemEnrichment extends Enrichment
         'dem-enrichable_id',
         'dem-enrichable_type',
         'enrichable_osmfeatures_id',
+        'enrichable_has_invalid_geometry',
     ];
 
     public function demEnrichable()
