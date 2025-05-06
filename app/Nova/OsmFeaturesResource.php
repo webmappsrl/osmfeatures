@@ -182,9 +182,7 @@ class OsmFeaturesResource extends Resource
     protected function enrichmentsFields(NovaRequest $request)
     {
         $enrichment = $this->enrichment;
-        if ($enrichment) {
-            $data = json_decode($enrichment->data, true);
-        }
+        $data = $enrichment ? json_decode($enrichment->data, true) : null;
 
         $fields = [];
 
@@ -210,15 +208,19 @@ class OsmFeaturesResource extends Resource
             })->onlyOnDetail();
 
             $fields[] = Text::make('Images', function () use ($data) {
-                $images = $data['images'];
-                if ($images) {
-                    $thumbnails = array_map(function ($image) {
-                        $sourceUrl = $image['source_url'] ?? '';
-                        $thumbUrl = $image['thumb_url'] ?? $image['source_url'] ?? '';
-                        return "<a href=\"{$sourceUrl}\" target=\"_blank\"><img src=\"{$thumbUrl}\" style=\"width:50px; height:50px; margin:2px; border-radius:50%;\"></a>";
-                    }, $images);
+                $images = $data['images'] ?? null;
+                if ($images && !empty($images)) {
+                    $thumbnails = [];
 
-                    return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', $thumbnails) . '</div>';
+                    $this->processImageSource($images['wikipedia_images'] ?? null, $thumbnails);
+                    $this->processImageSource($images['wikidata_images'] ?? null, $thumbnails);
+                    $this->processImageSource($images['wikimedia_images'] ?? null, $thumbnails);
+
+                    if (empty($thumbnails)) {
+                        return '-';
+                    }
+
+                    return '<div style="display:flex; flex-wrap:wrap; max-width:520px;">' . implode('', array_filter($thumbnails)) . '</div>';
                 } else {
                     return '-';
                 }
@@ -226,5 +228,49 @@ class OsmFeaturesResource extends Resource
         }
 
         return $fields;
+    }
+
+    /**
+     * Generates HTML for a single image thumbnail.
+     *
+     * @param  string  $sourceUrl
+     * @param  string  $thumbUrl
+     * @return string
+     */
+    private function generateImageThumbnailHtml(string $sourceUrl, string $thumbUrl): string
+    {
+        if ($sourceUrl) {
+            return "<a href='{$sourceUrl}' target='_blank'><img src='{$thumbUrl}' style='width:50px; height:50px; margin:2px; border-radius:50%;'></a>";
+        }
+        return '';
+    }
+
+    /**
+     * Processes a source of images (e.g., Wikipedia, Wikidata) and adds thumbnails to the list.
+     *
+     * @param  array|null  $imageSourceData
+     * @param  array  &$thumbnails
+     * @return void
+     */
+    private function processImageSource(?array $imageSourceData, array &$thumbnails): void
+    {
+        if (empty($imageSourceData)) {
+            return;
+        }
+
+        // Check if it's a single image or an array of images
+        if (isset($imageSourceData['source_url'])) {
+            // Single image
+            $sourceUrl = $imageSourceData['source_url'];
+            $thumbUrl = $imageSourceData['thumb_url'] ?? $sourceUrl;
+            $thumbnails[] = $this->generateImageThumbnailHtml($sourceUrl, $thumbUrl);
+        } else {
+            // Multiple images
+            foreach ($imageSourceData as $image) {
+                $sourceUrl = $image['source_url'] ?? '';
+                $thumbUrl = $image['thumb_url'] ?? $sourceUrl;
+                $thumbnails[] = $this->generateImageThumbnailHtml($sourceUrl, $thumbUrl);
+            }
+        }
     }
 }
