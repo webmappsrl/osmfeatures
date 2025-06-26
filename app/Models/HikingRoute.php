@@ -78,6 +78,8 @@ class HikingRoute extends OsmfeaturesModel
         $properties['wikipedia'] = $this->getWikipediaUrl();
         $properties['wikimedia_commons'] = $this->getWikimediaCommonsUrl();
 
+        $properties = $this->normalizeProperties($properties);
+
         return $properties;
     }
 }

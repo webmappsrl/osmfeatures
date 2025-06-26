@@ -91,6 +91,9 @@ class OsmfeaturesModel extends Model
         $properties['wikimedia_commons'] = $this->getWikimediaCommonsUrl();
         $properties['enrichments'] = $this->getEnrichment();
 
+        // Normalize numeric fields
+        $properties = $this->normalizeProperties($properties);
+
         return $properties;
     }
 
@@ -107,5 +110,70 @@ class OsmfeaturesModel extends Model
             return $enrichment;
         }
         return null;
+    }
+
+    /**
+     * Convert duration string to hours as float.
+     *
+     * @param mixed $duration
+     * @return float
+     */
+    public function convertDurationToMinutes($duration): float
+    {
+        if (empty($duration)) {
+            return 0.0;
+        }
+
+        // If it's already a number, assume it's in seconds and convert to minutes.
+        if (is_numeric($duration)) {
+            return (float) $duration / 60;
+        }
+
+        // If it's a string, try to parse it.
+        if (is_string($duration)) {
+            $parts = explode(':', $duration);
+            $minutes = 0;
+            if (count($parts) === 3) { // HH:MM:SS
+                $minutes = (int) $parts[0] * 60 + (int) $parts[1] + ((int) $parts[2] / 60);
+            } elseif (count($parts) === 2) { // HH:MM
+                $minutes = (int) $parts[0] * 60 + (int) $parts[1];
+            }
+
+            return (float) $minutes;
+        }
+
+        // Fallback for unknown types
+        return 0.0;
+    }
+
+    /**
+     * Normalize properties data types.
+     *
+     * @param array $properties
+     * @return array
+     */
+    protected function normalizeProperties(array $properties): array
+    {
+        // Numeric fields that should be converted to numbers
+        $numericFields = ['ascent', 'descent', 'distance'];
+
+        // Duration fields that should be converted to minutes
+        $durationFields = ['duration_forward', 'duration_backward'];
+
+        foreach ($numericFields as $field) {
+            if (isset($properties[$field]) && !empty($properties[$field])) {
+                $properties[$field] = is_numeric($properties[$field])
+                    ? (float) $properties[$field]
+                    : 0.0;
+            }
+        }
+
+        foreach ($durationFields as $field) {
+            if (isset($properties[$field]) && !empty($properties[$field])) {
+                $properties[$field] = $this->convertDurationToMinutes($properties[$field]);
+            }
+        }
+
+        return $properties;
     }
 }
