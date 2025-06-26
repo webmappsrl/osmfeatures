@@ -10,8 +10,7 @@ ADD php.ini /usr/local/etc/php/php.ini
 
 ENV TZ 'Europe/Rome'
 
-RUN apt install -y postgresql-common \
-    /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
+RUN apt-get update && apt-get install -y postgresql-common && sh /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
 
 RUN chown -R www-data:www-data /var/www \
     && chown  www-data:www-data /usr/local/etc/php-fpm.d/www.conf \
