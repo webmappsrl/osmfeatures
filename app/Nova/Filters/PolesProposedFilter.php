@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Nova\Filters;
+
+use Laravel\Nova\Filters\BooleanFilter;
+use Laravel\Nova\Http\Requests\NovaRequest;
+
+class PolesProposedFilter extends BooleanFilter
+{
+    public $name = 'Proposed';
+
+    /**
+     * Apply the filter to the given query.
+     *
+     * @param  NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  mixed  $value
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function apply(NovaRequest $request, $query, $value)
+    {
+        if ($value['is_proposed'] ?? false) {
+            return $query->whereRaw("(cast(tags as jsonb)->>'proposed') = 'yes'");
+        }
+
+        if ($value['is_not_proposed'] ?? false) {
+            return $query->whereRaw("(cast(tags as jsonb)->>'proposed') IS DISTINCT FROM 'yes'");
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get the filter's available options.
+     *
+     * @param  NovaRequest  $request
+     * @return array
+     */
+    public function options(NovaRequest $request)
+    {
+        return [
+            'Yes' => 'is_proposed',
+            'No' => 'is_not_proposed',
+        ];
+    }
+}

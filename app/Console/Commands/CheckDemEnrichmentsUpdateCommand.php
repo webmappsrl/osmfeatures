@@ -115,8 +115,8 @@ class CheckDemEnrichmentsUpdateCommand extends Command
         }
 
         foreach ($missingEnrichments as $model) {
-            $logger->info('Dispatching job for missing enrichment on model ' . get_class($model) . ' ' . $model->osm_type .
-                $model->osm_id);
+            $logger->info('Dispatching job for missing enrichment on model ' . get_class($model) . ' ' . $model->osm_type
+                . $model->osm_id);
             $this->info('Enrichment ' . $model->osm_type . $model->osm_id . ' is missing. Dispatching job for Enrich model ' . get_class($model) . ' ' . $model->osm_type . $model->osm_id);
             DemEnrichmentJob::dispatch($model);
         }

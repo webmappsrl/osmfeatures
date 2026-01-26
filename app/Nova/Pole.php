@@ -3,18 +3,12 @@
 namespace App\Nova;
 
 use Wm\MapPoint\MapPoint;
-use Laravel\Nova\Fields\Code;
 use Laravel\Nova\Fields\Text;
-use Illuminate\Support\Carbon;
-use Laravel\Nova\Fields\Number;
-use Laravel\Nova\Fields\DateTime;
 use Illuminate\Support\Facades\DB;
-use Rpj\Daterangepicker\DateHelper;
-use Illuminate\Support\Facades\Date;
-use Outl1ne\NovaTooltipField\Tooltip;
-use Rpj\Daterangepicker\Daterangepicker;
 use App\Nova\Filters\PolesElevationFilter;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use App\Nova\Filters\PolesProposedFilter;
+use Illuminate\Support\Facades\Log;
 
 class Pole extends OsmFeaturesResource
 {
@@ -54,7 +48,7 @@ class Pole extends OsmFeaturesResource
 
     public static function indexQuery(NovaRequest $request, $query)
     {
-        \Log::info($query->toSql());
+        Log::info($query->toSql());
 
         return $query;
     }
@@ -112,6 +106,7 @@ class Pole extends OsmFeaturesResource
     {
         $osmfeaturesFilters = parent::filters($request);
         $specifiFilters =  [
+            new PolesProposedFilter(),
             PolesElevationFilter::make()
                 ->dividerLabel('<>')
                 ->inputType('number')

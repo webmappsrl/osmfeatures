@@ -6,7 +6,7 @@ local poles = osm2pgsql.define_table({
         { column = 'updated_at' },
         { column = 'name' },
         { column = 'tags', type = 'jsonb' },
-        { column = 'geom', type = 'point' projection = 4326 },
+        { column = 'geom', type = 'point', projection = 4326 },
         { column = 'ref' },
         { column = 'ele' },
         { column = 'destination' },
@@ -21,7 +21,15 @@ function format_timestamp(unix_timestamp)
 end
 
 function process_pole(object)
-    if object.tags.tourism ~= 'information' or object.tags.information ~= 'guidepost' then
+    -- Poles ufficiali
+    local is_official = object.tags.tourism == 'information' and object.tags.information == 'guidepost'
+
+    -- Poles proposti
+    local is_proposed = object.tags.proposed == 'yes'
+        and object.tags['proposed:information'] == 'guidepost'
+        and object.tags['proposed:tourism'] == 'information'
+
+    if not is_official and not is_proposed then
         return
     end
     local score = 0

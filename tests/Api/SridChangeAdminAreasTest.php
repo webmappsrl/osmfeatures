@@ -177,8 +177,8 @@ class SridChangeAdminAreasTest extends TestCase
     {
         foreach ($coordinatesSet as $otherCoordinate) {
             if (
-                abs($coordinate[0] - $otherCoordinate[0]) <= $tolerance &&
-                abs($coordinate[1] - $otherCoordinate[1]) <= $tolerance
+                abs($coordinate[0] - $otherCoordinate[0]) <= $tolerance
+                && abs($coordinate[1] - $otherCoordinate[1]) <= $tolerance
             ) {
                 return true;
             }
