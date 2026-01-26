@@ -342,7 +342,15 @@ function process_place(object, geom)
 end
 
 function process_pole(object)
-     if object.tags.tourism ~= 'information' or object.tags.information ~= 'guidepost' then
+    -- Poles ufficiali
+    local is_official = object.tags.tourism == 'information' and object.tags.information == 'guidepost'
+
+    -- Poles proposti
+    local is_proposed = object.tags.proposed == 'yes'
+        and object.tags['proposed:information'] == 'guidepost'
+        and object.tags['proposed:tourism'] == 'information'
+
+    if not is_official and not is_proposed then
         return
     end
 
@@ -378,9 +386,7 @@ function process_pole(object)
 end
 
 function osm2pgsql.process_node(object)
-    if object.tags.information == 'guidepost' then
-        process_pole(object)
-    end
+    process_pole(object)
     process_place(object, object:as_point())
 end
 
