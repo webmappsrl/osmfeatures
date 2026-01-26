@@ -11,9 +11,9 @@ use Rpj\Daterangepicker\DateHelper as Helper;
 
 class Daterangepicker extends Filter
 {
-    private Carbon|null $minDate = null;
-    private Carbon|null $maxDate = null;
-    private array|null $ranges = null;
+    private ?Carbon $minDate = null;
+    private ?Carbon $maxDate = null;
+    private ?array $ranges = null;
 
     public function __construct(
         private string $column,

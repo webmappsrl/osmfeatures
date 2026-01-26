@@ -55,15 +55,15 @@ class OsmFeaturesResource extends Resource
 
                 $link = $this->getOsmUrl();
 
-                $osmIdLink =
-                    <<<HTML
+                $osmIdLink
+                    = <<<HTML
                         <a style='color:green;' href='{$link}' target='_blank'>
                             <span style='font-weight: bold;'>OSM ID:</span> {$this->osm_id}
                         </a>
                         HTML;
 
-                $osmType =
-                    <<<HTML
+                $osmType
+                    = <<<HTML
                             <span>
                                 <span style='font-weight: bold;'>OSM Type:</span> {$this->osm_type}
                             </span>
