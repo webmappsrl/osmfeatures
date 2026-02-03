@@ -66,12 +66,12 @@ class PoleController extends Controller
             $query->where('score', '>=', $score);
         }
 
-        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+        $poles = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at', 'osm_type', 'osm_id']);
 
         $poles->getCollection()->transform(function ($pole) {
             $pole->updated_at = Carbon::parse($pole->updated_at)->toIso8601String();
-            $model = Pole::find($pole->id);
-            $pole->id = $model->getOsmfeaturesId();
+            $pole->id = $pole->osm_type . $pole->osm_id;
+            unset($pole->osm_type, $pole->osm_id);
 
             return $pole;
         });

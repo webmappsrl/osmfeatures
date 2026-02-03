@@ -103,12 +103,12 @@ class AdminAreaController extends Controller
             $query->where('score', '>=', $score);
         }
 
-        $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+        $adminAreas = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at', 'osm_type', 'osm_id']);
 
         $adminAreas->getCollection()->transform(function ($adminArea) {
             $adminArea->updated_at = Carbon::parse($adminArea->updated_at)->toIso8601String();
-            $model = AdminArea::find($adminArea->id);
-            $adminArea->id = $model->getOsmfeaturesId();
+            $adminArea->id = $adminArea->osm_type . $adminArea->osm_id;
+            unset($adminArea->osm_type, $adminArea->osm_id);
 
             return $adminArea;
         });

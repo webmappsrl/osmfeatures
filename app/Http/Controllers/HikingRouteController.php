@@ -82,12 +82,12 @@ class HikingRouteController extends Controller
             $query->where('osm2cai_status', '>=', $osm2caiStatus);
         }
 
-        $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+        $hikingRoutes = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at', 'osm_type', 'osm_id']);
 
         $hikingRoutes->getCollection()->transform(function ($hr) {
             $hr->updated_at = Carbon::parse($hr->updated_at)->toIso8601String();
-            $model = HikingRoute::find($hr->id);
-            $hr->id = $model->getOsmFeaturesId();
+            $hr->id = $hr->osm_type . $hr->osm_id;
+            unset($hr->osm_type, $hr->osm_id);
 
             return $hr;
         });
