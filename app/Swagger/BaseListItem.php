@@ -91,7 +91,7 @@ namespace App\Swagger;
  *         property="per_page",
  *         type="integer",
  *         description="Number of items per page",
- *         example=100
+ *         example=10000
  *     ),
  *     @OA\Property(
  *         property="prev_page_url",
@@ -104,7 +104,7 @@ namespace App\Swagger;
  *         property="to",
  *         type="integer",
  *         description="The ending index of items on current page",
- *         example=100
+ *         example=10000
  *     ),
  *     @OA\Property(
  *         property="total",

@@ -16,7 +16,7 @@ class PoleController extends Controller
      *     operationId="listPoles",
      *     tags={"API V1"},
      *     summary="List all Poles",
-     *     description="Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
+     *     description="Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 10000 poles. Use the 'page' parameter to specify the page number to retrieve.",
      *
      *     @OA\Parameter(ref="#/components/parameters/list_updated_at"),
      *     @OA\Parameter(ref="#/components/parameters/list_page"),
@@ -38,7 +38,7 @@ class PoleController extends Controller
     public function list(Request $request)
     {
         $updated_after = $request->query('updated_at');
-        $perPage = 100;
+        $perPage = 10000;
         $bbox = $request->query('bbox');
         $score = $request->query('score');
         $query = DB::table('poles');
