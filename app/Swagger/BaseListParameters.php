@@ -20,7 +20,7 @@ namespace App\Swagger;
  *     parameter="list_page",
  *     in="query",
  *     name="page",
- *     description="Page number (10000 results per page).",
+ *     description="Page number (1000 results per page).",
  *     required=false,
  *     @OA\Schema(
  *         type="integer",

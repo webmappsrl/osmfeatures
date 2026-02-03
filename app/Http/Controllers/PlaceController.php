@@ -48,7 +48,7 @@ class PlaceController extends Controller
     public function list(Request $request)
     {
         $updated_at = $request->query('updated_at');
-        $perPage = 10000;
+        $perPage = 1000;
         $bbox = $request->query('bbox');
         $score = $request->query('score');
         $isTest = $request->query('testdata');

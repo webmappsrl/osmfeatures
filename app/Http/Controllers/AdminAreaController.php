@@ -70,7 +70,7 @@ class AdminAreaController extends Controller
     public function list(Request $request)
     {
         $query = DB::table('admin_areas');
-        $perPage = 10000;
+        $perPage = 1000;
 
         $updated_at = $request->query('updated_at');
         $bbox = $request->query('bbox');
