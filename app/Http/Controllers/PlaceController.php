@@ -77,12 +77,12 @@ class PlaceController extends Controller
             $query->where('score', '>=', $score);
         }
 
-        $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at']);
+        $places = $query->orderBy('updated_at', 'desc')->paginate($perPage, ['id', 'updated_at', 'osm_type', 'osm_id']);
 
         $places->getCollection()->transform(function ($place) {
             $place->updated_at = Carbon::parse($place->updated_at)->toIso8601String();
-            $model = Place::find($place->id);
-            $place->id = $model->getOsmFeaturesId();
+            $place->id = $place->osm_type . $place->osm_id;
+            unset($place->osm_type, $place->osm_id);
 
             return $place;
         });
