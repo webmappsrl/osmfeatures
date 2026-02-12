@@ -51,6 +51,69 @@ namespace App\Swagger;
  *         example=2
  *     )
  * )
+ *
+ * @OA\Parameter(
+ *     parameter="search_models",
+ *     in="query",
+ *     name="models",
+ *     description="Optional comma-separated model list. Allowed values: admin-areas, hiking-routes, places, poles. If omitted, all available models in the current database are used.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="string",
+ *         example="admin-areas,places,poles"
+ *     )
+ * )
+ *
+ * @OA\Parameter(
+ *     parameter="search_lat",
+ *     in="query",
+ *     name="lat",
+ *     description="Latitude in WGS84. Required for point-based search.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="number",
+ *         format="double",
+ *         example=43.77
+ *     )
+ * )
+ *
+ * @OA\Parameter(
+ *     parameter="search_lon",
+ *     in="query",
+ *     name="lon",
+ *     description="Longitude in WGS84. Required for point-based search.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="number",
+ *         format="double",
+ *         example=11.25
+ *     )
+ * )
+ *
+ * @OA\Parameter(
+ *     parameter="search_radius",
+ *     in="query",
+ *     name="radius",
+ *     description="Radius in meters. Use together with lat and lon.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="number",
+ *         format="double",
+ *         example=1000
+ *     )
+ * )
+ *
+ * @OA\Parameter(
+ *     parameter="search_bbox",
+ *     in="query",
+ *     name="bbox",
+ *     description="Bounding box for search in format minLon,minLat,maxLon,maxLat.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="string",
+ *         example="10.49,46.17,10.50,46.18"
+ *     )
+ * )
  */
 class BaseListParameters
 {

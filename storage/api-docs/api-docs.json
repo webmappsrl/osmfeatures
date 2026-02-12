@@ -1078,7 +1078,7 @@
                     "API V1"
                 ],
                 "summary": "List all Poles",
-                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 100 poles. Use the 'page' parameter to specify the page number to retrieve.",
+                "description": "Returns a list of Poles with their IDs and updated timestamps. Optionally provide an 'updated_at' and bbox parameter to filter poles. Paginated results are available, with each page containing 1000 poles. Use the 'page' parameter to specify the page number to retrieve.",
                 "operationId": "listPoles",
                 "parameters": [
                     {
@@ -1228,6 +1228,48 @@
                     }
                 }
             }
+        },
+        "/api/v1/features/search": {
+            "get": {
+                "tags": [
+                    "API V1"
+                ],
+                "summary": "Search features by spatial query",
+                "description": "Search features by model using point, point+radius or bbox. If models is not provided, the API searches across all models currently available in the database. Results are capped to 50 features per model.",
+                "operationId": "searchFeatures",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/search_models"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_lat"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_lon"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_radius"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_bbox"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SearchFeatureCollection"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1333,7 +1375,7 @@
                     "per_page": {
                         "description": "Number of items per page",
                         "type": "integer",
-                        "example": 100
+                        "example": 1000
                     },
                     "prev_page_url": {
                         "description": "URL of the previous page",
@@ -1344,12 +1386,66 @@
                     "to": {
                         "description": "The ending index of items on current page",
                         "type": "integer",
-                        "example": 100
+                        "example": 1000
                     },
                     "total": {
                         "description": "Total number of items across all pages",
                         "type": "integer",
                         "example": 937
+                    }
+                },
+                "type": "object"
+            },
+            "SearchFeatureCollection": {
+                "title": "Search Feature Collection",
+                "required": [
+                    "type",
+                    "features"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "example": "FeatureCollection"
+                    },
+                    "features": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "example": "Feature"
+                                },
+                                "properties": {
+                                    "properties": {
+                                        "model": {
+                                            "type": "string",
+                                            "example": "places"
+                                        },
+                                        "osmfeatures_id": {
+                                            "type": "string",
+                                            "example": "N123456"
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "geometry": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Point"
+                                        },
+                                        "coordinates": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            },
+                            "type": "object"
+                        }
                     }
                 },
                 "type": "object"
@@ -1370,7 +1466,7 @@
             "list_page": {
                 "name": "page",
                 "in": "query",
-                "description": "Page number (100 results per page).",
+                "description": "Page number (1000 results per page).",
                 "required": false,
                 "schema": {
                     "type": "integer",
@@ -1395,6 +1491,59 @@
                 "schema": {
                     "type": "integer",
                     "example": 2
+                }
+            },
+            "search_models": {
+                "name": "models",
+                "in": "query",
+                "description": "Optional comma-separated model list. Allowed values: admin-areas, hiking-routes, places, poles. If omitted, all available models in the current database are used.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "example": "admin-areas,places,poles"
+                }
+            },
+            "search_lat": {
+                "name": "lat",
+                "in": "query",
+                "description": "Latitude in WGS84. Required for point-based search.",
+                "required": false,
+                "schema": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 43.77
+                }
+            },
+            "search_lon": {
+                "name": "lon",
+                "in": "query",
+                "description": "Longitude in WGS84. Required for point-based search.",
+                "required": false,
+                "schema": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 11.25
+                }
+            },
+            "search_radius": {
+                "name": "radius",
+                "in": "query",
+                "description": "Radius in meters. Use together with lat and lon.",
+                "required": false,
+                "schema": {
+                    "type": "number",
+                    "format": "double",
+                    "example": 1000
+                }
+            },
+            "search_bbox": {
+                "name": "bbox",
+                "in": "query",
+                "description": "Bounding box for search in format minLon,minLat,maxLon,maxLat.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "example": "10.49,46.17,10.50,46.18"
                 }
             }
         }
