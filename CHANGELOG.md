@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.34.0](https://github.com/webmappsrl/osmfeatures/compare/v1.33.0...v1.34.0) (2026-02-12)
+
+
+### Features
+
+* **filters:** ✨ add PolesProposedFilter to enhance filtering options ([23fed1a](https://github.com/webmappsrl/osmfeatures/commit/23fed1af83c86523f36b284ba8bb6d97719790e6))
+* **pagination:** ✨ increase perPage limit to 10000 for list endpoints ([af5da08](https://github.com/webmappsrl/osmfeatures/commit/af5da088fd201d6025acf23b5e5d04f4834af5ca))
+* **search:** ✨ add spatial search functionality with API documentation ([9e60a90](https://github.com/webmappsrl/osmfeatures/commit/9e60a90917a8e415665abbaad3b92d0946c78ffa))
+
+
+### Bug Fixes
+
+* added web middleware for api documentation ([7af7329](https://github.com/webmappsrl/osmfeatures/commit/7af732930e8befc3d7a60ac9213e86fde1e333d8))
+* poles enrichments gallery OC:5438 ([b86848d](https://github.com/webmappsrl/osmfeatures/commit/b86848d02e13775144b9210b160ebc3431712625))
+
+
+### Miscellaneous Chores
+
+* **gitignore:** ➕ add storage/backups/ to ignore list ([aac5507](https://github.com/webmappsrl/osmfeatures/commit/aac5507b145f9ddca4048cb8fe4b2336af48e04d))
+* **pagination:** 🔧 reduce default pagination size from 10000 to 1000 ([a287c77](https://github.com/webmappsrl/osmfeatures/commit/a287c77012a088e03de927976ecf23639f162944))
+
 ## [1.33.0](https://github.com/webmappsrl/osmfeatures/compare/v1.32.0...v1.33.0) (2025-02-05)
 
 
