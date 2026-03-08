@@ -12,12 +12,12 @@ use InvalidArgumentException;
 
 class FeatureSearchService
 {
-    private const MAX_RESULTS_PER_MODEL = 50;
+    protected const MAX_RESULTS_PER_MODEL = 50;
 
     /**
      * @var array<string, array{class: class-string, table: string, modes: array<int, string>}>
      */
-    private array $modelConfig = [
+    protected array $modelConfig = [
         'admin-areas' => [
             'class' => AdminArea::class,
             'table' => 'admin_areas',
@@ -132,7 +132,7 @@ class FeatureSearchService
     /**
      * @param array<string, mixed> $filters
      */
-    private function applySpatialFilter(Builder $query, string $mode, array $filters): void
+    protected function applySpatialFilter(Builder $query, string $mode, array $filters): void
     {
         $geom4326 = $this->geometry4326Expression('geom');
 
@@ -167,7 +167,7 @@ class FeatureSearchService
         );
     }
 
-    private function geometry4326Expression(string $column): string
+    protected function geometry4326Expression(string $column): string
     {
         $geomAsGeometry = "($column::geometry)";
 

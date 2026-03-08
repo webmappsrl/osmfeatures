@@ -4,15 +4,27 @@ namespace App\Traits;
 
 trait OsmTagsProcessor
 {
+    private ?array $_decodedTags = null;
+
+    /**
+     * Decode the tags JSON once and cache the result for the request lifetime.
+     */
+    protected function getDecodedTags(): array
+    {
+        if ($this->_decodedTags === null) {
+            $this->_decodedTags = json_decode($this->tags, true) ?? [];
+        }
+
+        return $this->_decodedTags;
+    }
+
     /**
      * Get the wikidata from tags column if it exists
      * @return string|null
      */
     public function getWikidataUrl(): ?string
     {
-        $tags = json_decode($this->tags, true);
-
-        $wikidata = $tags['wikidata'] ?? null;
+        $wikidata = $this->getDecodedTags()['wikidata'] ?? null;
 
         if ($wikidata) {
             return 'https://www.wikidata.org/wiki/' . $wikidata;
@@ -27,9 +39,7 @@ trait OsmTagsProcessor
      */
     public function getWikimediaCommonsUrl(): ?string
     {
-        $tags = json_decode($this->tags, true);
-
-        $wikimediaCommons = $tags['wikimedia_commons'] ?? null;
+        $wikimediaCommons = $this->getDecodedTags()['wikimedia_commons'] ?? null;
 
         if ($wikimediaCommons) {
             return 'https://commons.wikimedia.org/wiki/' . $wikimediaCommons;
@@ -44,9 +54,7 @@ trait OsmTagsProcessor
      */
     public function getWikipediaUrl(): ?string
     {
-        $tags = json_decode($this->tags, true);
-
-        $wikipedia = $tags['wikipedia'] ?? null;
+        $wikipedia = $this->getDecodedTags()['wikipedia'] ?? null;
 
         if ($wikipedia) {
             return 'https://en.wikipedia.org/wiki/' . $wikipedia;

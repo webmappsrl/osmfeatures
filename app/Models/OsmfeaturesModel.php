@@ -18,6 +18,30 @@ class OsmfeaturesModel extends Model
 
 
     /**
+     * Return the GeoJSON representation using a precomputed geometry string.
+     * Eliminates the extra DB query for ST_AsGeoJSON.
+     *
+     * @param string $precomputedGeom Already-computed GeoJSON geometry string
+     * @param array  $props           Optional list of properties to include
+     * @return array
+     */
+    public function getGeojsonFeatureV2(string $precomputedGeom, array $props = []): array
+    {
+        $osmType = $this->getOsmType();
+        $properties = $this->prepareProperties($osmType);
+
+        if (!empty($props)) {
+            $properties = array_intersect_key($properties, array_flip($props));
+        }
+
+        return [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($precomputedGeom, true),
+        ];
+    }
+
+    /**
      * Return the GeoJSON representation.
      *
      * @param array $props

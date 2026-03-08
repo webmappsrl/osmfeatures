@@ -1270,6 +1270,763 @@
                     }
                 }
             }
+        },
+        "/api/v2/features/admin-areas/list": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "List all Admin Areas (V2)",
+                "description": "Returns a list of Admin Areas. Optionally filtered by updated_at, bbox and score. Paginated (1000 per page). V2: response cached with Cache-Control.",
+                "operationId": "listAdminAreasV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/list_updated_at"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_bbox"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_score"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BaseListItem"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bounding box not valid"
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/admin-areas/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get Admin Area by Osmfeatures ID (V2)",
+                "description": "Returns a single Admin Area in GeoJSON format. V2: ETag and Last-Modified headers for caching.",
+                "operationId": "getAdminAreaByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Admin Area Osmfeatures ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Admin Area not found"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/admin-areas/geojson": {
+            "post": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Admin Areas intersecting GeoJSON (V2)",
+                "description": "Returns Admin Areas whose geometries intersect the provided GeoJSON. Optional filters: updated_at, admin_level, score.",
+                "operationId": "intersectingGeojsonAdminAreaV2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "geojson"
+                                ],
+                                "properties": {
+                                    "geojson": {
+                                        "properties": {
+                                            "geometry": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "admin_level": {
+                                        "type": "integer"
+                                    },
+                                    "score": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "FeatureCollection"
+                                        },
+                                        "features": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    },
+                    "500": {
+                        "description": "Error processing GeoJSON intersection"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/hiking-routes/list": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "List all Hiking Routes (V2)",
+                "description": "Returns a list of Hiking Routes. Optionally filtered by updated_at, bbox, score, status (osm2cai). Paginated (1000 per page). V2: cached.",
+                "operationId": "listHikingRoutesV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/list_updated_at"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_bbox"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_score"
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "osm2cai status (min value)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BaseListItem"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bounding box not valid"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/hiking-routes/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get Hiking Route by Osmfeatures ID (V2)",
+                "description": "Returns a single Hiking Route in GeoJSON format. V2: ETag and Last-Modified for caching.",
+                "operationId": "getHikingRouteByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Hiking Route Osmfeatures ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Hiking Route not found"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/places/list": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "List all Places (V2)",
+                "description": "Returns a list of Places. Optionally filtered by updated_at, bbox, score. Paginated (1000 per page). V2: cached.",
+                "operationId": "listPlacesV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/list_updated_at"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_bbox"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_score"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BaseListItem"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bounding box not valid"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/places/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get Place by Osmfeatures ID (V2)",
+                "description": "Returns a single Place in GeoJSON format. V2: ETag and Last-Modified for caching.",
+                "operationId": "getPlaceByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Place Osmfeatures ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Place not found"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/places/{lon}/{lat}/{distance}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get nearby places (V2)",
+                "description": "Returns places within the specified distance (meters) from the given coordinates. V2: ST_DWithin on geography, cached.",
+                "operationId": "getPlacesByDistanceV2",
+                "parameters": [
+                    {
+                        "name": "lon",
+                        "in": "path",
+                        "description": "Longitude (WGS84)",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "example": 10.494953
+                        }
+                    },
+                    {
+                        "name": "lat",
+                        "in": "path",
+                        "description": "Latitude (WGS84)",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "example": 46.179482
+                        }
+                    },
+                    {
+                        "name": "distance",
+                        "in": "path",
+                        "description": "Distance in meters",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1000
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "osmfeatures_id": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "class": {
+                                                "type": "string"
+                                            },
+                                            "subclass": {
+                                                "type": "string"
+                                            },
+                                            "elevation": {
+                                                "type": "number"
+                                            },
+                                            "distance": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/pois/list": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "List all POIs (V2)",
+                "description": "Returns a paginated list of POIs. Optionally filtered by updated_at, bbox. V2: pagination (1000 per page) and cache.",
+                "operationId": "listPoisV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/list_updated_at"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_bbox"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "per_page": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bounding box not valid"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/pois/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get POI by ID (V2)",
+                "description": "Returns a single POI in GeoJSON format. V2: ETag and Last-Modified for caching.",
+                "operationId": "getPoiByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "POI numeric id (osm_id)",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "class": {
+                                                    "type": "string"
+                                                },
+                                                "subclass": {
+                                                    "type": "string"
+                                                },
+                                                "osm_id": {
+                                                    "type": "integer"
+                                                },
+                                                "osm_type": {
+                                                    "type": "string"
+                                                },
+                                                "tags": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "POI not found"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/poles/list": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "List all Poles (V2)",
+                "description": "Returns a list of Poles. Optionally filtered by updated_at, bbox, score. Paginated (1000 per page). V2: cached.",
+                "operationId": "listPolesV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/list_updated_at"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_page"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_bbox"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_score"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/BaseListItem"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bounding box not valid"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/poles/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Get Pole by Osmfeatures ID (V2)",
+                "description": "Returns a single Pole in GeoJSON format. V2: ETag and Last-Modified for caching.",
+                "operationId": "getPoleByIdV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Pole Osmfeatures ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Pole not found"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/refresh/{id}": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Refresh single feature from OSM API",
+                "description": "Fetches the feature from OpenStreetMap API and updates geom, tags and updated_at in the database. No PBF/Geofabrik. Supported: hiking-routes (R), places (N/W/R), poles (N).",
+                "operationId": "refreshFeatureV2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Osmfeatures ID (e.g. R1234567, W987654, N111222)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "R1234567"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Feature refreshed and returned",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "example": "Feature"
+                                        },
+                                        "properties": {
+                                            "type": "object"
+                                        },
+                                        "geometry": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Feature not found in database or on OSM"
+                    },
+                    "422": {
+                        "description": "Invalid osmfeatures_id format"
+                    },
+                    "502": {
+                        "description": "OSM API error"
+                    }
+                }
+            }
+        },
+        "/api/v2/features/search": {
+            "get": {
+                "tags": [
+                    "API V2"
+                ],
+                "summary": "Search features by spatial query (V2)",
+                "description": "Search features by model using point, point+radius or bbox. Same parameters as V1. V2: results cached.",
+                "operationId": "searchFeaturesV2",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/search_models"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_lat"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_lon"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_radius"
+                    },
+                    {
+                        "$ref": "#/components/parameters/search_bbox"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SearchFeatureCollection"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors"
+                    }
+                }
+            }
         }
     },
     "components": {
