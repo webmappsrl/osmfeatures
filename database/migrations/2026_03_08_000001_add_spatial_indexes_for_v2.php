@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,9 +14,13 @@ return new class extends Migration
 
     public function up(): void
     {
-        $tables = ['places', 'poles', 'hiking_routes', 'admin_areas', 'pois'];
+        $tables = ['places', 'poles', 'hiking_routes', 'admin_areas'];
 
         foreach ($tables as $table) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+
             // Indice spaziale GIST sulla colonna geom (per dati già in 4326)
             DB::statement("
                 CREATE INDEX CONCURRENTLY IF NOT EXISTS idx_{$table}_geom
@@ -38,9 +43,13 @@ return new class extends Migration
 
     public function down(): void
     {
-        $tables = ['places', 'poles', 'hiking_routes', 'admin_areas', 'pois'];
+        $tables = ['places', 'poles', 'hiking_routes', 'admin_areas'];
 
         foreach ($tables as $table) {
+            if (! Schema::hasTable($table)) {
+                continue;
+            }
+
             DB::statement("DROP INDEX CONCURRENTLY IF EXISTS idx_{$table}_geom");
             DB::statement("DROP INDEX CONCURRENTLY IF EXISTS idx_{$table}_geom_4326");
             DB::statement("DROP INDEX CONCURRENTLY IF EXISTS idx_{$table}_osm_type_osm_id");
