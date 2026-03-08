@@ -66,6 +66,7 @@ RUN chown -R www-data:www-data /var/www \
     && pecl install redis \
     && pecl install imagick \
     && pecl install apcu \
+    && docker-php-ext-enable redis \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable exif \
     && docker-php-ext-enable imagick \

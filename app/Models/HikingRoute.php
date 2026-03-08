@@ -19,6 +19,34 @@ class HikingRoute extends OsmfeaturesModel
     ];
 
     /**
+     * Returns the GeoJSON feature for the Hiking Route using a precomputed geometry.
+     * Eliminates the extra DB query for ST_AsGeoJSON. Enrichments must be eager-loaded.
+     *
+     * @param string $precomputedGeom Already-computed GeoJSON geometry string
+     * @param array  $props           Optional list of properties to include
+     * @return array
+     */
+    public function getGeojsonFeatureV2(string $precomputedGeom, array $props = []): array
+    {
+        $demEnrichment = $this->demEnrichment ? json_decode($this->demEnrichment->data, true) : null;
+        $adminAreas = $this->adminAreasEnrichment ? json_decode($this->adminAreasEnrichment->data, true) : null;
+        $osmType = $this->getOsmType($this->osm_type);
+        $properties = $this->prepareProperties($osmType);
+        $properties['admin_areas'] = $adminAreas;
+        $properties['dem_enrichment'] = $demEnrichment ? $demEnrichment['properties'] : null;
+
+        if (!empty($props)) {
+            $properties = array_intersect_key($properties, array_flip($props));
+        }
+
+        return [
+            'type' => 'Feature',
+            'properties' => $properties,
+            'geometry' => json_decode($precomputedGeom, true),
+        ];
+    }
+
+    /**
      * Returns the GeoJSON feature for the Hiking Route.
      *
      * @return array
