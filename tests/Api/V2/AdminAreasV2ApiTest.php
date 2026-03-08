@@ -60,7 +60,8 @@ class AdminAreasV2ApiTest extends TestCase
 
         $this->get("/api/v2/features/admin-areas/{$id}")
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'Feature')
                 ->has('properties')
                 ->has('geometry')
@@ -85,7 +86,8 @@ class AdminAreasV2ApiTest extends TestCase
 
         $this->postJson('/api/v2/features/admin-areas/geojson', $payload)
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'FeatureCollection')
                 ->has('features')
             );

@@ -60,7 +60,8 @@ class PolesV2ApiTest extends TestCase
 
         $this->get("/api/v2/features/poles/{$id}")
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'Feature')
                 ->has('properties')
                 ->has('geometry')

@@ -18,7 +18,8 @@ class SearchV2ApiTest extends TestCase
     {
         $this->get('/api/v2/features/search?bbox=10.0,43.0,11.0,44.0')
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'FeatureCollection')
                 ->has('features')
             );
@@ -36,7 +37,8 @@ class SearchV2ApiTest extends TestCase
     {
         $this->get('/api/v2/features/search?lat=43.5&lon=10.5&radius=5000')
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'FeatureCollection')
                 ->has('features')
             );

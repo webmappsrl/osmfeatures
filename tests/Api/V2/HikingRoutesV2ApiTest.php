@@ -77,7 +77,8 @@ class HikingRoutesV2ApiTest extends TestCase
 
         $this->get("/api/v2/features/hiking-routes/{$id}")
             ->assertStatus(200)
-            ->assertJson(fn(AssertableJson $json) => $json
+            ->assertJson(
+                fn(AssertableJson $json) => $json
                 ->where('type', 'Feature')
                 ->has('properties')
                 ->has('geometry')
