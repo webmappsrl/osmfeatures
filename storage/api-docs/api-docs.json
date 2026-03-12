@@ -1277,7 +1277,7 @@
                     "API V2"
                 ],
                 "summary": "List all Admin Areas (V2)",
-                "description": "Returns a list of Admin Areas. Optionally filtered by updated_at, bbox and score. Paginated (1000 per page). V2: response cached with Cache-Control.",
+                "description": "Returns a list of Admin Areas. Optionally filtered by updated_at, bbox, score and admin_level. Optionally returns selected OSM tag attributes via the tags query parameter (comma-separated, e.g. tags=name,wikidata). Paginated (1000 per page). V2: response cached with Cache-Control.",
                 "operationId": "listAdminAreasV2",
                 "parameters": [
                     {
@@ -1291,6 +1291,12 @@
                     },
                     {
                         "$ref": "#/components/parameters/list_score"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_admin_level"
+                    },
+                    {
+                        "$ref": "#/components/parameters/list_tags"
                     }
                 ],
                 "responses": {
@@ -2248,6 +2254,26 @@
                 "schema": {
                     "type": "integer",
                     "example": 2
+                }
+            },
+            "list_admin_level": {
+                "name": "admin_level",
+                "in": "query",
+                "description": "Filter Admin Areas by admin_level.",
+                "required": false,
+                "schema": {
+                    "type": "integer",
+                    "example": 8
+                }
+            },
+            "list_tags": {
+                "name": "tags",
+                "in": "query",
+                "description": "Optional comma-separated list of OSM tag keys (from the tags column) to include as additional fields in the list response. Example: tags=name,wikidata.",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "example": "name,wikidata"
                 }
             },
             "search_models": {

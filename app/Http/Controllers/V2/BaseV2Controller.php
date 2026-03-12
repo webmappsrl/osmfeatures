@@ -85,6 +85,13 @@ abstract class BaseV2Controller extends Controller
             $row->id = $row->osm_type . $row->osm_id;
             unset($row->osm_type, $row->osm_id);
 
+            if (property_exists($row, 'name') && is_string($row->name)) {
+                $decoded = json_decode($row->name, true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $row->name = $decoded;
+                }
+            }
+
             return $row;
         });
 

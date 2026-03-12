@@ -53,6 +53,30 @@ namespace App\Swagger;
  * )
  *
  * @OA\Parameter(
+ *     parameter="list_admin_level",
+ *     in="query",
+ *     name="admin_level",
+ *     description="Filter Admin Areas by admin_level.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="integer",
+ *         example=8
+ *     )
+ * )
+ *
+ * @OA\Parameter(
+ *     parameter="list_tags",
+ *     in="query",
+ *     name="tags",
+ *     description="Optional comma-separated list of OSM tag keys (from the tags column) to include as additional fields in the list response. Example: tags=name,wikidata.",
+ *     required=false,
+ *     @OA\Schema(
+ *         type="string",
+ *         example="name,wikidata"
+ *     )
+ * )
+ *
+ * @OA\Parameter(
  *     parameter="search_models",
  *     in="query",
  *     name="models",

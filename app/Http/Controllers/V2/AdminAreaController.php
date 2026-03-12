@@ -17,11 +17,13 @@ class AdminAreaController extends BaseV2Controller
      *     operationId="listAdminAreasV2",
      *     tags={"API V2"},
      *     summary="List all Admin Areas (V2)",
-     *     description="Returns a list of Admin Areas. Optionally filtered by updated_at, bbox and score. Paginated (1000 per page). V2: response cached with Cache-Control.",
+     *     description="Returns a list of Admin Areas. Optionally filtered by updated_at, bbox, score and admin_level. Optionally returns selected OSM tag attributes via the tags query parameter (comma-separated, e.g. tags=name,wikidata). Paginated (1000 per page). V2: response cached with Cache-Control.",
      *     @OA\Parameter(ref="#/components/parameters/list_updated_at"),
      *     @OA\Parameter(ref="#/components/parameters/list_page"),
      *     @OA\Parameter(ref="#/components/parameters/list_bbox"),
      *     @OA\Parameter(ref="#/components/parameters/list_score"),
+     *     @OA\Parameter(ref="#/components/parameters/list_admin_level"),
+     *     @OA\Parameter(ref="#/components/parameters/list_tags"),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -57,8 +59,37 @@ class AdminAreaController extends BaseV2Controller
                 $query->where('score', '>=', $request->query('score'));
             }
 
+            if ($request->filled('admin_level')) {
+                $query->where('admin_level', $request->query('admin_level'));
+            }
+
+            $columns = ['id', 'updated_at', 'osm_type', 'osm_id'];
+
+            if ($request->filled('tags')) {
+                $tagsParam = $request->query('tags');
+                $tags = is_array($tagsParam)
+                    ? $tagsParam
+                    : array_map('trim', explode(',', (string) $tagsParam));
+
+                $tags = array_filter($tags, static function ($tag) {
+                    return is_string($tag) && $tag !== '' && preg_match('/^[a-zA-Z0-9_:-]+$/', $tag);
+                });
+
+                foreach ($tags as $tag) {
+                    if ($tag === 'name') {
+                        $columns[] = DB::raw("(SELECT COALESCE(jsonb_object_agg(regexp_replace(key, '^name:', ''), value), '{}'::jsonb)
+                            FROM jsonb_each_text(tags::jsonb)
+                            WHERE key LIKE 'name:%') as name");
+                        continue;
+                    }
+
+                    $escapedTag = str_replace("'", "''", $tag);
+                    $columns[] = DB::raw('tags->>\'' . $escapedTag . '\' as "' . $tag . '"');
+                }
+            }
+
             $paginator = $query->orderBy('updated_at', 'desc')
-                ->paginate(self::PER_PAGE, ['id', 'updated_at', 'osm_type', 'osm_id']);
+                ->paginate(self::PER_PAGE, $columns);
 
             return $this->transformListCollection($paginator);
         });
