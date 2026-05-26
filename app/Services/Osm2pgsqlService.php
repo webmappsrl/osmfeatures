@@ -2,12 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Osm2pgsqlCrontabUpdate;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Storage;
 
 class Osm2pgsqlService
 {
@@ -21,12 +20,10 @@ class Osm2pgsqlService
         'poles',
     ];
 
-
     public static function make(): self
     {
         return app(self::class);
     }
-
 
     /**
      * Undocumented function
@@ -37,9 +34,36 @@ class Osm2pgsqlService
      */
     public function import($luaPath, $pbfPath)
     {
-        $this->createOsm2pgsqlDatabaseIfNoteExists();
-        $this->osm2pgsql($luaPath, $pbfPath);
-        $this->copyOsm2pgsqlTablesToTheLaravelDb();
+        try {
+            $this->createOsm2pgsqlDatabaseIfNoteExists();
+            $this->osm2pgsql($luaPath, $pbfPath);
+            $this->copyOsm2pgsqlTablesToTheLaravelDb();
+
+            try {
+                Osm2pgsqlCrontabUpdate::create([
+                    'imported_at' => now(),
+                    'from_lua' => basename($luaPath),
+                    'from_pbf' => basename($pbfPath),
+                    'success' => true,
+                ]);
+            } catch (\Throwable $loggingException) {
+                Log::error('Failed to record import success: '.$loggingException->getMessage());
+            }
+        } catch (\Throwable $e) {
+            try {
+                Osm2pgsqlCrontabUpdate::create([
+                    'imported_at' => now(),
+                    'from_lua' => basename($luaPath),
+                    'from_pbf' => basename($pbfPath),
+                    'success' => false,
+                    'log' => substr($e->getMessage(), 0, 255),
+                ]);
+            } catch (\Throwable $loggingException) {
+                Log::error('Failed to record import failure: '.$loggingException->getMessage());
+            }
+
+            throw $e;
+        }
     }
 
     protected function createOsm2pgsqlDatabaseIfNoteExists()
@@ -66,6 +90,7 @@ class Osm2pgsqlService
         $dbHost = $this->getDbHost();
 
         $command = "PGPASSWORD=$dbPassword osm2pgsql -d $dbName -H '$dbHost' -U $dbUser -O flex -x -S $luaPath $pbfPath --slim";
+
         return $this->exec($command);
     }
 
@@ -97,20 +122,18 @@ class Osm2pgsqlService
 
         $this->log('Imported osm2pgsql tables to the Laravel database');
         $check = unlink($path);
-        if (!$check) {
+        if (! $check) {
             $this->log("Failed to delete $path", 'error');
         } else {
             $this->log("Deleted $path");
         }
     }
 
-
     protected function dumpOsm2pgsqlTables(): string
     {
-        $this->log("Dumping osm2pgsql tables");
+        $this->log('Dumping osm2pgsql tables');
         $dumpRelativeDir = 'osm/pbf/';
-        $path = storage_path($dumpRelativeDir . date('Y-m-d') . ".sql");
-
+        $path = storage_path($dumpRelativeDir.date('Y-m-d').'.sql');
 
         \Spatie\DbDumper\Databases\PostgreSql::create()
             ->setDbName($this->getDbName())
@@ -129,29 +152,30 @@ class Osm2pgsqlService
         return $this::$tables;
     }
 
-
     protected function getLaravelDbName()
     {
-        return config('database.connections.' . config('database.default') . '.database', 'osmfeatures');
+        return config('database.connections.'.config('database.default').'.database', 'osmfeatures');
     }
 
     protected function getDbName()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.database');
+        return config('database.connections.'.self::$slaveDbConnection.'.database');
     }
 
     protected function getDbHost()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.host');
-        ;
+        return config('database.connections.'.self::$slaveDbConnection.'.host');
+
     }
+
     protected function getDbUser()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.username');
+        return config('database.connections.'.self::$slaveDbConnection.'.username');
     }
+
     protected function getDbPassword()
     {
-        return config('database.connections.' . self::$slaveDbConnection . '.password');
+        return config('database.connections.'.self::$slaveDbConnection.'.password');
     }
 
     protected function log($message, $level = 'info')
