@@ -3,8 +3,8 @@
 namespace App\Nova\Cards;
 
 use Abordage\HtmlCard\HtmlCard;
+use App\Models\Osm2pgsqlCrontabUpdate;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class LastLuaUpdate extends HtmlCard
 {
@@ -28,15 +28,34 @@ class LastLuaUpdate extends HtmlCard
      */
     public function content(): string
     {
-        // Get the record from planet_osm_replication_status table with the latest importdate
-        $lastLuaUpdateRecord = DB::select("SELECT MAX(importdate) AS importdate FROM planet_osm_replication_status")[0];
+        $lastSuccess = Osm2pgsqlCrontabUpdate::query()
+            ->where('success', true)
+            ->latest('imported_at')
+            ->first();
 
-        if ($lastLuaUpdateRecord && $lastLuaUpdateRecord->importdate) {
-            $lastLuaUpdate = Carbon::parse($lastLuaUpdateRecord->importdate);
+        $title = '<h1 class="text-4xl">Last DB Import</h1>';
 
-            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">' . $lastLuaUpdate->toDateTimeString() . '</p>';
-        } else {
-            return '<h1 class="text-4xl">Last Lua Update</h1><p class="text-lg text-gray-400 text-center">No data found</p>';
+        if (! $lastSuccess) {
+            return $title.'<p class="text-lg text-gray-400 text-center">No data found</p>';
         }
+
+        $lastSuccessTime = Carbon::parse($lastSuccess->imported_at);
+        $output = $title
+            .'<p class="text-lg text-gray-400 text-center">'
+            .$lastSuccessTime->toDateTimeString()
+            .'</p>';
+
+        $failedAfter = Osm2pgsqlCrontabUpdate::query()
+            ->where('success', false)
+            ->where('imported_at', '>', $lastSuccess->imported_at)
+            ->exists();
+
+        if ($failedAfter) {
+            $output .= '<p class="text-sm text-red-500 text-center mt-2">'
+                ."⚠️ Import falliti dopo l'ultimo successo"
+                .'</p>';
+        }
+
+        return $output;
     }
 }

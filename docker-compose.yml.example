@@ -19,6 +19,22 @@ services:
       - redis
     networks:
       - laravel
+
+  horizon:
+    build: ./docker/configs/phpfpm
+    restart: always
+    container_name: "horizon_${APP_NAME}"
+    image: wm-phpfpm:8.2.15-fpm
+    command: php artisan horizon
+    volumes:
+      - ".:/var/www/html/${DOCKER_PROJECT_DIR_NAME}"
+    working_dir: '/var/www/html/${DOCKER_PROJECT_DIR_NAME}'
+    depends_on:
+      - db
+      - redis
+    networks:
+      - laravel
+
   db:
     image: postgis/postgis:14-3.3
     container_name: "postgres_${APP_NAME}"
