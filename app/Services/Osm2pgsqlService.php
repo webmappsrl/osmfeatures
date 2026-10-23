@@ -47,7 +47,7 @@ class Osm2pgsqlService
                     'success' => true,
                 ]);
             } catch (\Throwable $loggingException) {
-                Log::error('Failed to record import success: '.$loggingException->getMessage());
+                Log::error('Failed to record import success: ' . $loggingException->getMessage());
             }
         } catch (\Throwable $e) {
             try {
@@ -59,7 +59,7 @@ class Osm2pgsqlService
                     'log' => substr($e->getMessage(), 0, 255),
                 ]);
             } catch (\Throwable $loggingException) {
-                Log::error('Failed to record import failure: '.$loggingException->getMessage());
+                Log::error('Failed to record import failure: ' . $loggingException->getMessage());
             }
 
             throw $e;
@@ -133,7 +133,7 @@ class Osm2pgsqlService
     {
         $this->log('Dumping osm2pgsql tables');
         $dumpRelativeDir = 'osm/pbf/';
-        $path = storage_path($dumpRelativeDir.date('Y-m-d').'.sql');
+        $path = storage_path($dumpRelativeDir . date('Y-m-d') . '.sql');
 
         \Spatie\DbDumper\Databases\PostgreSql::create()
             ->setDbName($this->getDbName())
@@ -154,28 +154,28 @@ class Osm2pgsqlService
 
     protected function getLaravelDbName()
     {
-        return config('database.connections.'.config('database.default').'.database', 'osmfeatures');
+        return config('database.connections.' . config('database.default') . '.database', 'osmfeatures');
     }
 
     protected function getDbName()
     {
-        return config('database.connections.'.self::$slaveDbConnection.'.database');
+        return config('database.connections.' . self::$slaveDbConnection . '.database');
     }
 
     protected function getDbHost()
     {
-        return config('database.connections.'.self::$slaveDbConnection.'.host');
+        return config('database.connections.' . self::$slaveDbConnection . '.host');
 
     }
 
     protected function getDbUser()
     {
-        return config('database.connections.'.self::$slaveDbConnection.'.username');
+        return config('database.connections.' . self::$slaveDbConnection . '.username');
     }
 
     protected function getDbPassword()
     {
-        return config('database.connections.'.self::$slaveDbConnection.'.password');
+        return config('database.connections.' . self::$slaveDbConnection . '.password');
     }
 
     protected function log($message, $level = 'info')

@@ -36,14 +36,14 @@ class LastLuaUpdate extends HtmlCard
         $title = '<h1 class="text-4xl">Last DB Import</h1>';
 
         if (! $lastSuccess) {
-            return $title.'<p class="text-lg text-gray-400 text-center">No data found</p>';
+            return $title . '<p class="text-lg text-gray-400 text-center">No data found</p>';
         }
 
         $lastSuccessTime = Carbon::parse($lastSuccess->imported_at);
         $output = $title
-            .'<p class="text-lg text-gray-400 text-center">'
-            .$lastSuccessTime->toDateTimeString()
-            .'</p>';
+            . '<p class="text-lg text-gray-400 text-center">'
+            . $lastSuccessTime->toDateTimeString()
+            . '</p>';
 
         $failedAfter = Osm2pgsqlCrontabUpdate::query()
             ->where('success', false)
@@ -52,8 +52,8 @@ class LastLuaUpdate extends HtmlCard
 
         if ($failedAfter) {
             $output .= '<p class="text-sm text-red-500 text-center mt-2">'
-                ."⚠️ Import falliti dopo l'ultimo successo"
-                .'</p>';
+                . "⚠️ Import falliti dopo l'ultimo successo"
+                . '</p>';
         }
 
         return $output;
