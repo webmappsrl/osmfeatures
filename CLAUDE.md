@@ -6,6 +6,12 @@ Questo file fornisce indicazioni a Claude Code (claude.ai/code) quando lavora co
 
 **osmfeatures** è un'applicazione Laravel 10 che importa, elabora ed espone feature geografiche di OpenStreetMap (OSM) tramite una JSON API. Usa PostgreSQL/PostGIS per i dati spaziali, Redis per le code e Laravel Horizon per la gestione dei job. Lo stack gira all'interno di Docker (PHP 8.2 FPM, PostGIS 14-3.3, Redis).
 
+## Regole del repo
+
+- Non ricreare `db` e `redis` quando cambi l'immagine PHP o il tag nel compose: la procedura è
+  [docs/howto/aggiornare-immagine-php.md](docs/howto/aggiornare-immagine-php.md). I passi sul
+  server li esegue il dev; l'agente prepara solo il Dockerfile e `docker-compose.yml.example`.
+
 ## Comandi
 
 Tutti i comandi PHP/artisan vanno eseguiti **dentro il container Docker** (`php81_osmfeatures`):
@@ -66,7 +72,7 @@ php artisan osmfeatures:calculate-admin-areas-intersecting
 php artisan osmfeatures:upload-db-to-aws
 ```
 
-I file Lua per le importazioni osm2pgsql si trovano in `storage/app/osm/lua/`. I file PBF sono salvati in `storage/app/osm/pbf/`.
+I file Lua per le importazioni osm2pgsql si trovano in `storage/osm/lua/`. I file PBF sono salvati in `storage/osm/pbf/`.
 
 ## Architettura
 
@@ -132,3 +138,9 @@ Sono inclusi due pacchetti locali come path-repository:
 - `wm-internal/` — strumenti interni Webmapp
 
 Dopo aver aggiornato questi pacchetti, eseguire `composer update wm/wm-package wm/wm-internal`.
+
+## Conoscenza
+
+| Argomento | Cosa copre | Pagina |
+|---|---|---|
+| Immagine PHP: base, pool FPM e rilascio | perché trixie, limiti del pool, perché il deploy di produzione è manuale | [docs/knowledge/8846-messa-in-sicurezza-php2shell-osmfeatures.md](docs/knowledge/8846-messa-in-sicurezza-php2shell-osmfeatures.md) |
