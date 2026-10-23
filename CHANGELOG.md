@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.35.0](https://github.com/webmappsrl/osmfeatures/compare/v1.34.0...v1.35.0) (2026-10-23)
+
+
+### Features
+
+* **docker:** ✨ add Horizon service to docker-compose example ([2462210](https://github.com/webmappsrl/osmfeatures/commit/2462210a71ad7545be93d3e2430de505069d0a49))
+* **oc:7947:** 🔄 rebase Last DB Import card on osm2pgsql_crontab_updates ([ddb86d0](https://github.com/webmappsrl/osmfeatures/commit/ddb86d03e9bbb19caec568cf5ce7960bc76dc317))
+
+
+### Bug Fixes
+
+* **oc:8846:** pin immagine PHP 8.2.35 (trixie) e hardening pool FPM contro PHP2Shell ([47576b6](https://github.com/webmappsrl/osmfeatures/commit/47576b608f064b68bb823bae4aa95bce03bcfe57))
+
 ## [1.34.0](https://github.com/webmappsrl/osmfeatures/compare/v1.33.0...v1.34.0) (2026-03-12)
 
 
